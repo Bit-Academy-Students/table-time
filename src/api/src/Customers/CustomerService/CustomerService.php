@@ -24,33 +24,41 @@ class CustomerService
         return $this->customerRepository->find($id);
     }
 
-    public function createCustomer(string $naam, ?string $email, ?string $telefoonnummer): CustomerEntity
+    public function createCustomer(array $data): CustomerEntity
     {
+        try {
+            if (empty($data['naam'])) {
+                throw new \InvalidArgumentException("Naam is required");
+            }
+        } catch (\InvalidArgumentException $e) {
+            // Handle the exception as needed, e.g., log it or rethrow
+            throw $e;
+        }
         $customer = new CustomerEntity();
-        $customer->setNaam($naam);
-        $customer->setEmail($email);
-        $customer->setTelefoonnummer($telefoonnummer);
+        $customer->setNaam($data['naam']);
+        $customer->setEmail($data['email'] ?? null);
+        $customer->setTelefoonnummer($data['telefoonnummer'] ?? null);
 
         $this->customerRepository->save($customer);
 
         return $customer;
     }
     
-    public function updateCustomer(int $id, ?string $naam, ?string $email, ?string $telefoonnummer): ?CustomerEntity
+    public function updateCustomer(int $id, array $data): ?CustomerEntity
     {
         $customer = $this->customerRepository->find($id);
         if (!$customer) {
             return null;
         }
 
-        if ($naam !== null) {
-            $customer->setNaam($naam);
+        if (isset($data['naam'])) {
+            $customer->setNaam($data['naam']);
         }
-        if ($email !== null) {
-            $customer->setEmail($email);
+        if (isset($data['email'])) {
+            $customer->setEmail($data['email']);
         }
-        if ($telefoonnummer !== null) {
-            $customer->setTelefoonnummer($telefoonnummer);
+        if (isset($data['telefoonnummer'])) {
+            $customer->setTelefoonnummer($data['telefoonnummer']);
         }
 
         $this->customerRepository->save($customer);

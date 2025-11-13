@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Customers\CustomerService\CustomerService;
+use Symfony\Component\HttpFoundation\Request;
 
 class CustomerController extends AbstractController
 {
@@ -34,29 +35,22 @@ class CustomerController extends AbstractController
         );
     }
 
-    public function Create(array $data): Response
+    public function Create(Request $request): Response
     {
-        $customer = $this->customerService->createCustomer(
-            $data['naam'],
-            $data['email'] ?? null,
-            $data['telefoonnummer'] ?? null
-        );
+        $data = json_decode($request->getContent(), true);
+        $customer = $this->customerService->createCustomer($data);
 
         return new JsonResponse(
             ['customer' => $customer, 'response' => 'created']
         );
     }
     
-    public function Update(int $id, array $data): Response
+    public function Update(int $id, Request $request): Response
     {
+        $data = json_decode($request->getContent(), true);
         $customer = $this->customerService->getCustomerById($id);
 
-        $this->customerService->updateCustomer(
-            $id,
-            $data['naam'] ?? $customer->getNaam(),
-            $data['email'] ?? $customer->getEmail(),
-            $data['telefoonnummer'] ?? $customer->getTelefoonnummer()
-        );
+        $this->customerService->updateCustomer($id, $data);
 
         return new JsonResponse(
             ['customer' => $customer, 'response' => 'updated']
