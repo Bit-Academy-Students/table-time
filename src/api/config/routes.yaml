@@ -1,0 +1,6 @@
+
+controllers:
+    resource: '../../src/Customers/CustomerController/'
+    type:     attribute
+    prefix:   '/blog'
+    trailing_slash_on_root: false

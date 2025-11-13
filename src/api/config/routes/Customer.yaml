@@ -1,0 +1,24 @@
+getAllCustomers:
+    path:       /Customers/all
+    methods:    [GET]
+    controller: App\Customers\CustomerController\CustomerController::FindAll
+
+getCustomerById:
+    path:       /Customers/{id}
+    methods:    [GET]
+    controller: App\Customers\CustomerController\CustomerController::FindById
+
+createCustomer:
+    path:       /Customers/create
+    methods:    [POST]
+    controller: App\Customers\CustomerController\CustomerController::Create
+
+updateCustomer:
+    path:       /Customers/{id}
+    methods:    [PUT]
+    controller: App\Customers\CustomerController\CustomerController::Update
+    
+deleteCustomer:
+    path:       /Customers/{id}
+    methods:    [DELETE]
+    controller: App\Customers\CustomerController\CustomerController::Delete
