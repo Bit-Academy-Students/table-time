@@ -20,6 +20,14 @@ class CustomerController extends AbstractController
     public function FindAll(): Response
     {
         $customers = $this->customerService->getAllCustomers();
+        $customers = array_map(function ($customer) {
+            return [
+                'id' => $customer->getId(),
+                'naam' => $customer->getNaam(),
+                'email' => $customer->getEmail(),
+                'telefoonnummer' => $customer->getTelefoonnummer(),
+            ];
+        }, $customers);
 
         return new JsonResponse(
             ['customers' => $customers]
@@ -29,6 +37,15 @@ class CustomerController extends AbstractController
     public function FindById(int $id): Response
     {
         $customer = $this->customerService->getCustomerById($id);
+
+        if ($customer) {
+            $customer = [
+                'id' => $customer->getId(),
+                'naam' => $customer->getNaam(),
+                'email' => $customer->getEmail(),
+                'telefoonnummer' => $customer->getTelefoonnummer(),
+            ];
+        }
 
         return new JsonResponse(
             ['customer' => $customer]
