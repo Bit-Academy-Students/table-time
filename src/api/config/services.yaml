@@ -35,6 +35,10 @@ services:
 
         arguments:
 
+    App\Reservations\ReservationService\ReservationService:
+
+        arguments:
+
     App\Restaurants\RestaurantService\RestaurantService:
 
         arguments:

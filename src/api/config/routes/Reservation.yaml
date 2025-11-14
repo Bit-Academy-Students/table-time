@@ -1,0 +1,24 @@
+getAllReservations:
+    path:       /Reservations
+    methods:    [GET]
+    controller: App\Reservations\ReservationController\ReservationController::FindAll
+
+getReservationById:
+    path:       /Reservations/{id}
+    methods:    [GET]
+    controller: App\Reservations\ReservationController\ReservationController::FindById
+
+createReservation:
+    path:       /Reservations
+    methods:    [POST]
+    controller: App\Reservations\ReservationController\ReservationController::Create
+
+updateReservation:
+    path:       /Reservations/{id}
+    methods:    [PUT]
+    controller: App\Reservations\ReservationController\ReservationController::Update
+
+deleteReservation:
+    path:       /Reservations/{id}
+    methods:    [DELETE]
+    controller: App\Reservations\ReservationController\ReservationController::Delete

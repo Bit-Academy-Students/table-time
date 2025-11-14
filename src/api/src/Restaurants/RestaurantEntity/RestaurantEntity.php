@@ -4,6 +4,9 @@ namespace App\Restaurants\RestaurantEntity;
 
 use App\Restaurants\RestaurantRepository\RestaurantRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToMany;
+use App\Reservations\ReservationEntity\ReservationEntity;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: RestaurantRepository::class)]
 class RestaurantEntity
@@ -21,6 +24,9 @@ class RestaurantEntity
 
     #[ORM\Column(length: 15, nullable: true)]
     private ?string $telefoonnummer = null;
+
+    #[OneToMany(mappedBy: "RestaurantId", targetEntity: ReservationEntity::class)]
+    private Collection $Reservations;
 
     public function getId(): ?int
     {
@@ -68,5 +74,10 @@ class RestaurantEntity
         $this->telefoonnummer = $telefoonnummer;
 
         return $this;
+    }
+
+    public function getReservations(): Collection
+    {
+        return $this->Reservations;
     }
 }
