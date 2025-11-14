@@ -1,0 +1,24 @@
+getAllProducts:
+    path:       /Products
+    methods:    [GET]
+    controller: App\Products\ProductController\ProductController::FindAll
+
+getProductById:
+    path:       /Products/{id}
+    methods:    [GET]
+    controller: App\Products\ProductController\ProductController::FindById
+
+createProduct:
+    path:       /Products
+    methods:    [POST]
+    controller: App\Products\ProductController\ProductController::Create
+
+updateProduct:
+    path:       /Products/{id}
+    methods:    [PUT]
+    controller: App\Products\ProductController\ProductController::Update
+
+deleteProduct:
+    path:       /Products/{id}
+    methods:    [DELETE]
+    controller: App\Products\ProductController\ProductController::Delete

@@ -1,35 +1,35 @@
 <?php
 
-namespace App\Restaurants\RestaurantRepository;
+namespace App\Products\ProductRepository;
 
-use App\Restaurants\RestaurantEntity\RestaurantEntity as Restaurant;
+use App\Products\ProductEntity\ProductEntity as Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Restaurant>
+ * @extends ServiceEntityRepository<Product>
  */
-class RestaurantRepository extends ServiceEntityRepository
+class ProductRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Restaurant::class);
+        parent::__construct($registry, Product::class);
     }
 
-    public function save(Restaurant $entity): void
+    public function save(Product $entity): void
     {
         $this->getEntityManager()->persist($entity);
         $this->getEntityManager()->flush();
     }
 
-    public function remove(Restaurant $entity): void
+    public function remove(Product $entity): void
     {
         $this->getEntityManager()->remove($entity);
         $this->getEntityManager()->flush(); 
     }
 
     //    /**
-    //     * @return Restaurant[] Returns an array of Restaurant objects
+    //     * @return Product[] Returns an array of Product objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -43,7 +43,7 @@ class RestaurantRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Restaurant
+    //    public function findOneBySomeField($value): ?Product
     //    {
     //        return $this->createQueryBuilder('c')
     //            ->andWhere('c.exampleField = :val')
