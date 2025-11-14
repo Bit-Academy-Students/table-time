@@ -1,0 +1,24 @@
+getAllRestaurants:
+    path:       /Restaurants
+    methods:    [GET]
+    controller: App\Restaurants\RestaurantController\RestaurantController::FindAll
+
+getRestaurantById:
+    path:       /Restaurants/{id}
+    methods:    [GET]
+    controller: App\Restaurants\RestaurantController\RestaurantController::FindById
+
+createRestaurant:
+    path:       /Restaurants
+    methods:    [POST]
+    controller: App\Restaurants\RestaurantController\RestaurantController::Create
+
+updateRestaurant:
+    path:       /Restaurants/{id}
+    methods:    [PUT]
+    controller: App\Restaurants\RestaurantController\RestaurantController::Update
+
+deleteRestaurant:
+    path:       /Restaurants/{id}
+    methods:    [DELETE]
+    controller: App\Restaurants\RestaurantController\RestaurantController::Delete

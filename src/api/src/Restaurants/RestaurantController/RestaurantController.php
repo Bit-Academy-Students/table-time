@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Restaurants\RestaurantService\RestaurantService;
 use Symfony\Component\HttpFoundation\Request;
 
-class CustomerController extends AbstractController
+class RestaurantController extends AbstractController
 {
     private RestaurantService $RestaurantService;
 
