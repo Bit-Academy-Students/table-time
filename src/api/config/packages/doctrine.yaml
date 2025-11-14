@@ -24,11 +24,19 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Customers/CustomerEntity'
                 prefix: 'App\Customers\CustomerEntity'
                 alias: App
+                
             App/Reservations:
                 type: attribute
                 is_bundle: false
                 dir: '%kernel.project_dir%/src/Reservations/ReservationEntity'
                 prefix: 'App\Reservations\ReservationEntity'
+                alias: App
+
+            App/Restaurants:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Restaurants/RestaurantEntity'
+                prefix: 'App\Restaurants\RestaurantEntity'
                 alias: App
         controller_resolver:
             auto_mapping: false
