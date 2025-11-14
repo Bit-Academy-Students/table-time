@@ -35,9 +35,11 @@ class ReservationService
             throw $e;
         }
         $Reservation = new ReservationEntity();
-        $Reservation->setNaam($data['naam']);
-        $Reservation->setEmail($data['email'] ?? null);
-        $Reservation->setTelefoonnummer($data['telefoonnummer'] ?? null);
+        $Reservation->setCustomerId($data['customerId']);
+        $Reservation->setRestaurantId($data['restaurantId']);
+        $Reservation->setStartDate($data['startDate']);
+        $Reservation->setEndDate($data['endDate']);
+        $Reservation->setAmountPeople($data['amountPeople']);
 
         $this->ReservationRepository->save($Reservation);
 
@@ -51,14 +53,20 @@ class ReservationService
             return null;
         }
 
-        if (isset($data['naam'])) {
-            $Reservation->setNaam($data['naam']);
+        if (isset($data['customerId'])) {
+            $Reservation->setCustomerId($data['customerId']);
         }
-        if (isset($data['email'])) {
-            $Reservation->setEmail($data['email']);
+        if (isset($data['restaurantId'])) {
+            $Reservation->setRestaurantId($data['restaurantId']);
         }
-        if (isset($data['telefoonnummer'])) {
-            $Reservation->setTelefoonnummer($data['telefoonnummer']);
+        if (isset($data['startDate'])) {
+            $Reservation->setStartDate($data['startDate']);
+        }
+        if (isset($data['endDate'])) {
+            $Reservation->setEndDate($data['endDate']);
+        }
+        if (isset($data['amountPeople'])) {
+            $Reservation->setAmountPeople($data['amountPeople']);
         }
 
         $this->ReservationRepository->save($Reservation);
