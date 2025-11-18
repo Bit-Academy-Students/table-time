@@ -29,15 +29,15 @@ services:
     networks:
       - app-network
 
-#   node:
-#     build: ./nodejs
-#     container_name: node
-#     ports:
-#       - "3000:3000"
-#     volumes:
-#       - ./nodejs:/app
-#     networks:
-#       - app-network
+  node:
+    build: ./nodejs
+    container_name: node
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./nodejs:/app
+    networks:
+      - app-network
 
   phpunit:
     build: ./phpunit

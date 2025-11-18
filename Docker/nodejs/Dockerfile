@@ -1,8 +1,19 @@
-FROM node:18-alpine
+FROM node:20-alpine
+
+# Nodige build tools voor native modules
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    bash
 
 WORKDIR /app
-COPY . .
 
+COPY package*.json ./
+
+# Install dependencies
 RUN npm install
 
-CMD ["npm", "start"]
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]
