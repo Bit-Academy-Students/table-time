@@ -2,8 +2,13 @@
 
 namespace App\Reservations\ReservationEntity;
 
+use App\Customers\CustomerEntity\CustomerEntity;
+use App\Restaurants\RestaurantEntity\RestaurantEntity;
 use App\Reservations\ReservationRepository\ReservationRepository;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping as ORM;
+use DateTimeInterface;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 class ReservationEntity
@@ -11,18 +16,26 @@ class ReservationEntity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
-    #[ORM\Column(length: 50)]
-    private ?string $naam = null;
+    #[ManyToOne(targetEntity: CustomerEntity::class, inversedBy: "Reservations")]
+    #[JoinColumn(name: "CustomerId", referencedColumnName: "id")]
+    private CustomerEntity $CustomerId;
 
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $email = null;
+    #[ManyToOne(targetEntity: RestaurantEntity::class, inversedBy: "Reservations")]
+    #[JoinColumn(name: "RestaurantId", referencedColumnName: "id")]
+    private RestaurantEntity $RestaurantId;
 
-    #[ORM\Column(length: 15, nullable: true)]
-    private ?string $telefoonnummer = null;
+    #[ORM\Column(type: "datetime")]
+    private DateTimeInterface $StartDate;
+    
+    #[ORM\Column(type: "datetime")]
+    private DateTimeInterface $EndDate;
 
-    public function getId(): ?int
+    #[ORM\Column]
+    private int $AmountPeople;
+
+    public function getId(): int
     {
         return $this->id;
     }
@@ -33,39 +46,63 @@ class ReservationEntity
 
         return $this;
     }
-
-    public function getNaam(): ?string
+    
+    public function getCustomerId(): CustomerEntity
     {
-        return $this->naam;
+        return $this->CustomerId;
     }
 
-    public function setNaam(string $naam): static
+    public function setCustomerId(CustomerEntity $CustomerId): static
     {
-        $this->naam = $naam;
+        $this->CustomerId = $CustomerId;
 
         return $this;
     }
 
-    public function getEmail(): ?string
+    public function getRestaurantId(): RestaurantEntity
     {
-        return $this->email;
+        return $this->RestaurantId;
     }
 
-    public function setEmail(?string $email): static
+    public function setRestaurantId(RestaurantEntity $RestaurantId): static
     {
-        $this->email = $email;
+        $this->RestaurantId = $RestaurantId;
 
         return $this;
     }
 
-    public function getTelefoonnummer(): ?string
+    public function getStartDate(): DateTimeInterface
     {
-        return $this->telefoonnummer;
+        return $this->StartDate;
     }
 
-    public function setTelefoonnummer(?string $telefoonnummer): static
+    public function setStartDate(DateTimeInterface $StartDate): static
     {
-        $this->telefoonnummer = $telefoonnummer;
+        $this->StartDate = $StartDate;
+
+        return $this;
+    }
+
+    public function getEndDate(): DateTimeInterface
+    {
+        return $this->EndDate;
+    }
+
+    public function setEndDate(DateTimeInterface $EndDate): static
+    {
+        $this->EndDate = $EndDate;
+
+        return $this;
+    }
+
+    public function getAmountPeople(): int
+    {
+        return $this->AmountPeople;
+    }
+
+    public function setAmountPeople(int $AmountPeople): static
+    {
+        $this->AmountPeople = $AmountPeople;
 
         return $this;
     }

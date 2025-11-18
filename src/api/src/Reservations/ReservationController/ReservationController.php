@@ -41,9 +41,6 @@ class ReservationController extends AbstractController
         if ($Reservation) {
             $Reservation = [
                 'id' => $Reservation->getId(),
-                'naam' => $Reservation->getNaam(),
-                'email' => $Reservation->getEmail(),
-                'telefoonnummer' => $Reservation->getTelefoonnummer(),
             ];
         }
 
