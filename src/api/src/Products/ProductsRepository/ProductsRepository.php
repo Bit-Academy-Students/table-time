@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Products\ProductRepository;
+namespace App\Products\ProductsRepository;
 
-use App\Products\ProductEntity\ProductEntity as Product;
+use App\Products\ProductsEntity\ProductsEntity as Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Product>
  */
-class ProductRepository extends ServiceEntityRepository
+class ProductsRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

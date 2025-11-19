@@ -1,18 +1,18 @@
 <?php 
 
-namespace App\Products\ProductController;
+namespace App\Products\ProductsController;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Products\ProductService\ProductService;
+use App\Products\ProductsService\ProductsService;
 use Symfony\Component\HttpFoundation\Request;
 
-class ProductController extends AbstractController
+class ProductsController extends AbstractController
 {
-    private ProductService $ProductService;
+    private ProductsService $ProductService;
 
-    public function __construct(ProductService $ProductService)
+    public function __construct(ProductsService $ProductService)
     {
         $this->ProductService = $ProductService;
     }

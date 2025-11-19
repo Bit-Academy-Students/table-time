@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Products\ProductService;
+namespace App\Products\ProductsService;
 
-use App\Products\ProductEntity\ProductEntity;
-use App\Products\ProductRepository\ProductRepository;
+use App\Products\ProductsEntity\ProductsEntity;
+use App\Products\ProductsRepository\ProductsRepository;
 
-class ProductService 
+class ProductsService 
 {
-    private ProductRepository $ProductRepository;
+    private ProductsRepository $ProductRepository;
 
-    public function __construct(ProductRepository $ProductRepository)
+    public function __construct(ProductsRepository $ProductRepository)
     {
         $this->ProductRepository = $ProductRepository;
     }
@@ -19,12 +19,12 @@ class ProductService
         return $this->ProductRepository->findAll();
     }
 
-    public function getProductById(int $id): ?ProductEntity
+    public function getProductById(int $id): ?ProductsEntity
     {
         return $this->ProductRepository->find($id);
     }
 
-    public function createProduct(array $data): ProductEntity
+    public function createProduct(array $data): ProductsEntity
     {
         try {
             if (empty($data['naam'])) {
@@ -34,7 +34,7 @@ class ProductService
             // Handle the exception as needed, e.g., log it or rethrow
             throw $e;
         }
-        $Product = new ProductEntity();
+        $Product = new ProductsEntity();
         $Product->setNaam($data['naam']);
         $Product->setPrijs($data['prijs'] ?? null);
         $Product->setSoort($data['soort'] ?? null);
@@ -45,7 +45,7 @@ class ProductService
         return $Product;
     }
     
-    public function updateProduct(int $id, array $data): ?ProductEntity
+    public function updateProduct(int $id, array $data): ?ProductsEntity
     {
         $Product = $this->ProductRepository->find($id);
         if (!$Product) {
