@@ -201,6 +201,25 @@
     <service id="App\Reservations\ReservationService\ReservationService" class="App\Reservations\ReservationService\ReservationService" autowire="true" autoconfigure="true">
       <argument type="service" id="App\Reservations\ReservationRepository\ReservationRepository"/>
     </service>
+    <service id="App\Restaurants\RestaurantController\RestaurantController" class="App\Restaurants\RestaurantController\RestaurantController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <argument type="service" id="App\Restaurants\RestaurantService\RestaurantService"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.ZyP9f7K.App\Restaurants\RestaurantController\RestaurantController"/>
+      </call>
+    </service>
+    <service id="App\Restaurants\RestaurantEntity\RestaurantEntity" class="App\Restaurants\RestaurantEntity\RestaurantEntity" autowire="true" autoconfigure="true">
+      <tag name="container.excluded" source="because it's a Doctrine entity"/>
+      <tag name="container.excluded" source="with #[Doctrine\ORM\Mapping\Entity] attribute"/>
+    </service>
+    <service id="App\Restaurants\RestaurantRepository\RestaurantRepository" class="App\Restaurants\RestaurantRepository\RestaurantRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Restaurants\RestaurantService\RestaurantService" class="App\Restaurants\RestaurantService\RestaurantService" autowire="true" autoconfigure="true">
+      <argument type="service" id="App\Restaurants\RestaurantRepository\RestaurantRepository"/>
+    </service>
     <service id="argument_metadata_factory" class="Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactory"/>
     <service id="argument_resolver.backed_enum_resolver" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\BackedEnumValueResolver">
       <tag priority="100" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\BackedEnumValueResolver">controller.argument_value_resolver</tag>
@@ -1734,7 +1753,7 @@
     <service id="doctrine.orm.configuration" class="Doctrine\ORM\Configuration" abstract="true"/>
     <service id="doctrine.orm.entity_manager.abstract" class="Doctrine\ORM\EntityManager" lazy="true" abstract="true"/>
     <service id="doctrine.orm.container_repository_factory" class="Doctrine\Bundle\DoctrineBundle\Repository\ContainerRepositoryFactory">
-      <argument type="service" id=".service_locator.KJ3J8sz"/>
+      <argument type="service" id=".service_locator.98YDqky"/>
     </service>
     <service id="doctrine.orm.manager_configurator.abstract" class="Doctrine\Bundle\DoctrineBundle\ManagerConfigurator" abstract="true">
       <argument type="collection"/>
@@ -1915,7 +1934,7 @@
       <tag name="doctrine.orm.configuration"/>
       <call method="setEntityNamespaces">
         <argument type="collection">
-          <argument key="App">App\Reservations\ReservationEntity</argument>
+          <argument key="App">App\Restaurants\RestaurantEntity</argument>
         </argument>
       </call>
       <call method="setMetadataCache">
@@ -1976,6 +1995,7 @@
       <argument type="collection">
         <argument>/var/www/html/api/src/Customers/CustomerEntity</argument>
         <argument>/var/www/html/api/src/Reservations/ReservationEntity</argument>
+        <argument>/var/www/html/api/src/Restaurants/RestaurantEntity</argument>
       </argument>
       <argument>true</argument>
     </service>
@@ -2243,6 +2263,10 @@
             <argument>App\Reservations\ReservationEntity</argument>
             <argument type="service" id="doctrine.orm.default_attribute_metadata_driver"/>
           </argument>
+          <argument type="collection">
+            <argument>App\Restaurants\RestaurantEntity</argument>
+            <argument type="service" id="doctrine.orm.default_attribute_metadata_driver"/>
+          </argument>
         </argument>
       </argument>
     </service>
@@ -2429,6 +2453,13 @@
     <service id=".abstract.instanceof.App\Reservations\ReservationEntity\ReservationEntity" class="App\Reservations\ReservationEntity\ReservationEntity" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Reservations\ReservationRepository\ReservationRepository" class="App\Reservations\ReservationRepository\ReservationRepository" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Reservations\ReservationRepository\ReservationRepository" class="App\Reservations\ReservationRepository\ReservationRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Restaurants\RestaurantController\RestaurantController" class="App\Restaurants\RestaurantController\RestaurantController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Restaurants\RestaurantController\RestaurantController" class="App\Restaurants\RestaurantController\RestaurantController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Restaurants\RestaurantController\RestaurantController" class="App\Restaurants\RestaurantController\RestaurantController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.App\Restaurants\RestaurantEntity\RestaurantEntity.0.App\Restaurants\RestaurantEntity\RestaurantEntity" class="App\Restaurants\RestaurantEntity\RestaurantEntity" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Restaurants\RestaurantEntity\RestaurantEntity" class="App\Restaurants\RestaurantEntity\RestaurantEntity" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Restaurants\RestaurantRepository\RestaurantRepository" class="App\Restaurants\RestaurantRepository\RestaurantRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Restaurants\RestaurantRepository\RestaurantRepository" class="App\Restaurants\RestaurantRepository\RestaurantRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".service_locator.pRu6x_4" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -2940,11 +2971,12 @@
         <argument key="doctrine.orm.default_listeners.attach_entity_listeners" type="service_closure" id="doctrine.orm.default_listeners.attach_entity_listeners"/>
       </argument>
     </service>
-    <service id=".service_locator.KJ3J8sz" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.98YDqky" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Customers\CustomerRepository\CustomerRepository" type="service_closure" id="App\Customers\CustomerRepository\CustomerRepository"/>
         <argument key="App\Reservations\ReservationRepository\ReservationRepository" type="service_closure" id="App\Reservations\ReservationRepository\ReservationRepository"/>
+        <argument key="App\Restaurants\RestaurantRepository\RestaurantRepository" type="service_closure" id="App\Restaurants\RestaurantRepository\RestaurantRepository"/>
       </argument>
     </service>
     <service id=".service_locator.BxSdgVt" class="Symfony\Component\DependencyInjection\ServiceLocator">
@@ -3005,6 +3037,12 @@
     <service id=".service_locator.ZyP9f7K.App\Reservations\ReservationController\ReservationController" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="App\Reservations\ReservationController\ReservationController"/>
       <argument>App\Reservations\ReservationController\ReservationController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.ZyP9f7K" method="withContext"/>
+    </service>
+    <service id=".service_locator.ZyP9f7K.App\Restaurants\RestaurantController\RestaurantController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Restaurants\RestaurantController\RestaurantController"/>
+      <argument>App\Restaurants\RestaurantController\RestaurantController</argument>
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.ZyP9f7K" method="withContext"/>
     </service>
@@ -3100,6 +3138,7 @@
           <argument>App\Kernel</argument>
           <argument>App\Customers\CustomerController\CustomerController</argument>
           <argument>App\Reservations\ReservationController\ReservationController</argument>
+          <argument>App\Restaurants\RestaurantController\RestaurantController</argument>
           <argument>Doctrine\Bundle\DoctrineBundle\Controller\ProfilerController</argument>
         </argument>
       </call>
@@ -3128,6 +3167,10 @@
       <call method="addDriver">
         <argument type="service" id="doctrine.orm.default_attribute_metadata_driver"/>
         <argument>App\Reservations\ReservationEntity</argument>
+      </call>
+      <call method="addDriver">
+        <argument type="service" id="doctrine.orm.default_attribute_metadata_driver"/>
+        <argument>App\Restaurants\RestaurantEntity</argument>
       </call>
     </service>
     <service id=".errored..service_locator.zHyJIs5.Symfony\Component\Config\Loader\LoaderInterface" class="Symfony\Component\Config\Loader\LoaderInterface">
