@@ -43,7 +43,7 @@ services:
 
         arguments:
 
-    App\Products\ProductService\ProductService:
+    App\Products\ProductsService\ProductsService:
 
         arguments:
 

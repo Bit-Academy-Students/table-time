@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Products\ProductEntity;
+namespace App\Products\ProductsEntity;
 
-use App\Products\ProductRepository\ProductRepository;
+use App\Products\ProductsRepository\ProductsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ProductRepository::class)]
-class ProductEntity
+#[ORM\Entity(repositoryClass: ProductsRepository::class)]
+class ProductsEntity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
