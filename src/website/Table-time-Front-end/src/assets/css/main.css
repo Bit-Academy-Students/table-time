@@ -1,10 +1,25 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Jockey+One&display=swap');
 
+@theme {
+    --font-jockey: 'Jockey One';
+}
 
 @layer base {
 
-body {
-    @apply bg-black text-black;
-}
+    body {
+        @apply bg-[#F8F4EB] text-black;
+    }
 
+    nav {
+        @apply w-[80%] bg-white border-3 border-[#03CAED] flex flex-row justify-between items-center p-4 rounded-[80px];
+    }
+
+    h2 {
+        @apply underline text-[#03CAED] decoration-[#FF8000] text-[90px] font-jockey;
+    }
+
+    a {
+        @apply text-[20px] font-jockey hover:text-[#FF8000]
+    }
 }
