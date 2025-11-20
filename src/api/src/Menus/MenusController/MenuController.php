@@ -1,11 +1,11 @@
 <?php 
 
-namespace App\Menus\MenuController;
+namespace App\Menus\MenusController;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Menus\MenuService\MenuService;
+use App\Menus\MenusService\MenuService;
 use Symfony\Component\HttpFoundation\Request;
 
 class MenuController extends AbstractController

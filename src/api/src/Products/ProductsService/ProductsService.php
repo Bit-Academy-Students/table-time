@@ -5,13 +5,35 @@ namespace App\Products\ProductsService;
 use App\Products\ProductsEntity\ProductsEntity;
 use App\Products\ProductsRepository\ProductsRepository;
 
-class ProductsService 
+class ProductsService
 {
     private ProductsRepository $ProductRepository;
 
     public function __construct(ProductsRepository $ProductRepository)
     {
         $this->ProductRepository = $ProductRepository;
+    }
+
+    private function sanitizeProductData(array $data): array
+    {
+        $data['naam'] = preg_replace('/\s+/', ' ', $data['naam']);
+
+        $data['prijs'] = preg_replace('/.+/', '.', $data['prijs']);
+
+        return $data;
+    }
+
+    private function validateProductData(array $data): void
+    {
+        if (empty($data['naam']) || gettype($data['naam']) !== 'string') {
+            throw new \InvalidArgumentException("Naam is invalid");
+        }
+        if (empty($data['prijs']) || gettype($data['prijs']) !== 'double') {
+            throw new \InvalidArgumentException("Er moet een getal opgegeven worden");
+        }
+        if (empty($data['soort']) || gettype($data['soort']) !== 'string') {
+            throw new \InvalidArgumentException("Er moet een soort worden meegegeven");
+        }
     }
 
     public function getAllProducts(): array
@@ -27,24 +49,24 @@ class ProductsService
     public function createProduct(array $data): ProductsEntity
     {
         try {
-            if (empty($data['naam'])) {
-                throw new \InvalidArgumentException("Naam is required");
-            }
+            $this->sanitizeProductData($data);
+            $this->validateProductData($data);
+
+            $Product = new ProductsEntity();
+            $Product->setNaam($data['naam']);
+            $Product->setPrijs($data['prijs']);
+            $Product->setSoort($data['soort']);
+            $Product->setIngredients($data['ingredients'] ?? null);
+
+            $this->ProductRepository->save($Product);
+
+            return $Product;
         } catch (\InvalidArgumentException $e) {
             // Handle the exception as needed, e.g., log it or rethrow
             throw $e;
         }
-        $Product = new ProductsEntity();
-        $Product->setNaam($data['naam']);
-        $Product->setPrijs($data['prijs'] ?? null);
-        $Product->setSoort($data['soort'] ?? null);
-        $Product->setIngredients($data['ingredients'] ?? null);
-
-        $this->ProductRepository->save($Product);
-
-        return $Product;
     }
-    
+
     public function updateProduct(int $id, array $data): ?ProductsEntity
     {
         $Product = $this->ProductRepository->find($id);

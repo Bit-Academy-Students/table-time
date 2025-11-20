@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Menus\MenuService;
+namespace App\Menus\MenusService;
 
 use App\Menus\MenusEntity\MenuEntity;
-use App\Menus\MenuRepository\MenuRepository;
+use App\Menus\MenusRepository\MenuRepository;
 
 class MenuService 
 {
