@@ -14,6 +14,16 @@ class MenuService
         $this->MenuRepository = $MenuRepository;
     }
 
+    private function validateMenuData(array $data): void
+    {
+        if (!isset($data['productId']) || gettype($data['productId']) !== 'array') {
+            throw new \InvalidArgumentException('field productId is invalid');
+        }
+        if (!isset($data['restaurantId']) || !is_int($data['restaurantId'])) {
+            throw new \InvalidArgumentException('field restaurantId is invalid');
+        }
+    }
+
     public function getAllMenus(): array
     {
         return $this->MenuRepository->findAll();
@@ -27,51 +37,50 @@ class MenuService
     public function createMenu(array $data): MenuEntity
     {
         try {
-            if (empty($data['naam'])) {
-                throw new \InvalidArgumentException("Naam is required");
+            $this->validateMenuData($data);
+            if (!isset($data['productId']) || !isset($data['restaurantId'])) {
+                throw new \InvalidArgumentException('Missing required fields: productId and restaurantId');
             }
+            $Menu = new MenuEntity();
+            foreach ($data['ProductId'] as $product) {
+                $Menu->setProductIds($product);
+            }
+            $Menu->setRestaurantId($data['restaurantId']);
+
+            $this->MenuRepository->save($Menu);
+
+            return $Menu;
         } catch (\InvalidArgumentException $e) {
             // Handle the exception as needed, e.g., log it or rethrow
             throw $e;
         }
-        $Menu = new MenuEntity();
-        $Menu->setProductIds($data['productId']);
-        $Menu->setRestaurantId($data['restaurantId']);
-        $Menu->setStartDate($data['startDate']);
-        $Menu->setEndDate($data['endDate']);
-        $Menu->setAmountPeople($data['amountPeople']);
-
-        $this->MenuRepository->save($Menu);
-
-        return $Menu;
     }
     
     public function updateMenu(int $id, array $data): ?MenuEntity
     {
-        $Menu = $this->MenuRepository->find($id);
-        if (!$Menu) {
-            return null;
-        }
+        try {
+            $this->validateMenuData($data);
+            $Menu = $this->MenuRepository->find($id);
+            if (!$Menu) {
+                return null;
+            }
 
-        if (isset($data['customerId'])) {
-            $Menu->setCustomerId($data['customerId']);
-        }
-        if (isset($data['restaurantId'])) {
-            $Menu->setRestaurantId($data['restaurantId']);
-        }
-        if (isset($data['startDate'])) {
-            $Menu->setStartDate($data['startDate']);
-        }
-        if (isset($data['endDate'])) {
-            $Menu->setEndDate($data['endDate']);
-        }
-        if (isset($data['amountPeople'])) {
-            $Menu->setAmountPeople($data['amountPeople']);
-        }
+            if (isset($data['ProductId'])) {
+                foreach ($data['ProductId'] as $product) {
+                    $Menu->setProductIds($product);
+                }
+            }
+            if (isset($data['restaurantId'])) {
+                $Menu->setRestaurantId($data['restaurantId']);
+            }
 
-        $this->MenuRepository->save($Menu);
+            $this->MenuRepository->save($Menu);
 
-        return $Menu;
+            return $Menu;
+        } catch (\InvalidArgumentException $e) {
+            // Handle the exception as needed, e.g., log it or rethrow
+            throw $e;
+        }
     }
 
     public function deleteMenu(int $id): bool

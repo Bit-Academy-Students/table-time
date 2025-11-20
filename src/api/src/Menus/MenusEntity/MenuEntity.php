@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping as ORM;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
@@ -27,15 +26,6 @@ class MenuEntity
     #[OneToOne(targetEntity: RestaurantEntity::class, inversedBy: "Menus")]
     #[JoinColumn(name: "RestaurantId", referencedColumnName: "id")]
     private RestaurantEntity $RestaurantId;
-
-    #[ORM\Column(type: "datetime")]
-    private DateTimeInterface $StartDate;
-    
-    #[ORM\Column(type: "datetime")]
-    private DateTimeInterface $EndDate;
-
-    #[ORM\Column]
-    private int $AmountPeople;
 
     public function getId(): int
     {
@@ -69,42 +59,6 @@ class MenuEntity
     public function setRestaurantId(RestaurantEntity $RestaurantId): static
     {
         $this->RestaurantId = $RestaurantId;
-
-        return $this;
-    }
-
-    public function getStartDate(): DateTimeInterface
-    {
-        return $this->StartDate;
-    }
-
-    public function setStartDate(DateTimeInterface $StartDate): static
-    {
-        $this->StartDate = $StartDate;
-
-        return $this;
-    }
-
-    public function getEndDate(): DateTimeInterface
-    {
-        return $this->EndDate;
-    }
-
-    public function setEndDate(DateTimeInterface $EndDate): static
-    {
-        $this->EndDate = $EndDate;
-
-        return $this;
-    }
-
-    public function getAmountPeople(): int
-    {
-        return $this->AmountPeople;
-    }
-
-    public function setAmountPeople(int $AmountPeople): static
-    {
-        $this->AmountPeople = $AmountPeople;
 
         return $this;
     }
