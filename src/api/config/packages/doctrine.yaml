@@ -44,6 +44,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Products/ProductsEntity'
                 prefix: 'App\Products\ProductsEntity'
                 alias: App
+            App/Menus:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Menus/MenusEntity'
+                prefix: 'App\Menus\MenusEntity'
+                alias: App
         controller_resolver:
             auto_mapping: false
 
