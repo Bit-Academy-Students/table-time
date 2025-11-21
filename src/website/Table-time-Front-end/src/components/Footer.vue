@@ -17,7 +17,7 @@
         </div>
 
         <div class="border-t-2 border-[#FF8000]">
-            <p class="flex justify-center items-center">2025 Team Unc B.V.</p>
+            <p class="flex justify-start items-center">2025 Team Unc B.V.</p>
         </div>
     </footer>
 </template>
