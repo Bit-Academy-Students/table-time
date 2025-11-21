@@ -182,6 +182,25 @@
     <service id="App\Customers\CustomerService\CustomerService" class="App\Customers\CustomerService\CustomerService" autowire="true" autoconfigure="true">
       <argument type="service" id="App\Customers\CustomerRepository\CustomerRepository"/>
     </service>
+    <service id="App\Products\ProductsController\ProductsController" class="App\Products\ProductsController\ProductsController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <argument type="service" id="App\Products\ProductsService\ProductsService"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.ZyP9f7K.App\Products\ProductsController\ProductsController"/>
+      </call>
+    </service>
+    <service id="App\Products\ProductsEntity\ProductsEntity" class="App\Products\ProductsEntity\ProductsEntity" autowire="true" autoconfigure="true">
+      <tag name="container.excluded" source="because it's a Doctrine entity"/>
+      <tag name="container.excluded" source="with #[Doctrine\ORM\Mapping\Entity] attribute"/>
+    </service>
+    <service id="App\Products\ProductsRepository\ProductsRepository" class="App\Products\ProductsRepository\ProductsRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Products\ProductsService\ProductsService" class="App\Products\ProductsService\ProductsService" autowire="true" autoconfigure="true">
+      <argument type="service" id="App\Products\ProductsRepository\ProductsRepository"/>
+    </service>
     <service id="App\Reservations\ReservationController\ReservationController" class="App\Reservations\ReservationController\ReservationController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
@@ -1753,7 +1772,7 @@
     <service id="doctrine.orm.configuration" class="Doctrine\ORM\Configuration" abstract="true"/>
     <service id="doctrine.orm.entity_manager.abstract" class="Doctrine\ORM\EntityManager" lazy="true" abstract="true"/>
     <service id="doctrine.orm.container_repository_factory" class="Doctrine\Bundle\DoctrineBundle\Repository\ContainerRepositoryFactory">
-      <argument type="service" id=".service_locator.98YDqky"/>
+      <argument type="service" id=".service_locator.jhqTlcc"/>
     </service>
     <service id="doctrine.orm.manager_configurator.abstract" class="Doctrine\Bundle\DoctrineBundle\ManagerConfigurator" abstract="true">
       <argument type="collection"/>
@@ -1934,7 +1953,7 @@
       <tag name="doctrine.orm.configuration"/>
       <call method="setEntityNamespaces">
         <argument type="collection">
-          <argument key="App">App\Restaurants\RestaurantEntity</argument>
+          <argument key="App">App\Products\ProductsEntity</argument>
         </argument>
       </call>
       <call method="setMetadataCache">
@@ -1996,6 +2015,7 @@
         <argument>/var/www/html/api/src/Customers/CustomerEntity</argument>
         <argument>/var/www/html/api/src/Reservations/ReservationEntity</argument>
         <argument>/var/www/html/api/src/Restaurants/RestaurantEntity</argument>
+        <argument>/var/www/html/api/src/Products/ProductsEntity</argument>
       </argument>
       <argument>true</argument>
     </service>
@@ -2267,6 +2287,10 @@
             <argument>App\Restaurants\RestaurantEntity</argument>
             <argument type="service" id="doctrine.orm.default_attribute_metadata_driver"/>
           </argument>
+          <argument type="collection">
+            <argument>App\Products\ProductsEntity</argument>
+            <argument type="service" id="doctrine.orm.default_attribute_metadata_driver"/>
+          </argument>
         </argument>
       </argument>
     </service>
@@ -2446,6 +2470,13 @@
     <service id=".abstract.instanceof.App\Customers\CustomerEntity\CustomerEntity" class="App\Customers\CustomerEntity\CustomerEntity" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Customers\CustomerRepository\CustomerRepository" class="App\Customers\CustomerRepository\CustomerRepository" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Customers\CustomerRepository\CustomerRepository" class="App\Customers\CustomerRepository\CustomerRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Products\ProductsController\ProductsController" class="App\Products\ProductsController\ProductsController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Products\ProductsController\ProductsController" class="App\Products\ProductsController\ProductsController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Products\ProductsController\ProductsController" class="App\Products\ProductsController\ProductsController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.App\Products\ProductsEntity\ProductsEntity.0.App\Products\ProductsEntity\ProductsEntity" class="App\Products\ProductsEntity\ProductsEntity" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Products\ProductsEntity\ProductsEntity" class="App\Products\ProductsEntity\ProductsEntity" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Products\ProductsRepository\ProductsRepository" class="App\Products\ProductsRepository\ProductsRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Products\ProductsRepository\ProductsRepository" class="App\Products\ProductsRepository\ProductsRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Reservations\ReservationController\ReservationController" class="App\Reservations\ReservationController\ReservationController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Reservations\ReservationController\ReservationController" class="App\Reservations\ReservationController\ReservationController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Reservations\ReservationController\ReservationController" class="App\Reservations\ReservationController\ReservationController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -2971,10 +3002,11 @@
         <argument key="doctrine.orm.default_listeners.attach_entity_listeners" type="service_closure" id="doctrine.orm.default_listeners.attach_entity_listeners"/>
       </argument>
     </service>
-    <service id=".service_locator.98YDqky" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.jhqTlcc" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Customers\CustomerRepository\CustomerRepository" type="service_closure" id="App\Customers\CustomerRepository\CustomerRepository"/>
+        <argument key="App\Products\ProductsRepository\ProductsRepository" type="service_closure" id="App\Products\ProductsRepository\ProductsRepository"/>
         <argument key="App\Reservations\ReservationRepository\ReservationRepository" type="service_closure" id="App\Reservations\ReservationRepository\ReservationRepository"/>
         <argument key="App\Restaurants\RestaurantRepository\RestaurantRepository" type="service_closure" id="App\Restaurants\RestaurantRepository\RestaurantRepository"/>
       </argument>
@@ -3031,6 +3063,12 @@
     <service id=".service_locator.ZyP9f7K.App\Customers\CustomerController\CustomerController" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="App\Customers\CustomerController\CustomerController"/>
       <argument>App\Customers\CustomerController\CustomerController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.ZyP9f7K" method="withContext"/>
+    </service>
+    <service id=".service_locator.ZyP9f7K.App\Products\ProductsController\ProductsController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Products\ProductsController\ProductsController"/>
+      <argument>App\Products\ProductsController\ProductsController</argument>
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.ZyP9f7K" method="withContext"/>
     </service>
@@ -3137,6 +3175,7 @@
         <argument type="collection">
           <argument>App\Kernel</argument>
           <argument>App\Customers\CustomerController\CustomerController</argument>
+          <argument>App\Products\ProductsController\ProductsController</argument>
           <argument>App\Reservations\ReservationController\ReservationController</argument>
           <argument>App\Restaurants\RestaurantController\RestaurantController</argument>
           <argument>Doctrine\Bundle\DoctrineBundle\Controller\ProfilerController</argument>
@@ -3171,6 +3210,10 @@
       <call method="addDriver">
         <argument type="service" id="doctrine.orm.default_attribute_metadata_driver"/>
         <argument>App\Restaurants\RestaurantEntity</argument>
+      </call>
+      <call method="addDriver">
+        <argument type="service" id="doctrine.orm.default_attribute_metadata_driver"/>
+        <argument>App\Products\ProductsEntity</argument>
       </call>
     </service>
     <service id=".errored..service_locator.zHyJIs5.Symfony\Component\Config\Loader\LoaderInterface" class="Symfony\Component\Config\Loader\LoaderInterface">
