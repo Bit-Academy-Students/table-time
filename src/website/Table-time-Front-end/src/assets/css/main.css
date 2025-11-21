@@ -12,7 +12,11 @@
     }
 
     nav {
-        @apply w-[80%] bg-white border-3 border-[#03CAED] flex flex-row justify-between items-center p-4 rounded-[80px];
+        @apply w-[80%] bg-white border-3 border-[#03CAED] flex flex-row justify-between items-center p-4 rounded-[80px] fixed ;
+    }
+
+    h1 {
+        @apply text-[120px] font-jockey text-[#03CAED] underline decoration-[#FF8000];
     }
 
     h2 {
@@ -21,5 +25,20 @@
 
     a {
         @apply text-[20px] font-jockey hover:text-[#FF8000]
+    }
+
+    p {
+        @apply text-[24px] text-[#03CAED] font-jockey;
+    }
+
+    button {
+        @apply bg-[#03CAED] p-2 w-[200px] rounded-[10px] text-white font-jockey hover:bg-[#FF8000] border-2 border-[#ff8000] cursor-pointer
+        duration-300 transition ease-in-out;
+    }
+}
+
+@layer components {
+    .--h2Li {
+        @apply no-underline bg-[#03CAED] text-white flex justify-center items-center rounded-[80px] w-[150px] h-[150px];
     }
 }
