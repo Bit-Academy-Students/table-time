@@ -9,6 +9,11 @@ const routes = [
     name: 'home',
     component: Home,
   },
+  {
+    path: '/reservations',
+    name: 'reservations',
+    component: Home,
+  },
 ];
 
 const router = createRouter({
