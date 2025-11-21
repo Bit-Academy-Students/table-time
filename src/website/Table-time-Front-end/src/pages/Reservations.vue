@@ -19,17 +19,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const duration = form.duration.value;
     const amountPeople = form.amountPeople.value;
 
-    fetch('http://localhost:8080/reservations', {
+    const body = {
+      startDate: `${date} ${time}`,
+      endDate: `${date} ${time + duration}`,
+      amountPeople: amountPeople,
+    };
+    
+
+    fetch('http://127.0.0.1:8080/reservations', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        date,
-        time,
-        duration,
-        amountPeople,
-      }),
+      body: JSON.stringify(body),
     })
       .then((response) => response.json())
       .then((data) => {
