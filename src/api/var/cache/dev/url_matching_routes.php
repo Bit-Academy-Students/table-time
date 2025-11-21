@@ -12,6 +12,10 @@ return [
             [['_route' => 'getAllCustomers', '_controller' => 'App\\Customers\\CustomerController\\CustomerController::FindAll'], null, ['GET' => 0], null, false, false, null],
             [['_route' => 'createCustomer', '_controller' => 'App\\Customers\\CustomerController\\CustomerController::Create'], null, ['POST' => 0], null, false, false, null],
         ],
+        '/Products' => [
+            [['_route' => 'getAllProducts', '_controller' => 'App\\Products\\ProductController\\ProductController::FindAll'], null, ['GET' => 0], null, false, false, null],
+            [['_route' => 'createProduct', '_controller' => 'App\\Products\\ProductController\\ProductController::Create'], null, ['POST' => 0], null, false, false, null],
+        ],
         '/Reservations' => [
             [['_route' => 'getAllReservations', '_controller' => 'App\\Reservations\\ReservationController\\ReservationController::FindAll'], null, ['GET' => 0], null, false, false, null],
             [['_route' => 'createReservation', '_controller' => 'App\\Reservations\\ReservationController\\ReservationController::Create'], null, ['POST' => 0], null, false, false, null],
@@ -26,15 +30,18 @@ return [
                 .'|/Customers/([^/]++)(?'
                     .'|(*:29)'
                 .')'
+                .'|/Products/([^/]++)(?'
+                    .'|(*:58)'
+                .')'
                 .'|/Res(?'
                     .'|ervations/([^/]++)(?'
-                        .'|(*:65)'
+                        .'|(*:94)'
                     .')'
                     .'|taurants/([^/]++)(?'
-                        .'|(*:93)'
+                        .'|(*:122)'
                     .')'
                 .')'
-                .'|/_error/(\\d+)(?:\\.([^/]++))?(*:130)'
+                .'|/_error/(\\d+)(?:\\.([^/]++))?(*:160)'
             .')/?$}sDu',
     ],
     [ // $dynamicRoutes
@@ -43,17 +50,22 @@ return [
             [['_route' => 'updateCustomer', '_controller' => 'App\\Customers\\CustomerController\\CustomerController::Update'], ['id'], ['PUT' => 0], null, false, true, null],
             [['_route' => 'deleteCustomer', '_controller' => 'App\\Customers\\CustomerController\\CustomerController::Delete'], ['id'], ['DELETE' => 0], null, false, true, null],
         ],
-        65 => [
+        58 => [
+            [['_route' => 'getProductById', '_controller' => 'App\\Products\\ProductController\\ProductController::FindById'], ['id'], ['GET' => 0], null, false, true, null],
+            [['_route' => 'updateProduct', '_controller' => 'App\\Products\\ProductController\\ProductController::Update'], ['id'], ['PUT' => 0], null, false, true, null],
+            [['_route' => 'deleteProduct', '_controller' => 'App\\Products\\ProductController\\ProductController::Delete'], ['id'], ['DELETE' => 0], null, false, true, null],
+        ],
+        94 => [
             [['_route' => 'getReservationById', '_controller' => 'App\\Reservations\\ReservationController\\ReservationController::FindById'], ['id'], ['GET' => 0], null, false, true, null],
             [['_route' => 'updateReservation', '_controller' => 'App\\Reservations\\ReservationController\\ReservationController::Update'], ['id'], ['PUT' => 0], null, false, true, null],
             [['_route' => 'deleteReservation', '_controller' => 'App\\Reservations\\ReservationController\\ReservationController::Delete'], ['id'], ['DELETE' => 0], null, false, true, null],
         ],
-        93 => [
+        122 => [
             [['_route' => 'getRestaurantById', '_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::FindById'], ['id'], ['GET' => 0], null, false, true, null],
             [['_route' => 'updateRestaurant', '_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::Update'], ['id'], ['PUT' => 0], null, false, true, null],
             [['_route' => 'deleteRestaurant', '_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::Delete'], ['id'], ['DELETE' => 0], null, false, true, null],
         ],
-        130 => [
+        160 => [
             [['_route' => '_preview_error', '_controller' => 'error_controller::preview', '_format' => 'html'], ['code', '_format'], null, null, false, true, null],
             [null, null, null, null, false, false, 0],
         ],
