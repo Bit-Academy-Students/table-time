@@ -23,3 +23,15 @@
         @apply text-[20px] font-jockey hover:text-[#FF8000]
     }
 }
+
+@layer components {
+    form {
+        @apply flex flex-col gap-4 w-[400px] m-auto mt-10 border-black border-2 p-6 rounded-[20px] bg-white;
+    }
+    label {
+        @apply text-[20px] font-jockey border-b-2 border-black;
+    }
+    input, select {
+        @apply p-2 border-2 border-black rounded-[10px];
+    }
+}
