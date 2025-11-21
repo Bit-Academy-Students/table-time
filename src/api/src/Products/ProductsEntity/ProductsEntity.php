@@ -4,6 +4,9 @@ namespace App\Products\ProductsEntity;
 
 use App\Products\ProductsRepository\ProductsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToOne;
+use App\Menus\MenusEntity\MenuEntity;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: ProductsRepository::class)]
 class ProductsEntity
@@ -24,6 +27,9 @@ class ProductsEntity
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $ingredients = null;
+    
+    #[OneToOne(mappedBy: "ProductIds", targetEntity: MenuEntity::class)]
+    private Collection $Menu;
 
     public function getId(): ?int
     {
@@ -81,6 +87,18 @@ class ProductsEntity
     public function setIngredients(?string $ingredients): static
     {
         $this->ingredients = $ingredients;
+
+        return $this;
+    }
+
+    public function getMenu(): Collection
+    {
+        return $this->Menu;
+    }
+
+    public function setMenu(Collection $Menu): static
+    {
+        $this->Menu = $Menu;
 
         return $this;
     }
