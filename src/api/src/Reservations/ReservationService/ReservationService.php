@@ -4,6 +4,8 @@ namespace App\Reservations\ReservationService;
 
 use App\Reservations\ReservationEntity\ReservationEntity;
 use App\Reservations\ReservationRepository\ReservationRepository;
+use App\Customers\CustomerEntity\CustomerEntity;
+use App\Restaurants\RestaurantEntity\RestaurantEntity;
 
 class ReservationService 
 {
@@ -12,6 +14,32 @@ class ReservationService
     public function __construct(ReservationRepository $ReservationRepository)
     {
         $this->ReservationRepository = $ReservationRepository;
+    }
+
+    private function sanitizeReservationData(array $data): array
+    {
+        if (isset($data['startDate']) && (!is_string($data['startDate']) || preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['startDate']) !== 1)) {
+            throw new \InvalidArgumentException("Invalid input for start date");
+        }
+        if (isset($data['endDate']) && (!is_string($data['endDate']) || preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['endDate']) !== 1)) {
+            throw new \InvalidArgumentException("Invalid input for end date");
+        }
+        $data['startDate'] = isset($data['startDate']) ? new \DateTimeImmutable($data['startDate']) : null;
+        $data['endDate'] = isset($data['endDate']) ? new \DateTimeImmutable($data['endDate']) : null;
+        return $data;
+    }
+
+    private function validateReservationData(array $data): void
+    {
+        if (empty($data['startDate']) || !gettype($data['startDate']) === 'DateTimeInterface') {
+            throw new \InvalidArgumentException("Start date is required");
+        }
+        if (empty($data['endDate']) || !gettype($data['endDate']) === 'DateTimeInterface') {
+            throw new \InvalidArgumentException("End date is required");
+        }
+        if (empty($data['amountPeople']) || !is_int($data['amountPeople']) || $data['amountPeople'] <= 0) {
+            throw new \InvalidArgumentException("invalid input for amount of people");
+        }
     }
 
     public function getAllReservations(): array
@@ -27,51 +55,56 @@ class ReservationService
     public function createReservation(array $data): ReservationEntity
     {
         try {
-            if (empty($data['naam'])) {
-                throw new \InvalidArgumentException("Naam is required");
-            }
+            $data = $this->sanitizeReservationData($data);
+            $this->validateReservationData($data);
+            $Reservation = new ReservationEntity();
+            $Reservation->setCustomer($data['customerId'] ?? null);
+            $Reservation->setRestaurant($data['restaurantId'] ?? null);
+            $Reservation->setStartDate($data['startDate']);
+            $Reservation->setEndDate($data['endDate']);
+            $Reservation->setAmountPeople($data['amountPeople']);
+
+            $this->ReservationRepository->save($Reservation);
+
+            return $Reservation;
         } catch (\InvalidArgumentException $e) {
             // Handle the exception as needed, e.g., log it or rethrow
             throw $e;
         }
-        $Reservation = new ReservationEntity();
-        $Reservation->setCustomerId($data['customerId']);
-        $Reservation->setRestaurantId($data['restaurantId']);
-        $Reservation->setStartDate($data['startDate']);
-        $Reservation->setEndDate($data['endDate']);
-        $Reservation->setAmountPeople($data['amountPeople']);
-
-        $this->ReservationRepository->save($Reservation);
-
-        return $Reservation;
     }
     
     public function updateReservation(int $id, array $data): ?ReservationEntity
     {
-        $Reservation = $this->ReservationRepository->find($id);
-        if (!$Reservation) {
-            return null;
-        }
+        try {
+            $data = $this->sanitizeReservationData($data);
+            $Reservation = $this->ReservationRepository->find($id);
+            if (!$Reservation) {
+                return null;
+            }
 
-        if (isset($data['customerId'])) {
-            $Reservation->setCustomerId($data['customerId']);
-        }
-        if (isset($data['restaurantId'])) {
-            $Reservation->setRestaurantId($data['restaurantId']);
-        }
-        if (isset($data['startDate'])) {
-            $Reservation->setStartDate($data['startDate']);
-        }
-        if (isset($data['endDate'])) {
-            $Reservation->setEndDate($data['endDate']);
-        }
-        if (isset($data['amountPeople'])) {
-            $Reservation->setAmountPeople($data['amountPeople']);
-        }
+            if (isset($data['customerId'])) {
+                $Reservation->setCustomerId($data['customerId']);
+            }
+            if (isset($data['restaurantId'])) {
+                $Reservation->setRestaurantId($data['restaurantId']);
+            }
+            if (isset($data['startDate'])) {
+                $Reservation->setStartDate($data['startDate']);
+            }
+            if (isset($data['endDate'])) {
+                $Reservation->setEndDate($data['endDate']);
+            }
+            if (isset($data['amountPeople'])) {
+                $Reservation->setAmountPeople($data['amountPeople']);
+            }
 
-        $this->ReservationRepository->save($Reservation);
+            $this->ReservationRepository->save($Reservation);
 
-        return $Reservation;
+            return $Reservation;
+        } catch (\InvalidArgumentException $e) {
+            // Handle the exception as needed, e.g., log it or rethrow
+            throw $e;
+        }
     }
 
     public function deleteReservation(int $id): bool
