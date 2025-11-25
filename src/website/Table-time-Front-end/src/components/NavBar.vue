@@ -1,5 +1,5 @@
 <template>
-  <header class="flex justify-center mt-4">
+  <header class="max-[768px]:hidden flex justify-center mt-4">
     <nav class="navbar">
       <ul>
         <li class="w-[50px]"><img src="../assets/img/logo TableTImes.png" alt=""></li>
