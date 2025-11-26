@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       body: JSON.stringify(body),
     })
+      .then((response) => response.json())
       .then((data) => {
         console.log('Success:', data);
       })
@@ -59,15 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   });
 });
-
-fetch('http://localhost:8080/Reservations')
-  .then((response) => response.json())
-  .then((data) => {
-    console.log('Reservations:', data);
-  })
-  .catch((error) => {
-    console.error('Error fetching reservations:', error);
-  });
 </script>
 
 <template>

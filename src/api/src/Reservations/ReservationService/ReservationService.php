@@ -37,6 +37,17 @@ class ReservationService
         if (empty($data['endDate']) || !gettype($data['endDate']) === 'DateTimeInterface') {
             throw new \InvalidArgumentException("End date is required");
         }
+        if ($data['startDate'] >= $data['endDate'] || $data['startDate'] - $data['endDate'] > 2) {
+            throw new \InvalidArgumentException("End date must be after start date");
+        }
+        $reservations = $this->ReservationRepository->findAll();
+        foreach($reservations as $reservation) {
+            if (($reservation->getStartDate() >= $data['startDate'] && $reservation->getStartDate() <= $data['endDate']) || 
+            ($reservation->getEndDate() >= $data['startDate'] && $reservation->getEndDate() <= $data['endDate']) || 
+            ($reservation->getStartDate() <= $data['startDate'] && $reservation->getEndDate() >= $data['endDate'])) {
+                throw new \InvalidArgumentException("This time slot is already booked");
+            }
+        }
         if (empty($data['amountPeople']) || !is_int($data['amountPeople']) || $data['amountPeople'] <= 0) {
             throw new \InvalidArgumentException("invalid input for amount of people");
         }

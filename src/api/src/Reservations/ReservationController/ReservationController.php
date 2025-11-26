@@ -53,12 +53,18 @@ class ReservationController extends AbstractController
 
     public function Create(Request $request): Response
     {
-        $data = json_decode($request->getContent(), true);
-        $Reservation = $this->ReservationService->createReservation($data);
+        try {
+            $data = json_decode($request->getContent(), true);
+            $Reservation = $this->ReservationService->createReservation($data);
 
-        return new JsonResponse(
-            ['Reservation' => $Reservation, 'response' => 'created']
-        );
+            return new JsonResponse(
+                ['Reservation' => $Reservation, 'response' => 'created']
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()]
+            );
+        }
     }
     
     public function Update(int $id, Request $request): Response
