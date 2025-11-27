@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Customers\CustomerController;
 
@@ -33,49 +33,70 @@ class CustomerController extends AbstractController
             ['customers' => $customers]
         );
     }
-    
+
     public function FindById(int $id): Response
     {
-        $customer = $this->customerService->getCustomerById($id);
+        try {
+            $customer = $this->customerService->getCustomerById($id);
 
-        if ($customer) {
-            $customer = [
-                'id' => $customer->getId(),
-                'naam' => $customer->getNaam(),
-                'email' => $customer->getEmail(),
-                'telefoonnummer' => $customer->getTelefoonnummer(),
-            ];
+            if ($customer) {
+                $customer = [
+                    'id' => $customer->getId(),
+                    'naam' => $customer->getNaam(),
+                    'email' => $customer->getEmail(),
+                    'telefoonnummer' => $customer->getTelefoonnummer(),
+                ];
+            }
+
+            return new JsonResponse(
+                ['customer' => $customer]
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
         }
-
-        return new JsonResponse(
-            ['customer' => $customer]
-        );
     }
 
     public function Create(Request $request): Response
     {
-        $data = json_decode($request->getContent(), true);
-        $customer = $this->customerService->createCustomer($data);
+        try {
+            $data = json_decode($request->getContent(), true);
+            $customer = $this->customerService->createCustomer($data);
 
-        return new JsonResponse(
-            ['customer' => $customer, 'response' => 'created']
-        );
+            return new JsonResponse(
+                ['customer' => $customer, 'response' => 'created']
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
-    
+
     public function Update(int $id, Request $request): Response
     {
+        try {
         $data = json_decode($request->getContent(), true);
         $customer = $this->customerService->getCustomerById($id);
-
         $this->customerService->updateCustomer($id, $data);
 
         return new JsonResponse(
             ['customer' => $customer, 'response' => 'updated']
         );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
-    
+
     public function Delete(int $id): Response
     {
+        try {
         $customer = $this->customerService->getCustomerById($id);
 
         $this->customerService->deleteCustomer($id);
@@ -83,5 +104,11 @@ class CustomerController extends AbstractController
         return new JsonResponse(
             ['customer' => $customer, 'response' => 'deleted']
         );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
 }

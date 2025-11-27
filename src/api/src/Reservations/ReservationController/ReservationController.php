@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Reservations\ReservationController;
 
@@ -12,6 +12,19 @@ class ReservationController extends AbstractController
 {
     private ReservationService $ReservationService;
 
+    private function validateId(int $id): int
+    {
+        $id > 0 ?: throw new \InvalidArgumentException('Invalid ID');
+        return $id;
+    }
+
+    private function validatedata(array $data): array
+    {
+        isset($data['customer']) && isset($data['restaurant']) && isset($data['startDate']) && isset($data['endDate']) && isset($data['amountPeople'])
+            ?: throw new \InvalidArgumentException('Missing required fields');
+        return $data;
+    }
+
     public function __construct(ReservationService $ReservationService)
     {
         $this->ReservationService = $ReservationService;
@@ -23,9 +36,11 @@ class ReservationController extends AbstractController
         $Reservations = array_map(function ($Reservation) {
             return [
                 'id' => $Reservation->getId(),
-                'naam' => $Reservation->getNaam(),
-                'email' => $Reservation->getEmail(),
-                'telefoonnummer' => $Reservation->getTelefoonnummer(),
+                'customer' => $Reservation->getCustomer(),
+                'restaurant' => $Reservation->getRestaurant(),
+                'startDate' => $Reservation->getStartDate(),
+                'endDate' => $Reservation->getEndDate(),
+                'amountPeople' => $Reservation->getAmountPeople(),
             ];
         }, $Reservations);
 
@@ -33,7 +48,7 @@ class ReservationController extends AbstractController
             ['Reservations' => $Reservations]
         );
     }
-    
+
     public function FindById(int $id): Response
     {
         $Reservation = $this->ReservationService->getReservationById($id);
@@ -51,34 +66,59 @@ class ReservationController extends AbstractController
 
     public function Create(Request $request): Response
     {
-        $data = json_decode($request->getContent(), true);
-        $Reservation = $this->ReservationService->createReservation($data);
+        try {
+            $data = json_decode($request->getContent(), true);
+            $this->validatedata($data);
+            $Reservation = $this->ReservationService->createReservation($data);
 
-        return new JsonResponse(
-            ['Reservation' => $Reservation, 'response' => 'created']
-        );
+            return new JsonResponse(
+                ['Reservation' => $Reservation, 'response' => 'created']
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
-    
+
     public function Update(int $id, Request $request): Response
     {
-        $data = json_decode($request->getContent(), true);
-        $Reservation = $this->ReservationService->getReservationById($id);
+        try {
+            $data = json_decode($request->getContent(), true);
+            $this->validatedata($data);
+            $this->validateId($id);
+            $Reservation = $this->ReservationService->getReservationById($id);
 
-        $this->ReservationService->updateReservation($id, $data);
+            $this->ReservationService->updateReservation($id, $data);
 
-        return new JsonResponse(
-            ['Reservation' => $Reservation, 'response' => 'updated']
-        );
+            return new JsonResponse(
+                ['Reservation' => $Reservation, 'response' => 'updated']
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
-    
+
     public function Delete(int $id): Response
     {
-        $Reservation = $this->ReservationService->getReservationById($id);
+        try {
+            $this->validateId($id);
+            $Reservation = $this->ReservationService->getReservationById($id);
 
-        $this->ReservationService->deleteReservation($id);
+            $this->ReservationService->deleteReservation($id);
 
-        return new JsonResponse(
-            ['Reservation' => $Reservation, 'response' => 'deleted']
-        );
+            return new JsonResponse(
+                ['Reservation' => $Reservation, 'response' => 'deleted']
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
 }

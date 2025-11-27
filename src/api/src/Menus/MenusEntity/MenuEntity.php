@@ -4,7 +4,7 @@ namespace App\Menus\MenusEntity;
 
 use App\Products\ProductsEntity\ProductsEntity;
 use App\Restaurants\RestaurantEntity\RestaurantEntity;
-use App\Menus\MenuRepository\MenuRepository;
+use App\Menus\MenusRepository\MenuRepository;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\JoinColumn;
