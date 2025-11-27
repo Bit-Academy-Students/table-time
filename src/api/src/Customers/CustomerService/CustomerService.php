@@ -14,6 +14,22 @@ class CustomerService
         $this->customerRepository = $customerRepository;
     }
 
+    private function sanitizeCustomerData(array $data): array
+    {
+        return [];
+    }
+
+    private function validateCustomerData(array $data): void
+    {
+        try {
+            if (empty($data['naam'])) {
+                throw new \InvalidArgumentException("Naam is verplicht");
+            }
+        } catch (\InvalidArgumentException $e) {
+            throw $e;
+        }
+    }
+
     public function getAllCustomers(): array
     {
         return $this->customerRepository->findAll();
@@ -27,47 +43,58 @@ class CustomerService
     public function createCustomer(array $data): CustomerEntity
     {
         try {
-            if (empty($data['naam'])) {
-                throw new \InvalidArgumentException("Naam is required");
-            }
+            $this->sanitizeCustomerData($data);
+            $this->validateCustomerData($data);
+            $customer = new CustomerEntity();
+            $customer->setNaam($data['naam']);
+            $customer->setEmail($data['email'] ?? null);
+            $customer->setTelefoonnummer($data['telefoonnummer'] ?? null);
+
+            $this->customerRepository->save($customer);
+
+            return $customer;
         } catch (\InvalidArgumentException $e) {
-            // Handle the exception as needed, e.g., log it or rethrow
             throw $e;
         }
-        $customer = new CustomerEntity();
-        $customer->setNaam($data['naam']);
-        $customer->setEmail($data['email'] ?? null);
-        $customer->setTelefoonnummer($data['telefoonnummer'] ?? null);
-
-        $this->customerRepository->save($customer);
-
-        return $customer;
     }
     
     public function updateCustomer(int $id, array $data): ?CustomerEntity
     {
-        $customer = $this->customerRepository->find($id);
-        if (!$customer) {
-            return null;
-        }
+        try { 
+            $this->sanitizeCustomerData($data);
+            $this->validateCustomerData($data);
+            $customer = $this->customerRepository->find($id);
+            if (!$customer) {
+                return null;
+            }
 
-        if (isset($data['naam'])) {
-            $customer->setNaam($data['naam']);
-        }
-        if (isset($data['email'])) {
-            $customer->setEmail($data['email']);
-        }
-        if (isset($data['telefoonnummer'])) {
-            $customer->setTelefoonnummer($data['telefoonnummer']);
-        }
+            if (isset($data['naam'])) {
+                $customer->setNaam($data['naam']);
+            }
+            if (isset($data['email'])) {
+                $customer->setEmail($data['email']);
+            }
+            if (isset($data['telefoonnummer'])) {
+                $customer->setTelefoonnummer($data['telefoonnummer']);
+            }
 
-        $this->customerRepository->save($customer);
+            $this->customerRepository->save($customer);
 
-        return $customer;
+            return $customer;
+        } catch (\InvalidArgumentException $e) {
+            throw $e;
+        }
     }
 
     public function deleteCustomer(int $id): bool
     {
+        try {
+            if (empty($id)) {
+                throw new \InvalidArgumentException("ID is nodig voor verwijdering");
+            }
+        } catch (\InvalidArgumentException $e) {
+            throw $e;
+        }
         $customer = $this->customerRepository->find($id);
         if (!$customer) {
             return false;
