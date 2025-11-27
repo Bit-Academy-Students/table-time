@@ -26,6 +26,7 @@ class CustomerController extends AbstractController
                 'naam' => $customer->getNaam(),
                 'email' => $customer->getEmail(),
                 'telefoonnummer' => $customer->getTelefoonnummer(),
+                'wachtwoord' => $customer->getWachtwoord(),
             ];
         }, $customers);
 
@@ -45,6 +46,7 @@ class CustomerController extends AbstractController
                     'naam' => $customer->getNaam(),
                     'email' => $customer->getEmail(),
                     'telefoonnummer' => $customer->getTelefoonnummer(),
+                    'wachtwoord' => $customer->getWachtwoord(),
                 ];
             }
 
@@ -97,13 +99,30 @@ class CustomerController extends AbstractController
     public function Delete(int $id): Response
     {
         try {
-        $customer = $this->customerService->getCustomerById($id);
+            $customer = $this->customerService->getCustomerById($id);
 
-        $this->customerService->deleteCustomer($id);
+            $this->customerService->deleteCustomer($id);
 
-        return new JsonResponse(
-            ['customer' => $customer, 'response' => 'deleted']
-        );
+            return new JsonResponse(
+                ['customer' => $customer, 'response' => 'deleted']
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+    }
+
+    public function Login(Request $request): Response
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            $customer = $this->customerService->login($data['gebruikersnaam'], $data['wachtwoord']);
+
+            return new JsonResponse(
+                ['customer' => $customer, 'response' => 'logged in']
+            );
         } catch (\InvalidArgumentException $e) {
             return new JsonResponse(
                 ['error' => $e->getMessage()],

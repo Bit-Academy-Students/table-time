@@ -16,7 +16,19 @@ class CustomerService
 
     private function sanitizeCustomerData(array $data): array
     {
-        return [];
+        if (isset($data['wachtwoord'])) {
+            $data['wachtwoord'] = password_hash($data['wachtwoord'], PASSWORD_DEFAULT);
+        }
+        if (isset($data['naam'])) {
+            $data['naam'] = preg_replace('/\s+/', ' ', trim($data['naam']));
+        }
+        if (isset($data['email'])) {
+            $data['email'] = preg_replace('/\s+/', ' ', trim($data['email']));
+        }
+        if (isset($data['telefoonnummer'])) {
+            $data['telefoonnummer'] = preg_replace('/\s+/', ' ', trim($data['telefoonnummer']));
+        }
+        return $data;
     }
 
     private function validateCustomerData(array $data): void
@@ -24,6 +36,15 @@ class CustomerService
         try {
             if (empty($data['naam'])) {
                 throw new \InvalidArgumentException("Naam is verplicht");
+            }
+            if (empty($data['wachtwoord'])) {
+                throw new \InvalidArgumentException("Wachtwoord is verplicht");
+            }
+            if (isset($data['email']) && !preg_match('/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/', $data['email'])) {
+                throw new \InvalidArgumentException("Ongeldig e-mailadres");
+            }
+            if (isset($data['telefoonnummer']) && !preg_match('/^\+?[0-9\s\-]+$/', $data['telefoonnummer'])) {
+                throw new \InvalidArgumentException("Ongeldig telefoonnummer");
             }
         } catch (\InvalidArgumentException $e) {
             throw $e;
@@ -43,12 +64,13 @@ class CustomerService
     public function createCustomer(array $data): CustomerEntity
     {
         try {
-            $this->sanitizeCustomerData($data);
+            $data = $this->sanitizeCustomerData($data);
             $this->validateCustomerData($data);
             $customer = new CustomerEntity();
             $customer->setNaam($data['naam']);
             $customer->setEmail($data['email'] ?? null);
             $customer->setTelefoonnummer($data['telefoonnummer'] ?? null);
+            $customer->setWachtwoord($data['wachtwoord']);
 
             $this->customerRepository->save($customer);
 
@@ -61,7 +83,7 @@ class CustomerService
     public function updateCustomer(int $id, array $data): ?CustomerEntity
     {
         try { 
-            $this->sanitizeCustomerData($data);
+            $data = $this->sanitizeCustomerData($data);
             $this->validateCustomerData($data);
             $customer = $this->customerRepository->find($id);
             if (!$customer) {
@@ -106,5 +128,34 @@ class CustomerService
         $this->customerRepository->remove($customer);
 
         return true;
+    }
+
+    public function Login(string $gebruikersnaam, string $wachtwoord): ?CustomerEntity
+    {
+        try {
+            if (empty($gebruikersnaam) || empty($wachtwoord)) {
+                throw new \InvalidArgumentException("Gebruikersnaam en wachtwoord zijn verplicht");
+            }
+            if(preg_match('/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/', $gebruikersnaam)) {
+                try {
+                    $customer = $this->customerRepository->findOneBy(['email' => $gebruikersnaam]);
+                } catch (\Exception $e) {
+                    throw new \InvalidArgumentException("kan email niet vinden");
+                }
+            } else {
+                try {
+                    $customer = $this->customerRepository->findOneBy(['naam' => $gebruikersnaam]);
+                } catch (\Exception $e) {
+                    throw new \InvalidArgumentException("kan naam niet vinden");
+                }
+            }
+            if ($customer && password_verify($wachtwoord, $customer->getWachtwoord())) {
+                return $customer;
+            }
+            return null;
+        } catch (\InvalidArgumentException $e) {
+            throw $e;
+
+        }
     }
 }
