@@ -38,6 +38,7 @@ class CustomerService
         $customer->setNaam($data['naam']);
         $customer->setEmail($data['email'] ?? null);
         $customer->setTelefoonnummer($data['telefoonnummer'] ?? null);
+        $customer->setWachtwoord($data['wachtwoord']);
 
         $this->customerRepository->save($customer);
 
@@ -59,6 +60,9 @@ class CustomerService
         }
         if (isset($data['telefoonnummer'])) {
             $customer->setTelefoonnummer($data['telefoonnummer']);
+        }
+        if (isset($data['wachtwoord'])) {
+            $customer->setWachtwoord($data['wachtwoord']);
         }
 
         $this->customerRepository->save($customer);
