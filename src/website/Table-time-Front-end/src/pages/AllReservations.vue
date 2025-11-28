@@ -1,36 +1,38 @@
 <script>
 import NavBar from "../components/NavBar.vue";
-import NavbarMobile from '../components/NavbarMobile.vue';
+import NavbarMobile from "../components/NavbarMobile.vue";
 
 export default {
-  components: { NavBar },
- 
-};
+  components: { NavBar, NavbarMobile },
 
-  fetch("http://localhost:8080/Reservations", {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  })
-    .then(async (res) => {
+  data() {
+    return {
+      reservations: []
+    };
+  },
+
+  async mounted() {
+    try {
+      const res = await fetch("http://localhost:8080/Reservations");
       const text = await res.text();
+
       try {
         const data = JSON.parse(text);
-        let div = document.getElementsByTagName("div")[0];
-        data.Reservations.forEach(reservation => {
-          let p = document.createElement("p");
-          p.textContent = `Reservering ID: ${reservation.id}, Naam: ${reservation.naam}, Datum: ${reservation.datum}, Tijd: ${reservation.tijd}, Aantal Personen: ${reservation.aantal_personen}`;
-          div.appendChild(p);
-        });
+
+        // Direct opslaan, geen aanpassingen
+        this.reservations = data.Reservations;
+
       } catch {
-        console.warn("Server stuurde geen JSON terug:");
-        console.log(text);
-        alert("Er is iets misgegaan bij het maken van de reservering.");
+        console.warn("Server stuurde geen JSON terug:", text);
+        alert("Something went wrong while parsing reservation data.");
       }
-    })
-    .catch((err) => {
-      console.error("Fout bij reserveren:", err);
-      alert("Er is iets misgegaan bij het vinden van de reservering.");
-    });
+
+    } catch (err) {
+      console.error("Error fetching reservations:", err);
+      alert("Something went wrong while loading reservations.");
+    }
+  }
+};
 </script>
 
 <template>
@@ -38,13 +40,19 @@ export default {
   <NavbarMobile />
 
   <main class="flex justify-center mt-6">
-    <section class="w-[420px] h-[300vh]">
-
-      <h2 class="text-2xl font-semibold mb-4">alle reserveringen</h2>
+    <section class="w-[420px]">
+      <h2 class="text-2xl font-semibold mb-[200px]">All Reservations</h2>
 
       <div>
+        <p v-for="r in reservations" :key="r.id" class="mb-4">
+          Reservation ID: {{ r.id }}<br>
+          Restaurant: {{ r.restaurant }}<br>
+          Start Date: {{ r.startDate.date }}<br>
+          End Date: {{ r.endDate.date }}<br>
+          Amount of People: {{ r.amountPeople }}<br>
+          Email: {{ r.email }}
+        </p>
       </div>
-
     </section>
   </main>
 </template>
