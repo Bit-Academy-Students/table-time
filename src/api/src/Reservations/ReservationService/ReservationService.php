@@ -8,6 +8,8 @@ use App\Reservations\ReservationRepository\ReservationRepository;
 class ReservationService 
 {
     private ReservationRepository $ReservationRepository;
+    // deze max capacity is voorlopig hardcoded, kan later uit database gehaald worden
+    private int $maxCapacity = 50;
 
     public function __construct(ReservationRepository $ReservationRepository)
     {
@@ -32,14 +34,6 @@ class ReservationService
         if ($data['startDate'] >= $data['endDate']) {
             throw new \InvalidArgumentException("Start date must be before end date");
         }
-        $reservations = $this->ReservationRepository->findAll();
-        foreach ($reservations as $reservation) {
-            if ($reservation->getStartDate() > $data['startDate'] && $reservation->getStartDate() < $data['startDate'] ||
-                $reservation->getEndDate() > $data['startDate'] && $reservation->getEndDate() < $data['endDate'] ||
-                $reservation->getStartDate() <= $data['startDate'] && $reservation->getEndDate() >= $data['endDate']) {
-                throw new \InvalidArgumentException("The reservation time conflicts with an existing reservation");
-            }
-        }
         if (empty($data['amountPeople']) || !is_int($data['amountPeople']) || $data['amountPeople'] <= 0) {
             throw new \InvalidArgumentException("invalid input for amount of people");
         }
@@ -51,6 +45,18 @@ class ReservationService
         }
         if (isset($data['Email']) && !filter_var($data['Email'], FILTER_VALIDATE_EMAIL)) {
             throw new \InvalidArgumentException("Invalid email format");
+        }
+        $reservations = $this->ReservationRepository->findAll();
+        $overlappingPeople = $data['amountPeople'] ?? 0;
+        foreach ($reservations as $reservation) {
+            if ($reservation->getStartDate() > $data['startDate'] && $reservation->getStartDate() < $data['startDate'] ||
+                $reservation->getEndDate() > $data['startDate'] && $reservation->getEndDate() < $data['endDate'] ||
+                $reservation->getStartDate() <= $data['startDate'] && $reservation->getEndDate() >= $data['endDate']) {
+                $overlappingPeople += $reservation->getAmountPeople();
+            }
+            if ($overlappingPeople + $data['amountPeople'] > $this->maxCapacity) {
+                throw new \InvalidArgumentException("Maximum capacity exceeded for the selected time slot");
+            }
         }
     }
 
