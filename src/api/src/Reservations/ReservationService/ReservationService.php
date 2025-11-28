@@ -8,8 +8,6 @@ use App\Reservations\ReservationRepository\ReservationRepository;
 class ReservationService 
 {
     private ReservationRepository $ReservationRepository;
-    // deze max capacity is voorlopig hardcoded, kan later uit database gehaald worden
-    private int $maxCapacity = 50;
 
     public function __construct(ReservationRepository $ReservationRepository)
     {
@@ -47,14 +45,16 @@ class ReservationService
             throw new \InvalidArgumentException("Invalid email format");
         }
         $reservations = $this->ReservationRepository->findAll();
+        $maxCapacity = $reservation['restaurant'] ?? 50;
         $overlappingPeople = $data['amountPeople'] ?? 0;
         foreach ($reservations as $reservation) {
-            if ($reservation->getStartDate() > $data['startDate'] && $reservation->getStartDate() < $data['startDate'] ||
+            if (($reservation->getStartDate() > $data['startDate'] && $reservation->getStartDate() < $data['startDate'] ||
                 $reservation->getEndDate() > $data['startDate'] && $reservation->getEndDate() < $data['endDate'] ||
-                $reservation->getStartDate() <= $data['startDate'] && $reservation->getEndDate() >= $data['endDate']) {
+                $reservation->getStartDate() <= $data['startDate'] && $reservation->getEndDate() >= $data['endDate']) &&
+                $reservation->getRestaurant() === ($data['restaurantId'] ?? null)) {
                 $overlappingPeople += $reservation->getAmountPeople();
             }
-            if ($overlappingPeople + $data['amountPeople'] > $this->maxCapacity) {
+            if ($overlappingPeople + $data['amountPeople'] > $maxCapacity) {
                 throw new \InvalidArgumentException("Maximum capacity exceeded for the selected time slot");
             }
         }
