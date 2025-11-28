@@ -9,6 +9,7 @@ if (in_array(PHP_SAPI, ['cli', 'phpdbg', 'embed'], true)) {
     return;
 }
 
+<<<<<<< HEAD
 require dirname(__DIR__, 3).''.\DIRECTORY_SEPARATOR.'vendor/autoload.php';
 (require __DIR__.'/App_KernelDevDebugContainer.php')->set(\Container0l9zLi6\App_KernelDevDebugContainer::class, null);
 require __DIR__.'/Container0l9zLi6/EntityManagerGhost614a58f.php';
@@ -72,6 +73,71 @@ require __DIR__.'/Container0l9zLi6/get_Debug_ValueResolver_ArgumentResolver_NotT
 require __DIR__.'/Container0l9zLi6/get_Debug_ValueResolver_ArgumentResolver_DefaultService.php';
 require __DIR__.'/Container0l9zLi6/get_Debug_ValueResolver_ArgumentResolver_DatetimeService.php';
 require __DIR__.'/Container0l9zLi6/get_Debug_ValueResolver_ArgumentResolver_BackedEnumResolverService.php';
+=======
+require dirname(__DIR__, 3).'/vendor/autoload.php';
+(require __DIR__.'/App_KernelDevDebugContainer.php')->set(\ContainerCuQ95Wm\App_KernelDevDebugContainer::class, null);
+require __DIR__.'/ContainerCuQ95Wm/EntityManagerGhost614a58f.php';
+require __DIR__.'/ContainerCuQ95Wm/RequestPayloadValueResolverGhost01ca9cc.php';
+require __DIR__.'/ContainerCuQ95Wm/getSession_Handler_NativeService.php';
+require __DIR__.'/ContainerCuQ95Wm/getSession_FactoryService.php';
+require __DIR__.'/ContainerCuQ95Wm/getServicesResetterService.php';
+require __DIR__.'/ContainerCuQ95Wm/getSecrets_VaultService.php';
+require __DIR__.'/ContainerCuQ95Wm/getSecrets_EnvVarLoaderService.php';
+require __DIR__.'/ContainerCuQ95Wm/getRouting_LoaderService.php';
+require __DIR__.'/ContainerCuQ95Wm/getErrorHandler_ErrorRenderer_HtmlService.php';
+require __DIR__.'/ContainerCuQ95Wm/getErrorControllerService.php';
+require __DIR__.'/ContainerCuQ95Wm/getDoctrine_UuidGeneratorService.php';
+require __DIR__.'/ContainerCuQ95Wm/getDoctrine_UlidGeneratorService.php';
+require __DIR__.'/ContainerCuQ95Wm/getDoctrine_Orm_Listeners_PdoSessionHandlerSchemaListenerService.php';
+require __DIR__.'/ContainerCuQ95Wm/getDoctrine_Orm_Listeners_LockStoreSchemaListenerService.php';
+require __DIR__.'/ContainerCuQ95Wm/getDoctrine_Orm_Listeners_DoctrineTokenProviderSchemaListenerService.php';
+require __DIR__.'/ContainerCuQ95Wm/getDoctrine_Orm_Listeners_DoctrineDbalCacheAdapterSchemaListenerService.php';
+require __DIR__.'/ContainerCuQ95Wm/getDoctrine_Orm_DefaultListeners_AttachEntityListenersService.php';
+require __DIR__.'/ContainerCuQ95Wm/getDoctrine_Orm_DefaultEntityManagerService.php';
+require __DIR__.'/ContainerCuQ95Wm/getDoctrine_Orm_DefaultConfigurationService.php';
+require __DIR__.'/ContainerCuQ95Wm/getDoctrine_Orm_DefaultAttributeMetadataDriverService.php';
+require __DIR__.'/ContainerCuQ95Wm/getDoctrine_Dbal_DefaultConnection_EventManagerService.php';
+require __DIR__.'/ContainerCuQ95Wm/getDoctrine_Dbal_DefaultConnectionService.php';
+require __DIR__.'/ContainerCuQ95Wm/getDoctrineService.php';
+require __DIR__.'/ContainerCuQ95Wm/getDebug_ErrorHandlerConfiguratorService.php';
+require __DIR__.'/ContainerCuQ95Wm/getContainer_GetRoutingConditionServiceService.php';
+require __DIR__.'/ContainerCuQ95Wm/getContainer_EnvVarProcessorsLocatorService.php';
+require __DIR__.'/ContainerCuQ95Wm/getContainer_EnvVarProcessorService.php';
+require __DIR__.'/ContainerCuQ95Wm/getCache_SystemClearerService.php';
+require __DIR__.'/ContainerCuQ95Wm/getCache_SystemService.php';
+require __DIR__.'/ContainerCuQ95Wm/getCache_GlobalClearerService.php';
+require __DIR__.'/ContainerCuQ95Wm/getCache_AppClearerService.php';
+require __DIR__.'/ContainerCuQ95Wm/getCache_AppService.php';
+require __DIR__.'/ContainerCuQ95Wm/getTemplateControllerService.php';
+require __DIR__.'/ContainerCuQ95Wm/getRedirectControllerService.php';
+require __DIR__.'/ContainerCuQ95Wm/getRestaurantRepositoryService.php';
+require __DIR__.'/ContainerCuQ95Wm/getRestaurantControllerService.php';
+require __DIR__.'/ContainerCuQ95Wm/getReservationRepositoryService.php';
+require __DIR__.'/ContainerCuQ95Wm/getReservationControllerService.php';
+require __DIR__.'/ContainerCuQ95Wm/getProductsRepositoryService.php';
+require __DIR__.'/ContainerCuQ95Wm/getProductsControllerService.php';
+require __DIR__.'/ContainerCuQ95Wm/getMenuRepositoryService.php';
+require __DIR__.'/ContainerCuQ95Wm/getMenuControllerService.php';
+require __DIR__.'/ContainerCuQ95Wm/getCustomerRepositoryService.php';
+require __DIR__.'/ContainerCuQ95Wm/getCustomerControllerService.php';
+require __DIR__.'/ContainerCuQ95Wm/get_ServiceLocator_ZHyJIs5_KernelregisterContainerConfigurationService.php';
+require __DIR__.'/ContainerCuQ95Wm/get_ServiceLocator_ZHyJIs5_KernelloadRoutesService.php';
+require __DIR__.'/ContainerCuQ95Wm/get_ServiceLocator_ZHyJIs5Service.php';
+require __DIR__.'/ContainerCuQ95Wm/get_ServiceLocator_ZyP9f7KService.php';
+require __DIR__.'/ContainerCuQ95Wm/get_ServiceLocator_F6vdjrPService.php';
+require __DIR__.'/ContainerCuQ95Wm/get_Debug_ValueResolver_Doctrine_Orm_EntityValueResolverService.php';
+require __DIR__.'/ContainerCuQ95Wm/get_Debug_ValueResolver_ArgumentResolver_VariadicService.php';
+require __DIR__.'/ContainerCuQ95Wm/get_Debug_ValueResolver_ArgumentResolver_SessionService.php';
+require __DIR__.'/ContainerCuQ95Wm/get_Debug_ValueResolver_ArgumentResolver_ServiceService.php';
+require __DIR__.'/ContainerCuQ95Wm/get_Debug_ValueResolver_ArgumentResolver_RequestPayloadService.php';
+require __DIR__.'/ContainerCuQ95Wm/get_Debug_ValueResolver_ArgumentResolver_RequestAttributeService.php';
+require __DIR__.'/ContainerCuQ95Wm/get_Debug_ValueResolver_ArgumentResolver_RequestService.php';
+require __DIR__.'/ContainerCuQ95Wm/get_Debug_ValueResolver_ArgumentResolver_QueryParameterValueResolverService.php';
+require __DIR__.'/ContainerCuQ95Wm/get_Debug_ValueResolver_ArgumentResolver_NotTaggedControllerService.php';
+require __DIR__.'/ContainerCuQ95Wm/get_Debug_ValueResolver_ArgumentResolver_DefaultService.php';
+require __DIR__.'/ContainerCuQ95Wm/get_Debug_ValueResolver_ArgumentResolver_DatetimeService.php';
+require __DIR__.'/ContainerCuQ95Wm/get_Debug_ValueResolver_ArgumentResolver_BackedEnumResolverService.php';
+>>>>>>> 694e9356e249ecb387ee9b5f51c627f35145ffbf
 
 $classes = [];
 $classes[] = 'Symfony\Bundle\FrameworkBundle\FrameworkBundle';

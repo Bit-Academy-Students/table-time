@@ -18,9 +18,8 @@ class ReservationEntity
     #[ORM\Column]
     private int $id;
 
-    #[ManyToOne(targetEntity: CustomerEntity::class, inversedBy: "Reservations")]
-    #[JoinColumn(name: "CustomerId", referencedColumnName: "id")]
-    private ?CustomerEntity $CustomerId;
+    #[ORM\Column(length: 255)]
+    private string $Email;
 
     #[ManyToOne(targetEntity: RestaurantEntity::class, inversedBy: "Reservations")]
     #[JoinColumn(name: "RestaurantId", referencedColumnName: "id")]
@@ -47,14 +46,14 @@ class ReservationEntity
         return $this;
     }
     
-    public function getCustomer(): ?CustomerEntity
+    public function getEmail(): string
     {
-        return $this->CustomerId;
+        return $this->Email;
     }
 
-    public function setCustomer(?CustomerEntity $CustomerId): static
+    public function setEmail(string $Email): static
     {
-        $this->CustomerId = $CustomerId;
+        $this->Email = $Email;
 
         return $this;
     }

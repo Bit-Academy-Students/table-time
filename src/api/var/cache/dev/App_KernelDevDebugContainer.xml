@@ -2032,11 +2032,19 @@
     </service>
     <service id="doctrine.orm.default_attribute_metadata_driver" class="Doctrine\ORM\Mapping\Driver\AttributeDriver">
       <argument type="collection">
+<<<<<<< HEAD
         <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\src\Customers\CustomerEntity</argument>
         <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\src\Reservations\ReservationEntity</argument>
         <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\src\Restaurants\RestaurantEntity</argument>
         <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\src\Products\ProductsEntity</argument>
         <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\src\Menus\MenusEntity</argument>
+=======
+        <argument>/var/www/html/api/src/Customers/CustomerEntity</argument>
+        <argument>/var/www/html/api/src/Reservations/ReservationEntity</argument>
+        <argument>/var/www/html/api/src/Restaurants/RestaurantEntity</argument>
+        <argument>/var/www/html/api/src/Products/ProductsEntity</argument>
+        <argument>/var/www/html/api/src/Menus/MenusEntity</argument>
+>>>>>>> 694e9356e249ecb387ee9b5f51c627f35145ffbf
       </argument>
       <argument>true</argument>
     </service>
