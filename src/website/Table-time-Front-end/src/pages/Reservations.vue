@@ -1,5 +1,6 @@
 <script>
 import NavBar from "../components/NavBar.vue";
+import NavbarMobile from '../components/NavbarMobile.vue';
 
 export default {
   components: { NavBar },
@@ -138,13 +139,14 @@ export default {
 
 <template>
   <NavBar />
+  <NavbarMobile />
 
   <main class="flex justify-center mt-6">
-    <section class="w-[420px]">
+    <section class="w-[420px] h-[300vh]">
 
       <h2 class="text-2xl font-semibold mb-4">Tafel reserveren</h2>
 
-      <div class="bg-white border-[#03CAED] border-2 p-4 rounded-xl shadow mb-8">
+      <div class="bg-white border-[#03CAED] border-2 z-10 p-4 rounded-xl shadow mb-8">
         <h3 class="text-center text-lg font-semibold mb-4">
           {{ monthName.charAt(0).toUpperCase() + monthName.slice(1) }} {{ currentYear }}
         </h3>
@@ -162,7 +164,7 @@ export default {
           <div
             v-for="(day, i) in daysInMonth"
             :key="i"
-            class="h-12 flex flex-col items-center justify-center rounded-lg text-sm relative"
+            class="h-12 flex flex-col items-center justify-center z-20 rounded-lg text-sm relative"
             :class="{
               'bg-gray-100 text-gray-400': day.disabled,
               'bg-[#03CAED] text-white': selectedDay === day.day,
@@ -185,8 +187,8 @@ export default {
             v-for="t in ['12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30']"
             :key="t"
             @click="form.time = t"
-            class="p-2 border rounded text-sm"
-            :class="form.time === t ? 'bg-black text-white' : 'hover:bg-gray-200'"
+            class="p-2 border w-[75px] rounded text-sm"
+            :class="form.time === t ? 'bg-[#FF8000] text-white' : 'hover:bg-gray-200'"
           >
             {{ t }}
           </button>
