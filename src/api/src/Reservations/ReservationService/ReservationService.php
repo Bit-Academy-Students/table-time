@@ -38,6 +38,9 @@ class ReservationService
         if (isset($data['endDate']) && (!is_string($data['endDate']) || preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['endDate']) !== 1)) {
             throw new \InvalidArgumentException("Invalid input for end date");
         }
+        if (isset($data['Email']) && !filter_var($data['Email'], FILTER_VALIDATE_EMAIL)) {
+            throw new \InvalidArgumentException("Invalid email format");
+        }
     }
 
     public function getAllReservations(): array
