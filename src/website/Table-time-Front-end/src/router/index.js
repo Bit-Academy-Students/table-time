@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 // Pagina-componenten importeren
 import Home from '../pages/Home.vue';
 import Reservations from '../pages/Reservations.vue';
+import Login from '../pages/Login.vue';
 
 const routes = [
   {
@@ -15,6 +16,11 @@ const routes = [
     name: 'reservations',
     component: Reservations,
   },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login,
+  }
 ];
 
 const router = createRouter({

@@ -18,22 +18,21 @@ class ReservationEntity
     #[ORM\Column]
     private int $id;
 
-    #[ManyToOne(targetEntity: CustomerEntity::class, inversedBy: "Reservations")]
-    #[JoinColumn(name: "CustomerId", referencedColumnName: "id")]
-    private ?CustomerEntity $CustomerId;
-
     #[ManyToOne(targetEntity: RestaurantEntity::class, inversedBy: "Reservations")]
     #[JoinColumn(name: "RestaurantId", referencedColumnName: "id")]
     private ?RestaurantEntity $RestaurantId;
 
     #[ORM\Column(type: "datetime")]
     private DateTimeInterface $StartDate;
-    
+
     #[ORM\Column(type: "datetime")]
     private DateTimeInterface $EndDate;
 
     #[ORM\Column]
     private int $AmountPeople;
+
+    #[ORM\Column(length: 255)]
+    private string $email;
 
     public function getId(): int
     {
@@ -46,7 +45,7 @@ class ReservationEntity
 
         return $this;
     }
-    
+
     public function getCustomer(): ?CustomerEntity
     {
         return $this->CustomerId;
@@ -103,6 +102,18 @@ class ReservationEntity
     public function setAmountPeople(int $AmountPeople): static
     {
         $this->AmountPeople = $AmountPeople;
+
+        return $this;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
 
         return $this;
     }

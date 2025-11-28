@@ -40,6 +40,10 @@ class ReservationService
         if (empty($data['amountPeople']) || !is_int($data['amountPeople']) || $data['amountPeople'] <= 0) {
             throw new \InvalidArgumentException("invalid input for amount of people");
         }
+        if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            throw new \InvalidArgumentException("invalid input for email");
+        }
+        
     }
 
     public function getAllReservations(): array
@@ -58,11 +62,11 @@ class ReservationService
             $data = $this->sanitizeReservationData($data);
             $this->validateReservationData($data);
             $Reservation = new ReservationEntity();
-            $Reservation->setCustomer($data['customerId'] ?? null);
             $Reservation->setRestaurant($data['restaurantId'] ?? null);
             $Reservation->setStartDate($data['startDate']);
             $Reservation->setEndDate($data['endDate']);
             $Reservation->setAmountPeople($data['amountPeople']);
+            $Reservation->setEmail($data['email']);
 
             $this->ReservationRepository->save($Reservation);
 
@@ -82,9 +86,6 @@ class ReservationService
                 return null;
             }
 
-            if (isset($data['customerId'])) {
-                $Reservation->setCustomerId($data['customerId']);
-            }
             if (isset($data['restaurantId'])) {
                 $Reservation->setRestaurantId($data['restaurantId']);
             }
@@ -96,6 +97,10 @@ class ReservationService
             }
             if (isset($data['amountPeople'])) {
                 $Reservation->setAmountPeople($data['amountPeople']);
+            }
+
+            if (isset($data['email'])) {
+                $Reservation->setEmail($data['email']);
             }
 
             $this->ReservationRepository->save($Reservation);
