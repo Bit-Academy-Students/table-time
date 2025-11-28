@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Reservations\ReservationController;
 
@@ -35,7 +35,7 @@ class ReservationController extends AbstractController
             ['Reservations' => $Reservations]
         );
     }
-    
+
     public function FindById(int $id): Response
     {
         $Reservation = $this->ReservationService->getReservationById($id);
@@ -53,34 +53,55 @@ class ReservationController extends AbstractController
 
     public function Create(Request $request): Response
     {
-        $data = json_decode($request->getContent(), true);
-        $Reservation = $this->ReservationService->createReservation($data);
+        try {
+            $data = json_decode($request->getContent(), true);
+            $Reservation = $this->ReservationService->createReservation($data);
 
-        return new JsonResponse(
-            ['Reservation' => $Reservation, 'response' => 'created']
-        );
+            return new JsonResponse(
+                ['Reservation' => $Reservation, 'response' => 'created']
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
-    
+
     public function Update(int $id, Request $request): Response
     {
-        $data = json_decode($request->getContent(), true);
-        $Reservation = $this->ReservationService->getReservationById($id);
+        try {
+            $data = json_decode($request->getContent(), true);
+            $Reservation = $this->ReservationService->getReservationById($id);
 
-        $this->ReservationService->updateReservation($id, $data);
+            $this->ReservationService->updateReservation($id, $data);
 
-        return new JsonResponse(
-            ['Reservation' => $Reservation, 'response' => 'updated']
-        );
+            return new JsonResponse(
+                ['Reservation' => $Reservation, 'response' => 'updated']
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
-    
+
     public function Delete(int $id): Response
     {
-        $Reservation = $this->ReservationService->getReservationById($id);
+        try {
+            $Reservation = $this->ReservationService->getReservationById($id);
 
-        $this->ReservationService->deleteReservation($id);
+            $this->ReservationService->deleteReservation($id);
 
-        return new JsonResponse(
-            ['Reservation' => $Reservation, 'response' => 'deleted']
-        );
+            return new JsonResponse(
+                ['Reservation' => $Reservation, 'response' => 'deleted']
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
 }

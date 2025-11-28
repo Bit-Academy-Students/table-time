@@ -109,6 +109,8 @@ export default {
           email: this.form.email,
         };
 
+        console.log("Reservering verzenden:", body);
+
         fetch("http://localhost:8080/Reservations", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

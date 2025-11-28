@@ -163,25 +163,6 @@
       <tag name="controller.service_arguments"/>
       <tag name="routing.route_loader"/>
     </service>
-    <service id="App\Customers\CustomerController\CustomerController" class="App\Customers\CustomerController\CustomerController" public="true" autowire="true" autoconfigure="true">
-      <tag name="controller.service_arguments"/>
-      <tag name="container.service_subscriber"/>
-      <argument type="service" id="App\Customers\CustomerService\CustomerService"/>
-      <call method="setContainer">
-        <argument type="service" id=".service_locator.ZyP9f7K.App\Customers\CustomerController\CustomerController"/>
-      </call>
-    </service>
-    <service id="App\Customers\CustomerEntity\CustomerEntity" class="App\Customers\CustomerEntity\CustomerEntity" autowire="true" autoconfigure="true">
-      <tag name="container.excluded" source="because it's a Doctrine entity"/>
-      <tag name="container.excluded" source="with #[Doctrine\ORM\Mapping\Entity] attribute"/>
-    </service>
-    <service id="App\Customers\CustomerRepository\CustomerRepository" class="App\Customers\CustomerRepository\CustomerRepository" autowire="true" autoconfigure="true">
-      <tag name="doctrine.repository_service"/>
-      <argument type="service" id="doctrine"/>
-    </service>
-    <service id="App\Customers\CustomerService\CustomerService" class="App\Customers\CustomerService\CustomerService" autowire="true" autoconfigure="true">
-      <argument type="service" id="App\Customers\CustomerRepository\CustomerRepository"/>
-    </service>
     <service id="App\Menus\MenusController\MenuController" class="App\Menus\MenusController\MenuController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
@@ -1792,7 +1773,7 @@
     <service id="doctrine.orm.configuration" class="Doctrine\ORM\Configuration" abstract="true"/>
     <service id="doctrine.orm.entity_manager.abstract" class="Doctrine\ORM\EntityManager" lazy="true" abstract="true"/>
     <service id="doctrine.orm.container_repository_factory" class="Doctrine\Bundle\DoctrineBundle\Repository\ContainerRepositoryFactory">
-      <argument type="service" id=".service_locator.F_IzUQi"/>
+      <argument type="service" id=".service_locator.y_cTwdr"/>
     </service>
     <service id="doctrine.orm.manager_configurator.abstract" class="Doctrine\Bundle\DoctrineBundle\ManagerConfigurator" abstract="true">
       <argument type="collection"/>
@@ -2032,7 +2013,6 @@
     </service>
     <service id="doctrine.orm.default_attribute_metadata_driver" class="Doctrine\ORM\Mapping\Driver\AttributeDriver">
       <argument type="collection">
-        <argument>/var/www/html/api/src/Customers/CustomerEntity</argument>
         <argument>/var/www/html/api/src/Reservations/ReservationEntity</argument>
         <argument>/var/www/html/api/src/Restaurants/RestaurantEntity</argument>
         <argument>/var/www/html/api/src/Products/ProductsEntity</argument>
@@ -2297,10 +2277,6 @@
       <argument type="collection">
         <argument key="default" type="collection">
           <argument type="collection">
-            <argument>App\Customers\CustomerEntity</argument>
-            <argument type="service" id="doctrine.orm.default_attribute_metadata_driver"/>
-          </argument>
-          <argument type="collection">
             <argument>App\Reservations\ReservationEntity</argument>
             <argument type="service" id="doctrine.orm.default_attribute_metadata_driver"/>
           </argument>
@@ -2488,13 +2464,6 @@
       <argument type="service" id="maker.file_manager"/>
       <argument type="service" id="maker.generator"/>
     </service>
-    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Customers\CustomerController\CustomerController" class="App\Customers\CustomerController\CustomerController" autowire="true" abstract="true"/>
-    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Customers\CustomerController\CustomerController" class="App\Customers\CustomerController\CustomerController" autowire="true" abstract="true"/>
-    <service id=".abstract.instanceof.App\Customers\CustomerController\CustomerController" class="App\Customers\CustomerController\CustomerController" autowire="true" autoconfigure="true" abstract="true"/>
-    <service id=".instanceof.App\Customers\CustomerEntity\CustomerEntity.0.App\Customers\CustomerEntity\CustomerEntity" class="App\Customers\CustomerEntity\CustomerEntity" autowire="true" abstract="true"/>
-    <service id=".abstract.instanceof.App\Customers\CustomerEntity\CustomerEntity" class="App\Customers\CustomerEntity\CustomerEntity" autowire="true" autoconfigure="true" abstract="true"/>
-    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Customers\CustomerRepository\CustomerRepository" class="App\Customers\CustomerRepository\CustomerRepository" autowire="true" abstract="true"/>
-    <service id=".abstract.instanceof.App\Customers\CustomerRepository\CustomerRepository" class="App\Customers\CustomerRepository\CustomerRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Menus\MenusController\MenuController" class="App\Menus\MenusController\MenuController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Menus\MenusController\MenuController" class="App\Menus\MenusController\MenuController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Menus\MenusController\MenuController" class="App\Menus\MenusController\MenuController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -3034,10 +3003,9 @@
         <argument key="doctrine.orm.default_listeners.attach_entity_listeners" type="service_closure" id="doctrine.orm.default_listeners.attach_entity_listeners"/>
       </argument>
     </service>
-    <service id=".service_locator.F_IzUQi" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.y_cTwdr" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
-        <argument key="App\Customers\CustomerRepository\CustomerRepository" type="service_closure" id="App\Customers\CustomerRepository\CustomerRepository"/>
         <argument key="App\Menus\MenusRepository\MenuRepository" type="service_closure" id="App\Menus\MenusRepository\MenuRepository"/>
         <argument key="App\Products\ProductsRepository\ProductsRepository" type="service_closure" id="App\Products\ProductsRepository\ProductsRepository"/>
         <argument key="App\Reservations\ReservationRepository\ReservationRepository" type="service_closure" id="App\Reservations\ReservationRepository\ReservationRepository"/>
@@ -3092,12 +3060,6 @@
         <argument key="http_kernel" type="service_closure" id="http_kernel" on-invalid="ignore"/>
         <argument key="parameter_bag" type="service_closure" id="parameter_bag" on-invalid="ignore"/>
       </argument>
-    </service>
-    <service id=".service_locator.ZyP9f7K.App\Customers\CustomerController\CustomerController" class="Symfony\Component\DependencyInjection\ServiceLocator">
-      <tag name="container.service_locator_context" id="App\Customers\CustomerController\CustomerController"/>
-      <argument>App\Customers\CustomerController\CustomerController</argument>
-      <argument type="service" id="service_container"/>
-      <factory service=".service_locator.ZyP9f7K" method="withContext"/>
     </service>
     <service id=".service_locator.ZyP9f7K.App\Menus\MenusController\MenuController" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="App\Menus\MenusController\MenuController"/>
@@ -3213,7 +3175,6 @@
       <call method="allowControllers">
         <argument type="collection">
           <argument>App\Kernel</argument>
-          <argument>App\Customers\CustomerController\CustomerController</argument>
           <argument>App\Menus\MenusController\MenuController</argument>
           <argument>App\Products\ProductsController\ProductsController</argument>
           <argument>App\Reservations\ReservationController\ReservationController</argument>
@@ -3239,10 +3200,6 @@
       <argument type="service" id=".service_locator.8J7i9pz"/>
     </service>
     <service id=".doctrine.orm.default_metadata_driver.inner" class="Doctrine\Persistence\Mapping\Driver\MappingDriverChain">
-      <call method="addDriver">
-        <argument type="service" id="doctrine.orm.default_attribute_metadata_driver"/>
-        <argument>App\Customers\CustomerEntity</argument>
-      </call>
       <call method="addDriver">
         <argument type="service" id="doctrine.orm.default_attribute_metadata_driver"/>
         <argument>App\Reservations\ReservationEntity</argument>

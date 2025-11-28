@@ -22,6 +22,12 @@ class RestaurantEntity
     #[ORM\Column(length: 50)]
     private ?string $naam = null;
 
+    #[ORM\Column(length: 255)]
+    private string $email;
+
+    #[ORM\Column(length: 255)]
+    private string $wachtwoord;
+
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $locatie = null;
 
@@ -54,6 +60,30 @@ class RestaurantEntity
     public function setNaam(string $naam): static
     {
         $this->naam = $naam;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getWachtwoord(): ?string
+    {
+        return $this->wachtwoord;
+    }
+
+    public function setWachtwoord(string $wachtwoord): static
+    {
+        $this->wachtwoord = $wachtwoord;
 
         return $this;
     }

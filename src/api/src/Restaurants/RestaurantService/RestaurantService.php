@@ -36,6 +36,8 @@ class RestaurantService
         }
         $Restaurant = new RestaurantEntity();
         $Restaurant->setNaam($data['naam']);
+        $Restaurant->setEmail($data['email'] ?? null);
+        $Restaurant->setWachtwoord($data['wachtwoord'] ?? null);
         $Restaurant->setLocatie($data['locatie'] ?? null);
         $Restaurant->setTelefoonnummer($data['telefoonnummer'] ?? null);
 
@@ -53,6 +55,12 @@ class RestaurantService
 
         if (isset($data['naam'])) {
             $Restaurant->setNaam($data['naam']);
+        }
+        if (isset($data['email'])) {
+            $Restaurant->setEmail($data['email']);
+        }
+        if (isset($data['wachtwoord'])) {
+            $Restaurant->setWachtwoord($data['wachtwoord']);
         }
         if (isset($data['locatie'])) {
             $Restaurant->setLocatie($data['locatie']);

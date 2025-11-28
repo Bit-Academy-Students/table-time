@@ -31,9 +31,6 @@ services:
 
 
 
-    App\Customers\CustomerService\CustomerService:
-
-        arguments:
 
     App\Reservations\ReservationService\ReservationService:
 
