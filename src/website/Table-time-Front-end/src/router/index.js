@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../pages/Home.vue';
 import Reservations from '../pages/Reservations.vue';
 import AllReservations from '../pages/AllReservations.vue';
+import Login from '../pages/Login.vue';
 
 const routes = [
   {
@@ -21,6 +22,11 @@ const routes = [
     name: 'all-reservations',
     component: AllReservations,
   },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login,
+  }
 ];
 
 const router = createRouter({
