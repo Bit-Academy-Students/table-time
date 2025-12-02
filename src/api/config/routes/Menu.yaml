@@ -1,24 +1,24 @@
 getAllMenus:
     path:       /Menus
     methods:    [GET]
-    controller: App\Menus\MenuController\MenuController::FindAll
+    controller: App\Menus\MenusController\MenuController::FindAll
 
 getMenuById:
     path:       /Menus/{id}
     methods:    [GET]
-    controller: App\Menus\MenuController\MenuController::FindById
+    controller: App\Menus\MenusController\MenuController::FindById
 
 createMenu:
     path:       /Menus
     methods:    [POST]
-    controller: App\Menus\MenuController\MenuController::Create
+    controller: App\Menus\MenusController\MenuController::Create
 
 updateMenu:
     path:       /Menus/{id}
     methods:    [PUT]
-    controller: App\Menus\MenuController\MenuController::Update
+    controller: App\Menus\MenusController\MenuController::Update
 
 deleteMenu:
     path:       /Menus/{id}
     methods:    [DELETE]
-    controller: App\Menus\MenuController\MenuController::Delete
+    controller: App\Menus\MenusController\MenuController::Delete
