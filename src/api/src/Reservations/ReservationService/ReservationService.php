@@ -48,13 +48,13 @@ class ReservationService
         $maxCapacity = $reservation['restaurant'] ?? 50;
         $overlappingPeople = $data['amountPeople'] ?? 0;
         foreach ($reservations as $reservation) {
-            if (($reservation->getStartDate() > $data['startDate'] && $reservation->getStartDate() < $data['startDate'] ||
+            if (($reservation->getStartDate() > $data['startDate'] && $reservation->getStartDate() < $data['endDate'] ||
                 $reservation->getEndDate() > $data['startDate'] && $reservation->getEndDate() < $data['endDate'] ||
                 $reservation->getStartDate() <= $data['startDate'] && $reservation->getEndDate() >= $data['endDate']) &&
                 $reservation->getRestaurant() === ($data['restaurantId'] ?? null)) {
                 $overlappingPeople += $reservation->getAmountPeople();
             }
-            if ($overlappingPeople + $data['amountPeople'] > $maxCapacity) {
+            if ($overlappingPeople > $maxCapacity) {
                 throw new \InvalidArgumentException("Maximum capacity exceeded for the selected time slot");
             }
         }
