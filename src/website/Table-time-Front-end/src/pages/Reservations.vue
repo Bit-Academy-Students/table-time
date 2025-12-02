@@ -3,7 +3,7 @@ import NavBar from "../components/NavBar.vue";
 import NavbarMobile from '../components/NavbarMobile.vue';
 
 export default {
-  components: { NavBar },
+  components: { NavBar, NavbarMobile },
 
   data() {
     return {

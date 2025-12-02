@@ -219,6 +219,7 @@
     </service>
     <service id="App\Reservations\ReservationService\ReservationService" class="App\Reservations\ReservationService\ReservationService" autowire="true" autoconfigure="true">
       <argument type="service" id="App\Reservations\ReservationRepository\ReservationRepository"/>
+      <argument type="service" id="mailer.mailer"/>
     </service>
     <service id="App\Restaurants\RestaurantController\RestaurantController" class="App\Restaurants\RestaurantController\RestaurantController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
@@ -391,6 +392,7 @@
         <argument key="cache.validator" type="service" id="cache.validator" on-invalid="ignore_uninitialized"/>
         <argument key="cache.serializer" type="service" id="cache.serializer" on-invalid="ignore_uninitialized"/>
         <argument key="cache.property_info" type="service" id="cache.property_info" on-invalid="ignore_uninitialized"/>
+        <argument key="mailer.message_logger_listener" type="service" id="mailer.message_logger_listener" on-invalid="ignore_uninitialized"/>
         <argument key="debug.stopwatch" type="service" id="debug.stopwatch" on-invalid="ignore_uninitialized"/>
         <argument key="debug.event_dispatcher" type="service" id="debug.event_dispatcher" on-invalid="ignore_uninitialized"/>
         <argument key="session_listener" type="service" id="session_listener" on-invalid="ignore_uninitialized"/>
@@ -417,6 +419,9 @@
           <argument>reset</argument>
         </argument>
         <argument key="cache.property_info" type="collection">
+          <argument>reset</argument>
+        </argument>
+        <argument key="mailer.message_logger_listener" type="collection">
           <argument>reset</argument>
         </argument>
         <argument key="debug.stopwatch" type="collection">
@@ -1065,6 +1070,78 @@
         <argument key="cache.doctrine.orm.default.query" type="service" id="cache.doctrine.orm.default.query" on-invalid="ignore_uninitialized"/>
       </argument>
     </service>
+    <service id="mailer.mailer" class="Symfony\Component\Mailer\Mailer">
+      <argument type="service" id="mailer.transports"/>
+      <argument>null</argument>
+      <argument type="service" id="debug.event_dispatcher" on-invalid="ignore"/>
+    </service>
+    <service id="mailer.transports" class="Symfony\Component\Mailer\Transport\Transports">
+      <argument type="collection">
+        <argument key="main">%env(MAILER_DSN)%</argument>
+      </argument>
+      <factory service="mailer.transport_factory" method="fromStrings"/>
+    </service>
+    <service id="mailer.transport_factory" class="Symfony\Component\Mailer\Transport">
+      <argument type="tagged_iterator" tag="mailer.transport_factory"/>
+    </service>
+    <service id="mailer.messenger.message_handler" class="Symfony\Component\Mailer\Messenger\MessageHandler">
+      <tag name="messenger.message_handler"/>
+      <argument type="service" id="mailer.transports"/>
+    </service>
+    <service id="mailer.envelope_listener" class="Symfony\Component\Mailer\EventListener\EnvelopeListener">
+      <tag name="kernel.event_subscriber"/>
+      <argument>null</argument>
+      <argument>null</argument>
+      <argument type="collection"/>
+    </service>
+    <service id="mailer.message_logger_listener" class="Symfony\Component\Mailer\EventListener\MessageLoggerListener">
+      <tag name="kernel.event_subscriber"/>
+      <tag name="kernel.reset" method="reset"/>
+    </service>
+    <service id="mailer.messenger_transport_listener" class="Symfony\Component\Mailer\EventListener\MessengerTransportListener">
+      <tag name="kernel.event_subscriber"/>
+    </service>
+    <service id="console.command.mailer_test" class="Symfony\Component\Mailer\Command\MailerTestCommand">
+      <tag name="console.command"/>
+      <tag name="container.no_preload"/>
+      <argument type="service" id="mailer.transports"/>
+      <call method="setName">
+        <argument>mailer:test</argument>
+      </call>
+      <call method="setDescription">
+        <argument>Test Mailer transports by sending an email</argument>
+      </call>
+    </service>
+    <service id="mailer.transport_factory.abstract" class="Symfony\Component\Mailer\Transport\AbstractTransportFactory" abstract="true">
+      <tag name="monolog.logger" channel="mailer"/>
+      <argument type="service" id="debug.event_dispatcher"/>
+      <argument type="service" id="http_client" on-invalid="ignore"/>
+      <argument type="service" id="logger" on-invalid="ignore"/>
+    </service>
+    <service id="mailer.transport_factory.native" class="Symfony\Component\Mailer\Transport\NativeTransportFactory">
+      <tag name="mailer.transport_factory"/>
+      <argument type="service" id="debug.event_dispatcher"/>
+      <argument>null</argument>
+      <argument type="service" id="logger" on-invalid="ignore"/>
+    </service>
+    <service id="mailer.transport_factory.null" class="Symfony\Component\Mailer\Transport\NullTransportFactory">
+      <tag name="mailer.transport_factory"/>
+      <argument type="service" id="debug.event_dispatcher"/>
+      <argument>null</argument>
+      <argument type="service" id="logger" on-invalid="ignore"/>
+    </service>
+    <service id="mailer.transport_factory.sendmail" class="Symfony\Component\Mailer\Transport\SendmailTransportFactory">
+      <tag name="mailer.transport_factory"/>
+      <argument type="service" id="debug.event_dispatcher"/>
+      <argument>null</argument>
+      <argument type="service" id="logger" on-invalid="ignore"/>
+    </service>
+    <service id="mailer.transport_factory.smtp" class="Symfony\Component\Mailer\Transport\Smtp\EsmtpTransportFactory">
+      <tag name="mailer.transport_factory"/>
+      <argument type="service" id="debug.event_dispatcher"/>
+      <argument>null</argument>
+      <argument type="service" id="logger" on-invalid="ignore"/>
+    </service>
     <service id="debug.error_handler_configurator" class="Symfony\Component\HttpKernel\Debug\ErrorHandlerConfigurator" public="true">
       <tag name="monolog.logger" channel="php"/>
       <argument type="service" id="logger" on-invalid="null"/>
@@ -1223,6 +1300,30 @@
         <argument type="collection">
           <argument type="service_closure" id="console.suggest_missing_package_subscriber"/>
           <argument>onConsoleError</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Mailer\Event\MessageEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="mailer.envelope_listener"/>
+          <argument>onMessage</argument>
+        </argument>
+        <argument>-255</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Mailer\Event\MessageEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="mailer.message_logger_listener"/>
+          <argument>onMessage</argument>
+        </argument>
+        <argument>-255</argument>
+      </call>
+      <call method="addListener">
+        <argument>Symfony\Component\Mailer\Event\MessageEvent</argument>
+        <argument type="collection">
+          <argument type="service_closure" id="mailer.messenger_transport_listener"/>
+          <argument>onMessage</argument>
         </argument>
         <argument>0</argument>
       </call>
@@ -1572,6 +1673,11 @@
       <argument>%session.storage.options%</argument>
     </service>
     <service id="session.marshaller" class="Symfony\Component\HttpFoundation\Session\Storage\Handler\IdentityMarshaller"/>
+    <service id="mime_types" class="Symfony\Component\Mime\MimeTypes">
+      <call method="setDefault">
+        <argument type="service" id="mime_types"/>
+      </call>
+    </service>
     <service id="data_collector.doctrine" class="Doctrine\Bundle\DoctrineBundle\DataCollector\DoctrineDataCollector">
       <tag name="data_collector" template="@Doctrine/Collector/db.html.twig" id="db" priority="250"/>
       <argument type="service" id="doctrine"/>
@@ -3409,6 +3515,13 @@
       <argument>false</argument>
       <argument type="service_closure" id="console.command.error_dumper"/>
     </service>
+    <service id=".console.command.mailer_test.lazy" class="Symfony\Component\Console\Command\LazyCommand">
+      <argument>mailer:test</argument>
+      <argument type="collection"/>
+      <argument>Test Mailer transports by sending an email</argument>
+      <argument>false</argument>
+      <argument type="service_closure" id="console.command.mailer_test"/>
+    </service>
     <service id=".doctrine_migrations.diff_command.lazy" class="Symfony\Component\Console\Command\LazyCommand">
       <argument>doctrine:migrations:diff</argument>
       <argument type="collection"/>
@@ -3696,7 +3809,7 @@
     </service>
     <service id="console.command_loader" class="Symfony\Component\Console\CommandLoader\ContainerCommandLoader" public="true">
       <tag name="container.no_preload"/>
-      <argument type="service" id=".service_locator.iRmrrxp"/>
+      <argument type="service" id=".service_locator.ESpSo7f"/>
       <argument type="collection">
         <argument key="about">console.command.about</argument>
         <argument key="assets:install">console.command.assets_install</argument>
@@ -3725,6 +3838,7 @@
         <argument key="secrets:decrypt-to-local">console.command.secrets_decrypt_to_local</argument>
         <argument key="secrets:encrypt-from-local">console.command.secrets_encrypt_from_local</argument>
         <argument key="error:dump">console.command.error_dumper</argument>
+        <argument key="mailer:test">console.command.mailer_test</argument>
         <argument key="doctrine:database:create">doctrine.database_create_command</argument>
         <argument key="doctrine:database:drop">doctrine.database_drop_command</argument>
         <argument key="doctrine:query:sql">doctrine.query_sql_command</argument>
@@ -3787,7 +3901,7 @@
         <argument key="make:webhook">maker.auto_command.make_webhook</argument>
       </argument>
     </service>
-    <service id=".service_locator.iRmrrxp" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.ESpSo7f" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="console.command.about" type="service_closure" id=".console.command.about.lazy"/>
@@ -3817,6 +3931,7 @@
         <argument key="console.command.secrets_decrypt_to_local" type="service_closure" id=".console.command.secrets_decrypt_to_local.lazy"/>
         <argument key="console.command.secrets_encrypt_from_local" type="service_closure" id=".console.command.secrets_encrypt_from_local.lazy"/>
         <argument key="console.command.error_dumper" type="service_closure" id=".console.command.error_dumper.lazy"/>
+        <argument key="console.command.mailer_test" type="service_closure" id=".console.command.mailer_test.lazy"/>
         <argument key="doctrine.database_create_command" type="service_closure" id="doctrine.database_create_command"/>
         <argument key="doctrine.database_drop_command" type="service_closure" id="doctrine.database_drop_command"/>
         <argument key="doctrine.query_sql_command" type="service_closure" id="doctrine.query_sql_command"/>
@@ -3905,6 +4020,10 @@
     <service id="Symfony\Contracts\Cache\CacheInterface" alias="cache.app"/>
     <service id="Symfony\Contracts\Cache\NamespacedPoolInterface" alias="cache.app"/>
     <service id="Symfony\Contracts\Cache\TagAwareCacheInterface" alias="cache.app.taggable"/>
+    <service id="mailer" alias="mailer.mailer"/>
+    <service id="Symfony\Component\Mailer\MailerInterface" alias="mailer.mailer"/>
+    <service id="mailer.default_transport" alias="mailer.transports"/>
+    <service id="Symfony\Component\Mailer\Transport\TransportInterface" alias="mailer.transports"/>
     <service id="Symfony\Component\ErrorHandler\ErrorRenderer\FileLinkFormatter" alias="debug.file_link_formatter"/>
     <service id="Symfony\Component\Stopwatch\Stopwatch" alias="debug.stopwatch"/>
     <service id="router" alias="router.default" public="true"/>
@@ -3920,6 +4039,8 @@
     <service id="SessionHandlerInterface" alias="session.handler.native"/>
     <service id="session.storage.factory" alias="session.storage.factory.native"/>
     <service id="session.handler" alias="session.handler.native"/>
+    <service id="Symfony\Component\Mime\MimeTypesInterface" alias="mime_types"/>
+    <service id="Symfony\Component\Mime\MimeTypeGuesserInterface" alias="mime_types"/>
     <service id="Doctrine\DBAL\Connection" alias="doctrine.dbal.default_connection"/>
     <service id="Doctrine\Persistence\ManagerRegistry" alias="doctrine"/>
     <service id="Doctrine\Common\Persistence\ManagerRegistry" alias="doctrine"/>

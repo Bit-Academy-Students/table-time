@@ -4,14 +4,20 @@ namespace App\Reservations\ReservationService;
 
 use App\Reservations\ReservationEntity\ReservationEntity;
 use App\Reservations\ReservationRepository\ReservationRepository;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
-class ReservationService 
+class ReservationService
 {
     private ReservationRepository $ReservationRepository;
+    private MailerInterface $mailer;
 
-    public function __construct(ReservationRepository $ReservationRepository)
-    {
+    public function __construct(
+        ReservationRepository $ReservationRepository,
+        MailerInterface $mailer
+    ) {
         $this->ReservationRepository = $ReservationRepository;
+        $this->mailer = $mailer;
     }
 
     private function sanitizeReservationData(array $data): array
@@ -21,22 +27,16 @@ class ReservationService
 
     private function validateReservationData(array $data): void
     {
-        if (empty($data['startDate']) || !gettype($data['startDate']) === 'DateTimeInterface') {
+        if (empty($data['startDate'])) {
             throw new \InvalidArgumentException("Start date is required");
         }
-        if (empty($data['endDate']) || !gettype($data['endDate']) === 'DateTimeInterface') {
+        if (empty($data['endDate'])) {
             throw new \InvalidArgumentException("End date is required");
         }
-        if (empty($data['amountPeople']) || !is_int($data['amountPeople']) || $data['amountPeople'] <= 0) {
-            throw new \InvalidArgumentException("invalid input for amount of people");
+        if (empty($data['amountPeople']) || !is_numeric($data['amountPeople']) || $data['amountPeople'] <= 0) {
+            throw new \InvalidArgumentException("Invalid amount of people");
         }
-        if (isset($data['startDate']) && !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['startDate'])) {
-            throw new \InvalidArgumentException("Invalid input for start date");
-        }
-        if (isset($data['endDate']) && !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['endDate'])) {
-            throw new \InvalidArgumentException("Invalid input for end date");
-        }
-        if (isset($data['Email']) && !filter_var($data['Email'], FILTER_VALIDATE_EMAIL)) {
+        if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             throw new \InvalidArgumentException("Invalid email format");
         }
     }
@@ -53,63 +53,64 @@ class ReservationService
 
     public function createReservation(array $data): ReservationEntity
     {
-        try {
-            $data = $this->sanitizeReservationData($data);
-            $this->validateReservationData($data);
-            $data['startDate'] = isset($data['startDate']) ? new \DateTimeImmutable($data['startDate']) : null;
-            $data['endDate'] = isset($data['endDate']) ? new \DateTimeImmutable($data['endDate']) : null;
-            $Reservation = new ReservationEntity();
-            $Reservation->setEmail($data['email']);
-            $Reservation->setRestaurant($data['restaurantId'] ?? null);
-            $Reservation->setStartDate($data['startDate']);
-            $Reservation->setEndDate($data['endDate']);
-            $Reservation->setAmountPeople($data['amountPeople']);
+        $this->validateReservationData($data);
 
-            $this->ReservationRepository->save($Reservation);
+        $data['startDate'] = new \DateTimeImmutable($data['startDate']);
+        $data['endDate'] = new \DateTimeImmutable($data['endDate']);
 
-            return $Reservation;
-        } catch (\InvalidArgumentException $e) {
-            // Handle the exception as needed, e.g., log it or rethrow
-            throw $e;
-        }
+        $Reservation = new ReservationEntity();
+        $Reservation->setEmail($data['email']);
+        $Reservation->setRestaurant($data['restaurantId'] ?? null);
+        $Reservation->setStartDate($data['startDate']);
+        $Reservation->setEndDate($data['endDate']);
+        $Reservation->setAmountPeople($data['amountPeople']);
+
+        $this->ReservationRepository->save($Reservation);
+
+        // 📧 Email versturen
+        $email = (new Email())
+            ->from('no-reply@jouwdomein.nl')
+            ->to($Reservation->getEmail())
+            ->subject('Bevestiging van uw reservering')
+            ->html("
+                <h2>Dank voor uw reservering!</h2>
+                <p>Uw reservering is succesvol geplaatst.</p>
+                <p><strong>Start:</strong> {$data['startDate']->format('Y-m-d H:i')}</p>
+                <p><strong>Eind:</strong> {$data['endDate']->format('Y-m-d H:i')}</p>
+                <p><strong>Personen:</strong> {$data['amountPeople']}</p>
+            ");
+
+        $this->mailer->send($email);
+
+        return $Reservation;
     }
-    
+
     public function updateReservation(int $id, array $data): ?ReservationEntity
     {
-        try {
-            $data = $this->sanitizeReservationData($data);
-            $Reservation = $this->ReservationRepository->find($id);
-            if (!$Reservation) {
-                return null;
-            }
-
-            if (isset($data['Email'])) {
-                $Reservation->setEmail($data['Email']);
-            }
-            if (isset($data['restaurantId'])) {
-                $Reservation->setRestaurantId($data['restaurantId']);
-            }
-            if (isset($data['startDate'])) {
-                $Reservation->setStartDate($data['startDate']);
-            }
-            if (isset($data['endDate'])) {
-                $Reservation->setEndDate($data['endDate']);
-            }
-            if (isset($data['amountPeople'])) {
-                $Reservation->setAmountPeople($data['amountPeople']);
-            }
-
-            if (isset($data['email'])) {
-                $Reservation->setEmail($data['email']);
-            }
-
-            $this->ReservationRepository->save($Reservation);
-
-            return $Reservation;
-        } catch (\InvalidArgumentException $e) {
-            // Handle the exception as needed, e.g., log it or rethrow
-            throw $e;
+        $Reservation = $this->ReservationRepository->find($id);
+        if (!$Reservation) {
+            return null;
         }
+
+        if (isset($data['email'])) {
+            $Reservation->setEmail($data['email']);
+        }
+        if (isset($data['restaurantId'])) {
+            $Reservation->setRestaurant($data['restaurantId']);
+        }
+        if (isset($data['startDate'])) {
+            $Reservation->setStartDate(new \DateTimeImmutable($data['startDate']));
+        }
+        if (isset($data['endDate'])) {
+            $Reservation->setEndDate(new \DateTimeImmutable($data['endDate']));
+        }
+        if (isset($data['amountPeople'])) {
+            $Reservation->setAmountPeople($data['amountPeople']);
+        }
+
+        $this->ReservationRepository->save($Reservation);
+
+        return $Reservation;
     }
 
     public function deleteReservation(int $id): bool
