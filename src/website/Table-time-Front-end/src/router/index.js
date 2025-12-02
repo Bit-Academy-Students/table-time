@@ -8,24 +8,24 @@ import Login from '../pages/Login.vue';
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: Home,
+      path: '/',
+      name: 'home',
+      component: Home,
   },
   {
-    path: '/reservations',
-    name: 'reservations',
-    component: Reservations,
+      path: '/reservations',
+      name: 'reservations',
+      component: Reservations,
   },
   {
-    path: '/all-reservations',
-    name: 'all-reservations',
-    component: AllReservations,
+      path: '/all-reservations',
+      name: 'all-reservations',
+      component: AllReservations,
   },
   {
-    path: '/login',
-    name: 'login',
-    component: Login,
+      path: '/login',
+      name: 'login',
+      component: Login,
   }
 ];
 
