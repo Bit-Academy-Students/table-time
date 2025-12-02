@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Products\ProductsController;
 
@@ -11,6 +11,24 @@ use Symfony\Component\HttpFoundation\Request;
 class ProductsController extends AbstractController
 {
     private ProductsService $ProductService;
+
+    private function sanitizeProductData(array $data): array
+    {
+        $data['naam'] = preg_replace('/\s+/', ' ', $data['naam']);
+        return [
+            'naam' => htmlspecialchars($data['naam'] ?? ''),
+            'prijs' => filter_var($data['prijs'] ?? 0, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
+            'beschrijving' => htmlspecialchars($data['beschrijving'] ?? ''),
+
+        ];
+    }
+
+    private function validateProductId(int $id): void
+    {
+        if ($id <= 0) {
+            throw new \InvalidArgumentException('Invalide Product ID');
+        }
+    }
 
     public function __construct(ProductsService $ProductService)
     {
@@ -35,40 +53,68 @@ class ProductsController extends AbstractController
             ['Products' => $Products]
         );
     }
-    
+
     public function FindById(int $id): Response
     {
-        $Product = $this->ProductService->getProductById($id);
+        try {
+            $this->validateProductId($id);
 
-        return new JsonResponse(
-            ['Product' => $Product]
-        );
+            $Product = $this->ProductService->getProductById($id);
+
+            return new JsonResponse(
+                ['Product' => $Product]
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
 
     public function Create(Request $request): Response
     {
-        $data = json_decode($request->getContent(), true);
-        $Product = $this->ProductService->createProduct($data);
+        try {
+            $data = json_decode($request->getContent(), true);
+            $this->sanitizeProductData($data);
+            $Product = $this->ProductService->createProduct($data);
 
-        return new JsonResponse(
-            ['Product' => $Product, 'response' => 'created']
-        );
+            return new JsonResponse(
+                ['Product' => $Product, 'response' => 'created']
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
-    
+
     public function Update(int $id, Request $request): Response
     {
-        $data = json_decode($request->getContent(), true);
-        $Product = $this->ProductService->getProductById($id);
+        try {
+            $data = json_decode($request->getContent(), true);
+            $Product = $this->ProductService->getProductById($id);
+            $this->sanitizeProductData($data);
+            $this->validateProductId($id);
 
-        $this->ProductService->updateProduct($id, $data);
+            $this->ProductService->updateProduct($id, $data);
 
-        return new JsonResponse(
-            ['Product' => $Product, 'response' => 'updated']
-        );
+            return new JsonResponse(
+                ['Product' => $Product, 'response' => 'updated']
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
-    
+
     public function Delete(int $id): Response
     {
+        try{
+            $this->validateProductId($id);
         $Product = $this->ProductService->getProductById($id);
 
         $this->ProductService->deleteProduct($id);
@@ -76,5 +122,11 @@ class ProductsController extends AbstractController
         return new JsonResponse(
             ['Product' => $Product, 'response' => 'deleted']
         );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
 }

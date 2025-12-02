@@ -18,12 +18,6 @@ doctrine:
             Doctrine\DBAL\Platforms\PostgreSQLPlatform: identity
         auto_mapping: true
         mappings:
-            App/Customers:
-                type: attribute
-                is_bundle: false
-                dir: '%kernel.project_dir%/src/Customers/CustomerEntity'
-                prefix: 'App\Customers\CustomerEntity'
-                alias: App
                 
             App/Reservations:
                 type: attribute

@@ -12,14 +12,50 @@
     }
 
     nav {
-        @apply w-[80%] bg-white border-3 border-[#03CAED] flex flex-row justify-between items-center p-4 rounded-[80px];
+        @apply w-[80%] bg-white border-3 border-[#03CAED] flex flex-row justify-between items-center p-4 z-100 rounded-[80px] fixed ;
+    }
+
+    h1 {
+        @apply text-[120px] max-[768px]:text-[50px] font-jockey text-[#03CAED] underline decoration-[#FF8000];
     }
 
     h2 {
-        @apply underline text-[#03CAED] decoration-[#FF8000] text-[90px] font-jockey;
+        @apply underline text-[#03CAED] decoration-[#FF8000] text-[90px] max-[768px]:text-[60px] font-jockey;
     }
 
     a {
         @apply text-[20px] font-jockey hover:text-[#FF8000]
+    }
+
+    p {
+        @apply text-[24px] text-[#03CAED] font-jockey;
+    }
+
+    button {
+        @apply bg-[#03CAED] p-2 w-[200px] max-[768px]:w-[150px] rounded-[10px] text-white font-jockey hover:bg-[#FF8000] border-2 border-[#ff8000] cursor-pointer
+        duration-300 transition ease-in-out;
+    }
+}
+
+@layer components {
+    .--h2Li {
+        @apply no-underline bg-[#03CAED] text-white max-[768px]:text-[40px] flex justify-center items-center rounded-[80px] w-[150px] h-[150px]
+        max-[768px]:w-[75px] max-[768px]:h-[75px];
+    }
+
+    .--hWHContainer {
+        @apply w-full flex flex-row max-[768px]:flex-col justify-between max-[768px]:justify-center items-center p-4;
+    }
+
+    .--hWHTextContainer {
+        @apply flex justify-between gap-10;
+    }
+
+    .--hamburgerBtn {
+        @apply flex flex-col justify-center gap-[5px] w-[50px] h-[45px] cursor-pointer bg-transparent border-none;
+    }
+
+    .--navbarMenuMobile {
+        @apply md:hidden fixed z-30 w-full h-full flex justify-center items-center flex-col gap-4 text-lg font-medium bg-white shadow-lg pl-6
     }
 }

@@ -4,8 +4,6 @@ namespace App\Reservations\ReservationService;
 
 use App\Reservations\ReservationEntity\ReservationEntity;
 use App\Reservations\ReservationRepository\ReservationRepository;
-use App\Customers\CustomerEntity\CustomerEntity;
-use App\Restaurants\RestaurantEntity\RestaurantEntity;
 
 class ReservationService 
 {
@@ -18,12 +16,6 @@ class ReservationService
 
     private function sanitizeReservationData(array $data): array
     {
-        if (isset($data['startDate']) && (!is_string($data['startDate']) || preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['startDate']) !== 1)) {
-            throw new \InvalidArgumentException("Invalid input for start date");
-        }
-        if (isset($data['endDate']) && (!is_string($data['endDate']) || preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['endDate']) !== 1)) {
-            throw new \InvalidArgumentException("Invalid input for end date");
-        }
         $data['startDate'] = isset($data['startDate']) ? new \DateTimeImmutable($data['startDate']) : null;
         $data['endDate'] = isset($data['endDate']) ? new \DateTimeImmutable($data['endDate']) : null;
         return $data;
@@ -37,8 +29,34 @@ class ReservationService
         if (empty($data['endDate']) || !gettype($data['endDate']) === 'DateTimeInterface') {
             throw new \InvalidArgumentException("End date is required");
         }
+        if ($data['startDate'] >= $data['endDate']) {
+            throw new \InvalidArgumentException("Start date must be before end date");
+        }
         if (empty($data['amountPeople']) || !is_int($data['amountPeople']) || $data['amountPeople'] <= 0) {
             throw new \InvalidArgumentException("invalid input for amount of people");
+        }
+        if (isset($data['startDate']) && !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['startDate']->format('Y-m-d H:i'))) {
+            throw new \InvalidArgumentException("Invalid input for start date");
+        }
+        if (isset($data['endDate']) && !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['endDate']->format('Y-m-d H:i'))) {
+            throw new \InvalidArgumentException("Invalid input for end date");
+        }
+        if (isset($data['Email']) && !filter_var($data['Email'], FILTER_VALIDATE_EMAIL)) {
+            throw new \InvalidArgumentException("Invalid email format");
+        }
+        $reservations = $this->ReservationRepository->findAll();
+        $maxCapacity = $reservation['restaurant'] ?? 50;
+        $overlappingPeople = $data['amountPeople'] ?? 0;
+        foreach ($reservations as $reservation) {
+            if (($reservation->getStartDate() > $data['startDate'] && $reservation->getStartDate() < $data['startDate'] ||
+                $reservation->getEndDate() > $data['startDate'] && $reservation->getEndDate() < $data['endDate'] ||
+                $reservation->getStartDate() <= $data['startDate'] && $reservation->getEndDate() >= $data['endDate']) &&
+                $reservation->getRestaurant() === ($data['restaurantId'] ?? null)) {
+                $overlappingPeople += $reservation->getAmountPeople();
+            }
+            if ($overlappingPeople + $data['amountPeople'] > $maxCapacity) {
+                throw new \InvalidArgumentException("Maximum capacity exceeded for the selected time slot");
+            }
         }
     }
 
@@ -58,7 +76,7 @@ class ReservationService
             $data = $this->sanitizeReservationData($data);
             $this->validateReservationData($data);
             $Reservation = new ReservationEntity();
-            $Reservation->setCustomer($data['customerId'] ?? null);
+            $Reservation->setEmail($data['email']);
             $Reservation->setRestaurant($data['restaurantId'] ?? null);
             $Reservation->setStartDate($data['startDate']);
             $Reservation->setEndDate($data['endDate']);
@@ -82,8 +100,8 @@ class ReservationService
                 return null;
             }
 
-            if (isset($data['customerId'])) {
-                $Reservation->setCustomerId($data['customerId']);
+            if (isset($data['Email'])) {
+                $Reservation->setEmail($data['Email']);
             }
             if (isset($data['restaurantId'])) {
                 $Reservation->setRestaurantId($data['restaurantId']);
@@ -96,6 +114,10 @@ class ReservationService
             }
             if (isset($data['amountPeople'])) {
                 $Reservation->setAmountPeople($data['amountPeople']);
+            }
+
+            if (isset($data['email'])) {
+                $Reservation->setEmail($data['email']);
             }
 
             $this->ReservationRepository->save($Reservation);

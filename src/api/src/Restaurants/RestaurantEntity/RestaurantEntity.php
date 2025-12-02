@@ -22,11 +22,20 @@ class RestaurantEntity
     #[ORM\Column(length: 50)]
     private ?string $naam = null;
 
+    #[ORM\Column(length: 255)]
+    private string $email;
+
+    #[ORM\Column(length: 255)]
+    private string $wachtwoord;
+
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $locatie = null;
 
     #[ORM\Column(length: 15, nullable: true)]
     private ?string $telefoonnummer = null;
+
+    #[ORM\Column]
+    private int $maxCapacity = 50;
 
     #[OneToMany(mappedBy: "RestaurantId", targetEntity: ReservationEntity::class)]
     private Collection $Reservations;
@@ -58,6 +67,30 @@ class RestaurantEntity
         return $this;
     }
 
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getWachtwoord(): ?string
+    {
+        return $this->wachtwoord;
+    }
+
+    public function setWachtwoord(string $wachtwoord): static
+    {
+        $this->wachtwoord = $wachtwoord;
+
+        return $this;
+    }
+
     public function getLocatie(): ?string
     {
         return $this->locatie;
@@ -78,6 +111,18 @@ class RestaurantEntity
     public function setTelefoonnummer(?string $telefoonnummer): static
     {
         $this->telefoonnummer = $telefoonnummer;
+
+        return $this;
+    }
+
+    public function getMaxCapacity(): int
+    {
+        return $this->maxCapacity;
+    }
+
+    public function setMaxCapacity(int $maxCapacity): static
+    {
+        $this->maxCapacity = $maxCapacity;
 
         return $this;
     }

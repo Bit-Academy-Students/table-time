@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Menus\MenusController;
 
@@ -33,7 +33,7 @@ class MenuController extends AbstractController
             ['Menus' => $Menus]
         );
     }
-    
+
     public function FindById(int $id): Response
     {
         $Menu = $this->MenuService->getMenuById($id);
@@ -51,34 +51,55 @@ class MenuController extends AbstractController
 
     public function Create(Request $request): Response
     {
-        $data = json_decode($request->getContent(), true);
-        $Menu = $this->MenuService->createMenu($data);
+        try {
+            $data = json_decode($request->getContent(), true);
+            $Menu = $this->MenuService->createMenu($data);
 
-        return new JsonResponse(
-            ['Menu' => $Menu, 'response' => 'created']
-        );
+            return new JsonResponse(
+                ['Menu' => $Menu, 'response' => 'created']
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
-    
+
     public function Update(int $id, Request $request): Response
     {
-        $data = json_decode($request->getContent(), true);
-        $Menu = $this->MenuService->getMenuById($id);
+        try {
+            $data = json_decode($request->getContent(), true);
+            $Menu = $this->MenuService->getMenuById($id);
 
-        $this->MenuService->updateMenu($id, $data);
+            $this->MenuService->updateMenu($id, $data);
 
-        return new JsonResponse(
-            ['Menu' => $Menu, 'response' => 'updated']
-        );
+            return new JsonResponse(
+                ['Menu' => $Menu, 'response' => 'updated']
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
-    
+
     public function Delete(int $id): Response
     {
-        $Menu = $this->MenuService->getMenuById($id);
+        try {
+            $Menu = $this->MenuService->getMenuById($id);
 
-        $this->MenuService->deleteMenu($id);
+            $this->MenuService->deleteMenu($id);
 
-        return new JsonResponse(
-            ['Menu' => $Menu, 'response' => 'deleted']
-        );
+            return new JsonResponse(
+                ['Menu' => $Menu, 'response' => 'deleted']
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
 }
