@@ -52,12 +52,6 @@ class ReservationService
         if (empty($data['amountPeople']) || !is_int($data['amountPeople']) || $data['amountPeople'] <= 0) {
             throw new \InvalidArgumentException("invalid input for amount of people");
         }
-        if (isset($data['startDate']) && (!is_string($data['startDate']) || preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['startDate']) !== 1)) {
-            throw new \InvalidArgumentException("Invalid input for start date");
-        }
-        if (isset($data['endDate']) && (!is_string($data['endDate']) || preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['endDate']) !== 1)) {
-            throw new \InvalidArgumentException("Invalid input for end date");
-        }
         if (isset($data['Email']) && !filter_var($data['Email'], FILTER_VALIDATE_EMAIL)) {
             throw new \InvalidArgumentException("Invalid email format");
         }
@@ -79,7 +73,7 @@ class ReservationService
             $data = $this->sanitizeReservationData($data);
             $this->validateReservationData($data);
             $Reservation = new ReservationEntity();
-            $Reservation->setEmail($data['Email'] ?? null);
+            $Reservation->setEmail($data['email']);
             $Reservation->setRestaurant($data['restaurantId'] ?? null);
             $Reservation->setStartDate($data['startDate']);
             $Reservation->setEndDate($data['endDate']);
@@ -104,7 +98,7 @@ class ReservationService
             }
 
             if (isset($data['Email'])) {
-                $Reservation->setEmail($data['Email']);
+                $Reservation->setEmail($data['email']);
             }
             if (isset($data['restaurantId'])) {
                 $Reservation->setRestaurantId($data['restaurantId']);

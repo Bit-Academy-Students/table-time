@@ -12,6 +12,7 @@ export default {
         time: "",
         duration: "01:00",
         amountPeople: 1,
+        email: "",
       },
       currentYear: new Date().getFullYear(),
       currentMonth: new Date().getMonth(), // 0 = januari
@@ -105,6 +106,7 @@ export default {
           startDate: fmt(start),
           endDate: fmt(end),
           amountPeople: Number(this.form.amountPeople),
+          email: this.form.email,
         };
 
         fetch("http://localhost:8080/Reservations", {
@@ -214,6 +216,15 @@ export default {
         />
       </div>
 
+      <div class="bg-white p-4 rounded-xl shadow mb-8">
+        <h3 class="font-semibold mb-2">Aantal personen</h3>
+        <input
+          type="text"
+          v-model="form.email"
+          class="w-full p-2 border rounded"
+          min="1"
+        />
+      </div>
       <form @submit.prevent="submitReservation">
         <button type="submit">
           Reserveren
