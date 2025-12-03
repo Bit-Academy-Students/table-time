@@ -12,19 +12,6 @@ class ReservationController extends AbstractController
 {
     private ReservationService $ReservationService;
 
-    private function validateId(int $id): int
-    {
-        $id > 0 ?: throw new \InvalidArgumentException('Invalid ID');
-        return $id;
-    }
-
-    private function validatedata(array $data): array
-    {
-        isset($data['customer']) && isset($data['restaurant']) && isset($data['startDate']) && isset($data['endDate']) && isset($data['amountPeople'])
-            ?: throw new \InvalidArgumentException('Missing required fields');
-        return $data;
-    }
-
     public function __construct(ReservationService $ReservationService)
     {
         $this->ReservationService = $ReservationService;
@@ -85,8 +72,6 @@ class ReservationController extends AbstractController
     {
         try {
             $data = json_decode($request->getContent(), true);
-            $this->validatedata($data);
-            $this->validateId($id);
             $Reservation = $this->ReservationService->getReservationById($id);
 
             $this->ReservationService->updateReservation($id, $data);
@@ -105,7 +90,6 @@ class ReservationController extends AbstractController
     public function Delete(int $id): Response
     {
         try {
-            $this->validateId($id);
             $Reservation = $this->ReservationService->getReservationById($id);
 
             $this->ReservationService->deleteReservation($id);

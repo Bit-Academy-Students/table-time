@@ -27,6 +27,11 @@ class MenuEntity
     #[JoinColumn(name: "RestaurantId", referencedColumnName: "id")]
     private RestaurantEntity $RestaurantId;
 
+    function __construct()
+    {
+        $this->ProductsIds = new ArrayCollection();
+    }
+
     public function getId(): int
     {
         return $this->id;

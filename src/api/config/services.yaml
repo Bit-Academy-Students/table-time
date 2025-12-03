@@ -42,7 +42,7 @@ services:
 
         arguments:
 
-    App\Menus\MenusService\MenusService:
+    App\Menus\MenusService\MenuService:
 
         arguments:
 

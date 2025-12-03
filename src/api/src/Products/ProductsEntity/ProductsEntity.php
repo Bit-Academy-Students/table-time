@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToOne;
 use App\Menus\MenusEntity\MenuEntity;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping\ManyToMany;
 
 #[ORM\Entity(repositoryClass: ProductsRepository::class)]
 class ProductsEntity
@@ -28,7 +29,7 @@ class ProductsEntity
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $ingredients = null;
     
-    #[OneToOne(mappedBy: "ProductIds", targetEntity: MenuEntity::class)]
+    #[ManyToMany(mappedBy: "ProductIds", targetEntity: MenuEntity::class)]
     private Collection $Menu;
 
     public function getId(): ?int

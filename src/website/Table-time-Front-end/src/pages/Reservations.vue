@@ -109,6 +109,8 @@ export default {
           email: this.form.email,
         };
 
+        console.log("Reservering verzenden:", body);
+
         fetch("http://localhost:8080/Reservations", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -217,14 +219,16 @@ export default {
       </div>
 
       <div class="bg-white p-4 rounded-xl shadow mb-8">
-        <h3 class="font-semibold mb-2">Aantal personen</h3>
+        <h3 class="font-semibold mb-2">Email</h3>
         <input
-          type="text"
+          type="email"
           v-model="form.email"
           class="w-full p-2 border rounded"
-          min="1"
         />
       </div>
+
+
+
       <form @submit.prevent="submitReservation">
         <button type="submit">
           Reserveren

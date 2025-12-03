@@ -38,6 +38,16 @@ class ProductsController extends AbstractController
     public function FindAll(): Response
     {
         $Products = $this->ProductService->getAllProducts();
+        $Products = array_map(function ($Product) {
+            return [
+                'id' => $Product->getId(),
+                'naam' => $Product->getNaam(),
+                'prijs' => $Product->getPrijs(),
+                'soort' => $Product->getSoort(),
+                'ingredients' => $Product->getIngredients(),
+                'menu' => $Product->getMenu(),
+            ];
+        }, $Products);
 
         return new JsonResponse(
             ['Products' => $Products]

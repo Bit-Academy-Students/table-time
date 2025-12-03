@@ -27,7 +27,7 @@ class ReservationEntity
 
     #[ORM\Column(type: "datetime")]
     private DateTimeInterface $StartDate;
-    
+
     #[ORM\Column(type: "datetime")]
     private DateTimeInterface $EndDate;
 

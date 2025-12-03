@@ -38,22 +38,34 @@ class ReservationService
         if (empty($data['endDate']) || !gettype($data['endDate']) === 'DateTimeInterface') {
             throw new \InvalidArgumentException("End date is required");
         }
-        if ($data['startDate']->getTimeStamp() >= $data['endDate']->getTimeStamp()) {
-            throw new \InvalidArgumentException("End date must be after start date");
-        }
-        $reservations = $this->ReservationRepository->findAll();
-        foreach($reservations as $reservation) {
-            if (($reservation->getStartDate() >= $data['startDate'] && $reservation->getStartDate() <= $data['endDate']) || 
-            ($reservation->getEndDate() >= $data['startDate'] && $reservation->getEndDate() <= $data['endDate']) || 
-            ($reservation->getStartDate() <= $data['startDate'] && $reservation->getEndDate() >= $data['endDate'])) {
-                throw new \InvalidArgumentException("This time slot is already booked");
-            }
+        if ($data['startDate'] >= $data['endDate']) {
+            throw new \InvalidArgumentException("Start date must be before end date");
         }
         if (empty($data['amountPeople']) || !is_int($data['amountPeople']) || $data['amountPeople'] <= 0) {
             throw new \InvalidArgumentException("invalid input for amount of people");
         }
+        if (isset($data['startDate']) && !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['startDate']->format('Y-m-d H:i'))) {
+            throw new \InvalidArgumentException("Invalid input for start date");
+        }
+        if (isset($data['endDate']) && !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['endDate']->format('Y-m-d H:i'))) {
+            throw new \InvalidArgumentException("Invalid input for end date");
+        }
         if (isset($data['Email']) && !filter_var($data['Email'], FILTER_VALIDATE_EMAIL)) {
             throw new \InvalidArgumentException("Invalid email format");
+        }
+        $reservations = $this->ReservationRepository->findAll();
+        $maxCapacity = $reservation['restaurant'] ?? 50;
+        $overlappingPeople = $data['amountPeople'] ?? 0;
+        foreach ($reservations as $reservation) {
+            if (($reservation->getStartDate() > $data['startDate'] && $reservation->getStartDate() < $data['endDate'] ||
+                $reservation->getEndDate() > $data['startDate'] && $reservation->getEndDate() < $data['endDate'] ||
+                $reservation->getStartDate() <= $data['startDate'] && $reservation->getEndDate() >= $data['endDate']) &&
+                $reservation->getRestaurant() === ($data['restaurantId'] ?? null)) {
+                $overlappingPeople += $reservation->getAmountPeople();
+            }
+            if ($overlappingPeople > $maxCapacity) {
+                throw new \InvalidArgumentException("Maximum capacity exceeded for the selected time slot");
+            }
         }
     }
 
@@ -111,6 +123,10 @@ class ReservationService
             }
             if (isset($data['amountPeople'])) {
                 $Reservation->setAmountPeople($data['amountPeople']);
+            }
+
+            if (isset($data['email'])) {
+                $Reservation->setEmail($data['email']);
             }
 
             $this->ReservationRepository->save($Reservation);

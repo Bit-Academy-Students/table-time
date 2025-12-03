@@ -14,6 +14,33 @@ class RestaurantService
         $this->RestaurantRepository = $RestaurantRepository;
     }
 
+    private function sanitizeRestaurantData(array $data): array
+    {
+        if (isset($data['naam'])) {
+            $data['naam'] = preg_replace('/\s+/', ' ', $data['naam']);
+        }
+        if (isset($data['wachtwoord'])) {
+            $data['wachtwoord'] = password_hash($data['wachtwoord'], PASSWORD_DEFAULT);
+        }
+        return $data;
+    }
+
+    private function validateRestaurantData(array $data): void
+    {
+        if (empty($data['naam'])) {
+            throw new \InvalidArgumentException("Naam is required");
+        }
+        if (isset($data['maxCapacity']) && (!is_int($data['maxCapacity']) || $data['maxCapacity'] <= 0)) {
+            throw new \InvalidArgumentException("Invalid input for max capacity");
+        }
+        if (isset($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            throw new \InvalidArgumentException("Invalid email format");
+        }
+        if (isset($data['telefoonnummer']) && !preg_match('/^\+?[0-9]{7,15}$/', $data['telefoonnummer'])) {
+            throw new \InvalidArgumentException("Invalid phone number format");
+        }
+    }
+
     public function getAllRestaurants(): array
     {
         return $this->RestaurantRepository->findAll();
@@ -27,51 +54,60 @@ class RestaurantService
     public function createRestaurant(array $data): RestaurantEntity
     {
         try {
-            if (empty($data['naam'])) {
-                throw new \InvalidArgumentException("Naam is required");
-            }
+            $data = $this->sanitizeRestaurantData($data);
+            $this->validateRestaurantData($data);
+            $Restaurant = new RestaurantEntity();
+            $Restaurant->setNaam($data['naam']);
+            $Restaurant->setEmail($data['email'] ?? null);
+            $Restaurant->setWachtwoord($data['wachtwoord'] ?? null);
+            $Restaurant->setLocatie($data['locatie'] ?? null);
+            $Restaurant->setTelefoonnummer($data['telefoonnummer'] ?? null);
+            $Restaurant->setMaxCapacity($data['maxCapacity'] ?? 50);
+
+            $this->RestaurantRepository->save($Restaurant);
+
+            return $Restaurant;
         } catch (\InvalidArgumentException $e) {
             // Handle the exception as needed, e.g., log it or rethrow
             throw $e;
         }
-        $Restaurant = new RestaurantEntity();
-        $Restaurant->setNaam($data['naam']);
-        $Restaurant->setEmail($data['email'] ?? null);
-        $Restaurant->setWachtwoord($data['wachtwoord'] ?? null);
-        $Restaurant->setLocatie($data['locatie'] ?? null);
-        $Restaurant->setTelefoonnummer($data['telefoonnummer'] ?? null);
-
-        $this->RestaurantRepository->save($Restaurant);
-
-        return $Restaurant;
     }
     
     public function updateRestaurant(int $id, array $data): ?RestaurantEntity
     {
-        $Restaurant = $this->RestaurantRepository->find($id);
-        if (!$Restaurant) {
-            return null;
-        }
+        try {
+            $data = $this->sanitizeRestaurantData($data);
+            $this->validateRestaurantData($data);
+            $Restaurant = $this->RestaurantRepository->find($id);
+            if (!$Restaurant) {
+                return null;
+            }
 
-        if (isset($data['naam'])) {
-            $Restaurant->setNaam($data['naam']);
-        }
-        if (isset($data['email'])) {
-            $Restaurant->setEmail($data['email']);
-        }
-        if (isset($data['wachtwoord'])) {
-            $Restaurant->setWachtwoord($data['wachtwoord']);
-        }
-        if (isset($data['locatie'])) {
-            $Restaurant->setLocatie($data['locatie']);
-        }
-        if (isset($data['telefoonnummer'])) {
-            $Restaurant->setTelefoonnummer($data['telefoonnummer']);
-        }
+            if (isset($data['naam'])) {
+                $Restaurant->setNaam($data['naam']);
+            }
+            if (isset($data['email'])) {
+                $Restaurant->setEmail($data['email']);
+            }
+            if (isset($data['wachtwoord'])) {
+                $Restaurant->setWachtwoord($data['wachtwoord']);
+            }
+            if (isset($data['locatie'])) {
+                $Restaurant->setLocatie($data['locatie']);
+            }
+            if (isset($data['telefoonnummer'])) {
+                $Restaurant->setTelefoonnummer($data['telefoonnummer']);
+            }
+            if (isset($data['maxCapacity'])) {
+                $Restaurant->setMaxCapacity($data['maxCapacity']);
+            }
 
-        $this->RestaurantRepository->save($Restaurant);
+            $this->RestaurantRepository->save($Restaurant);
 
-        return $Restaurant;
+            return $Restaurant;
+        } catch (\InvalidArgumentException $e) {
+            throw $e;
+        }
     }
 
     public function deleteRestaurant(int $id): bool
