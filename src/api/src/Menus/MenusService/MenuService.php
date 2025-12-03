@@ -14,13 +14,23 @@ class MenuService
         $this->MenuRepository = $MenuRepository;
     }
 
+    private function sanitizeMenuData(array $data): array
+    {
+        $data['email'] = preg_match('/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/', $data['email']) ? $data['email'] : '';
+        return [
+            'naam' => htmlspecialchars($data['naam'] ?? ''),
+            'email' => filter_var($data['email'] ?? '', FILTER_SANITIZE_EMAIL),
+            'telefoonnummer' => preg_replace('/[^0-9+]/', '', $data['telefoonnummer'] ?? ''),
+        ];
+    }
+
     private function validateMenuData(array $data): void
     {
         if (!isset($data['productId']) || gettype($data['productId']) !== 'array') {
-            throw new \InvalidArgumentException('field productId is invalid');
+            throw new \InvalidArgumentException('veld productId is invalide');
         }
         if (!isset($data['restaurantId']) || !is_int($data['restaurantId'])) {
-            throw new \InvalidArgumentException('field restaurantId is invalid');
+            throw new \InvalidArgumentException('veld restaurantId is invalide');
         }
     }
 
@@ -37,6 +47,7 @@ class MenuService
     public function createMenu(array $data): MenuEntity
     {
         try {
+            $data = $this->sanitizeMenuData($data);
             $this->validateMenuData($data);
             if (!isset($data['productId']) || !isset($data['restaurantId'])) {
                 throw new \InvalidArgumentException('Missing required fields: productId and restaurantId');
@@ -59,13 +70,14 @@ class MenuService
     public function updateMenu(int $id, array $data): ?MenuEntity
     {
         try {
+            $data = $this->sanitizeMenuData($data);
             $this->validateMenuData($data);
             $Menu = $this->MenuRepository->find($id);
             if (!$Menu) {
                 return null;
             }
 
-            if (isset($data['ProductId'])) {
+            if (isset($data['productId'])) {
                 foreach ($data['ProductId'] as $product) {
                     $Menu->setProductIds($product);
                 }
