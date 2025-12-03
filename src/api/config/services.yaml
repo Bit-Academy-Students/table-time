@@ -30,11 +30,6 @@ services:
         exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
 
 
-
-    App\Customers\CustomerService\CustomerService:
-
-        arguments:
-
     App\Reservations\ReservationService\ReservationService:
 
         arguments:
