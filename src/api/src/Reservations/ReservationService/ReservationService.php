@@ -4,6 +4,9 @@ namespace App\Reservations\ReservationService;
 
 use App\Reservations\ReservationEntity\ReservationEntity;
 use App\Reservations\ReservationRepository\ReservationRepository;
+use DateTimeImmutable;
+use App\Customers\CustomerEntity\CustomerEntity;
+use App\Restaurants\RestaurantEntity\RestaurantEntity;
 
 class ReservationService 
 {
@@ -16,8 +19,14 @@ class ReservationService
 
     private function sanitizeReservationData(array $data): array
     {
-        $data['startDate'] = isset($data['startDate']) ? new \DateTimeImmutable($data['startDate']) : null;
-        $data['endDate'] = isset($data['endDate']) ? new \DateTimeImmutable($data['endDate']) : null;
+        if (isset($data['startDate']) && (!is_string($data['startDate']) || preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['startDate']) !== 1)) {
+            throw new \InvalidArgumentException("Invalid input for start date");
+        }
+        if (isset($data['endDate']) && (!is_string($data['endDate']) || preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['endDate']) !== 1)) {
+            throw new \InvalidArgumentException("Invalid input for end date");
+        }
+        $data['startDate'] = isset($data['startDate']) ? new DateTimeImmutable($data['startDate']) : null;
+        $data['endDate'] = isset($data['endDate']) ? new DateTimeImmutable($data['endDate']) : null;
         return $data;
     }
 
@@ -101,7 +110,7 @@ class ReservationService
             }
 
             if (isset($data['Email'])) {
-                $Reservation->setEmail($data['Email']);
+                $Reservation->setEmail($data['email']);
             }
             if (isset($data['restaurantId'])) {
                 $Reservation->setRestaurantId($data['restaurantId']);
