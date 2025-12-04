@@ -12,24 +12,6 @@ class ProductsController extends AbstractController
 {
     private ProductsService $ProductService;
 
-    private function sanitizeProductData(array $data): array
-    {
-        $data['naam'] = preg_replace('/\s+/', ' ', $data['naam']);
-        return [
-            'naam' => htmlspecialchars($data['naam'] ?? ''),
-            'prijs' => filter_var($data['prijs'] ?? 0, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION),
-            'beschrijving' => htmlspecialchars($data['beschrijving'] ?? ''),
-
-        ];
-    }
-
-    private function validateProductId(int $id): void
-    {
-        if ($id <= 0) {
-            throw new \InvalidArgumentException('Invalide Product ID');
-        }
-    }
-
     public function __construct(ProductsService $ProductService)
     {
         $this->ProductService = $ProductService;
@@ -57,7 +39,6 @@ class ProductsController extends AbstractController
     public function FindById(int $id): Response
     {
         try {
-            $this->validateProductId($id);
 
             $Product = $this->ProductService->getProductById($id);
 
@@ -76,7 +57,6 @@ class ProductsController extends AbstractController
     {
         try {
             $data = json_decode($request->getContent(), true);
-            $this->sanitizeProductData($data);
             $Product = $this->ProductService->createProduct($data);
 
             return new JsonResponse(
@@ -95,9 +75,6 @@ class ProductsController extends AbstractController
         try {
             $data = json_decode($request->getContent(), true);
             $Product = $this->ProductService->getProductById($id);
-            $this->sanitizeProductData($data);
-            $this->validateProductId($id);
-
             $this->ProductService->updateProduct($id, $data);
 
             return new JsonResponse(
@@ -114,7 +91,6 @@ class ProductsController extends AbstractController
     public function Delete(int $id): Response
     {
         try{
-            $this->validateProductId($id);
         $Product = $this->ProductService->getProductById($id);
 
         $this->ProductService->deleteProduct($id);
