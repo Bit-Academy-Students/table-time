@@ -23,11 +23,11 @@ class ReservationController extends AbstractController
         $Reservations = array_map(function ($Reservation) {
             return [
                 'id' => $Reservation->getId(),
-                'customer' => $Reservation->getCustomer(),
                 'restaurant' => $Reservation->getRestaurant(),
                 'startDate' => $Reservation->getStartDate(),
                 'endDate' => $Reservation->getEndDate(),
                 'amountPeople' => $Reservation->getAmountPeople(),
+                'email' => $Reservation->getEmail(),
             ];
         }, $Reservations);
 
