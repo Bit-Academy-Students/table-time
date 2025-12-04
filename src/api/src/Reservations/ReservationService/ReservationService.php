@@ -51,7 +51,7 @@ class ReservationService
             if (($reservation->getStartDate() > $data['startDate'] && $reservation->getStartDate() < $data['endDate'] ||
                 $reservation->getEndDate() > $data['startDate'] && $reservation->getEndDate() < $data['endDate'] ||
                 $reservation->getStartDate() <= $data['startDate'] && $reservation->getEndDate() >= $data['endDate']) &&
-                $reservation->getRestaurant() === ($data['restaurantId'] ?? null)) {
+                $reservation->getRestaurant()->getId() === ($data['restaurantId'] ?? null)) {
                 $overlappingPeople += $reservation->getAmountPeople();
             }
             if ($overlappingPeople > $maxCapacity) {
