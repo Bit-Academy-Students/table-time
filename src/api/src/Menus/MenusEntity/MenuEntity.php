@@ -21,7 +21,7 @@ class MenuEntity
 
     #[ManyToMany(targetEntity: ProductsEntity::class, inversedBy: "Menus")]
     #[JoinColumn(name: "ProductsId", referencedColumnName: "id")]
-    private ArrayCollection $ProductsIds;
+    private ArrayCollection $ProductIds;
 
     #[OneToOne(targetEntity: RestaurantEntity::class, inversedBy: "Menus")]
     #[JoinColumn(name: "RestaurantId", referencedColumnName: "id")]
@@ -46,12 +46,12 @@ class MenuEntity
     
     public function getProductIds(): ArrayCollection
     {
-        return $this->ProductsIds;
+        return $this->ProductIds;
     }
 
-    public function setProductIds(ArrayCollection $ProductsIds): static
+    public function setProductIds(ArrayCollection $ProductIds): static
     {
-        $this->ProductsIds = $ProductsIds;
+        $this->ProductIds = $ProductIds;
 
         return $this;
     }

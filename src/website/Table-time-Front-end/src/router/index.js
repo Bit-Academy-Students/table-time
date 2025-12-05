@@ -3,8 +3,9 @@ import { createRouter, createWebHistory } from 'vue-router';
 // Pagina-componenten importeren
 import Home from '../pages/Home.vue';
 import Reservations from '../pages/Reservations.vue';
-import DashboardReservations from '../pages/ReservationDashboard.vue';
-
+import AllReservations from '../pages/AllReservations.vue';
+import Login from '../pages/Login.vue';
+import AboutUs from '../pages/AboutUs.vue';
 const routes = [
   {
       path: '/',
@@ -17,11 +18,22 @@ const routes = [
       component: Reservations,
   },
   {
-    path: '/dashboard/reservations',
-    name: 'reservation',
-    component: DashboardReservations,
+    path: '/all-reservations',
+    name: 'all-reservations',
+    component: AllReservations,
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login,
+  },
+  {
+    path: '/aboutUs',
+    name: 'aboutUs',
+    component: AboutUs,
   }
 ];
+
 
 const router = createRouter({
   history: createWebHistory(),
