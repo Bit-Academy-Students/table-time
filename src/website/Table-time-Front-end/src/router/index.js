@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 // Pagina-componenten importeren
 import Home from '../pages/Home.vue';
 import Reservations from '../pages/Reservations.vue';
-import AllReservations from '../pages/AllReservations.vue';
+import AllReservations from '../pages/ReservationDashboard.vue';
 import Login from '../pages/Login.vue';
 import AboutUs from '../pages/AboutUs.vue';
 const routes = [
