@@ -67,4 +67,22 @@ class RestaurantController extends AbstractController
             ['Restaurant' => $Restaurant, 'response' => 'deleted']
         );
     }
+
+    public function Authenticate(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $Restaurant = $this->RestaurantService->authenticateRestaurant($data);
+
+        if ($Restaurant) {
+            return new JsonResponse(
+                ['Restaurant' => $Restaurant, 'response' => 'authenticated']
+            );
+        } else {
+            return new JsonResponse(
+                ['response' => 'authentication_failed'],
+                Response::HTTP_UNAUTHORIZED
+            );
+        }
+    }
 }
