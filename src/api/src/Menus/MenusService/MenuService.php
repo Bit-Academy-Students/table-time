@@ -16,29 +16,18 @@ class MenuService
 
     private function sanitizeMenuData(array $data): array
     {
-        if (isset($data['ProductId']) && !isset($data['productId'])) {
-            $data['productId'] = $data['ProductId'];
-        }
-
-        if (isset($data['productId']) && !is_array($data['productId'])) {
-            $data['productId'] = [$data['productId']];
-        }
-
-        if (isset($data['productId'])) {
-            $data['productId'] = array_map('intval', $data['productId']);
-        }
-
-        if (isset($data['restaurantId'])) {
-            $data['restaurantId'] = (int)$data['restaurantId'];
-        }
-
-        return $data;
+        $data['email'] = preg_match('/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/', $data['email']) ? $data['email'] : '';
+        return [
+            'naam' => htmlspecialchars($data['naam'] ?? ''),
+            'email' => filter_var($data['email'] ?? '', FILTER_SANITIZE_EMAIL),
+            'telefoonnummer' => preg_replace('/[^0-9+]/', '', $data['telefoonnummer'] ?? ''),
+        ];
     }
 
     private function validateMenuData(array $data): void
     {
-        if (!isset($data['productId']) || !is_array($data['productId']) || count($data['productId']) === 0) {
-            throw new \InvalidArgumentException('productId must be a non-empty array of product IDs.');
+        if (!isset($data['productId']) || gettype($data['productId']) !== 'array') {
+            throw new \InvalidArgumentException('veld productId is invalide');
         }
 
         foreach ($data['productId'] as $p) {
@@ -48,7 +37,7 @@ class MenuService
         }
 
         if (!isset($data['restaurantId']) || !is_int($data['restaurantId'])) {
-            throw new \InvalidArgumentException('restaurantId must be an integer.');
+            throw new \InvalidArgumentException('veld restaurantId is invalide');
         }
     }
 
@@ -96,7 +85,7 @@ class MenuService
             }
 
             if (isset($data['productId'])) {
-                foreach ($data['productId'] as $product) {
+                foreach ($data['ProductId'] as $product) {
                     $Menu->setProductIds($product);
                 }
             }

@@ -13,8 +13,13 @@ return [
             [['_route' => 'createCustomer', '_controller' => 'App\\Customers\\CustomerController\\CustomerController::Create'], null, ['POST' => 0], null, false, false, null],
         ],
         '/Menus' => [
+<<<<<<< HEAD
             [['_route' => 'getAllMenus', '_controller' => 'App\\Menus\\MenusController\\MenuController::FindAll'], null, ['GET' => 0], null, false, false, null],
             [['_route' => 'createMenu', '_controller' => 'App\\Menus\\MenusController\\MenuController::Create'], null, ['POST' => 0], null, false, false, null],
+=======
+            [['_route' => 'getAllMenus', '_controller' => 'App\\Menus\\MenuController\\MenuController::FindAll'], null, ['GET' => 0], null, false, false, null],
+            [['_route' => 'createMenu', '_controller' => 'App\\Menus\\MenuController\\MenuController::Create'], null, ['POST' => 0], null, false, false, null],
+>>>>>>> main
         ],
         '/Products' => [
             [['_route' => 'getAllProducts', '_controller' => 'App\\Products\\ProductsController\\ProductsController::FindAll'], null, ['GET' => 0], null, false, false, null],
@@ -58,9 +63,15 @@ return [
             [['_route' => 'deleteCustomer', '_controller' => 'App\\Customers\\CustomerController\\CustomerController::Delete'], ['id'], ['DELETE' => 0], null, false, true, null],
         ],
         55 => [
+<<<<<<< HEAD
             [['_route' => 'getMenuById', '_controller' => 'App\\Menus\\MenusController\\MenuController::FindById'], ['id'], ['GET' => 0], null, false, true, null],
             [['_route' => 'updateMenu', '_controller' => 'App\\Menus\\MenusController\\MenuController::Update'], ['id'], ['PUT' => 0], null, false, true, null],
             [['_route' => 'deleteMenu', '_controller' => 'App\\Menus\\MenusController\\MenuController::Delete'], ['id'], ['DELETE' => 0], null, false, true, null],
+=======
+            [['_route' => 'getMenuById', '_controller' => 'App\\Menus\\MenuController\\MenuController::FindById'], ['id'], ['GET' => 0], null, false, true, null],
+            [['_route' => 'updateMenu', '_controller' => 'App\\Menus\\MenuController\\MenuController::Update'], ['id'], ['PUT' => 0], null, false, true, null],
+            [['_route' => 'deleteMenu', '_controller' => 'App\\Menus\\MenuController\\MenuController::Delete'], ['id'], ['DELETE' => 0], null, false, true, null],
+>>>>>>> main
         ],
         84 => [
             [['_route' => 'getProductById', '_controller' => 'App\\Products\\ProductsController\\ProductsController::FindById'], ['id'], ['GET' => 0], null, false, true, null],
