@@ -34,8 +34,11 @@ class RestaurantEntity
     #[ORM\Column(length: 15, nullable: true)]
     private ?string $telefoonnummer = null;
 
-    #[ORM\Column]
+    #[ORM\Column(name: 'max_capacity')]
     private int $maxCapacity = 50;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $afbeelding = null;
 
     #[OneToMany(mappedBy: "RestaurantId", targetEntity: ReservationEntity::class)]
     private Collection $Reservations;
@@ -123,6 +126,18 @@ class RestaurantEntity
     public function setMaxCapacity(int $maxCapacity): static
     {
         $this->maxCapacity = $maxCapacity;
+
+        return $this;
+    }
+
+    public function getAfbeelding(): ?string
+    {
+        return $this->afbeelding;
+    }
+
+    public function setAfbeelding(?string $afbeelding): static
+    {
+        $this->afbeelding = $afbeelding;
 
         return $this;
     }
