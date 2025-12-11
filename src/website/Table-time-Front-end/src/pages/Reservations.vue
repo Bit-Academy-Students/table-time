@@ -1,4 +1,36 @@
 <script>
+/*
+ * @fileoverview Client-side helper for the Reservations page.
+ *
+ * Fetches and renders a responsive calendar picker, wires up time and duration
+ * selectors, collects reservation form data (date, time, party size, email),
+ * and submits bookings to the backend API.
+ *
+ * Responsibilities
+ * 1. Calendar rendering – Builds an interactive month grid with disabled past
+ *    dates, empty alignment cells, and discount badges on days 26+.
+ * 2. Month navigation – Provides prev/next controls to switch months with
+ *    automatic year transition (Jan → Dec and Dec → Jan).
+ * 3. Form data collection – Binds user selections (date, time, duration,
+ *    party size, email) to a reactive form object.
+ * 4. Submission & API interaction – Parses selected date/time, calculates
+ *    start and end times, and sends a POST request to the backend with
+ *    formatted datetime strings.
+ * 5. Error handling & user feedback – Displays alerts and logs errors
+ *    for both successful submissions and network/parsing failures.
+ *
+ * External dependencies
+ * • Vue.js – Component framework, reactive data binding, computed properties.
+ * • Browser Fetch API – XMLHttpRequest-like Ajax for server communication.
+ * • NavBar and NavbarMobile – Local Vue components for page chrome.
+ *
+ * @module ReservationsPage
+ * @exports default Vue component
+ *
+ * @author Bit Academy
+ * @version 1.0
+ */
+
 import NavBar from "../components/NavBar.vue";
 import NavbarMobile from '../components/NavbarMobile.vue';
 
@@ -35,12 +67,12 @@ export default {
 
       const days = [];
 
-      // lege vakjes voor de eerste dag
+      // Empty squares for first days
       for (let i = 1; i < firstDay; i++) {
         days.push({ empty: true });
       }
 
-      // echte dagen
+      // Real days
       for (let d = 1; d <= total; d++) {
         const dateObj = new Date(year, month, d);
         const disabled = dateObj < new Date().setHours(0, 0, 0, 0);
@@ -57,6 +89,7 @@ export default {
   },
 
   methods: {
+
     prevMonth() {
       if (this.currentMonth === 0) {
         this.currentMonth = 11;
@@ -165,17 +198,12 @@ export default {
         </div>
 
         <div class="grid grid-cols-7 gap-2">
-          <div
-            v-for="(day, i) in daysInMonth"
-            :key="i"
-            class="h-12 flex flex-col items-center justify-center z-20 rounded-lg text-sm relative"
-            :class="{
+          <div v-for="(day, i) in daysInMonth" :key="i"
+            class="h-12 flex flex-col items-center justify-center z-20 rounded-lg text-sm relative" :class="{
               'bg-gray-100 text-gray-400': day.disabled,
               'bg-[#03CAED] text-white': selectedDay === day.day,
               'hover:bg-gray-200 cursor-pointer': !day.disabled && !day.empty
-            }"
-            @click="chooseDay(day)"
-          >
+            }" @click="chooseDay(day)">
             <span v-if="!day.empty">{{ day.day }}</span>
             <span v-if="day.discount" class="absolute bottom-1 bg-[#FF8000] text-white text-[10px] px-1 rounded">
               {{ day.discount }}
@@ -187,13 +215,9 @@ export default {
       <div class="bg-white p-4 rounded-xl shadow mb-8">
         <h3 class="font-semibold mb-2">Kies tijd</h3>
         <div class="grid grid-cols-4 gap-2">
-          <button
-            v-for="t in ['12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30']"
-            :key="t"
-            @click="form.time = t"
-            class="p-2 border w-[75px] rounded text-sm"
-            :class="form.time === t ? 'bg-[#FF8000] text-white' : 'hover:bg-gray-200'"
-          >
+          <button v-for="t in ['12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30']" :key="t"
+            @click="form.time = t" class="p-2 border w-[75px] rounded text-sm"
+            :class="form.time === t ? 'bg-[#FF8000] text-white' : 'hover:bg-gray-200'">
             {{ t }}
           </button>
         </div>
@@ -210,21 +234,12 @@ export default {
 
       <div class="bg-white p-4 rounded-xl shadow mb-8">
         <h3 class="font-semibold mb-2">Aantal personen</h3>
-        <input
-          type="number"
-          v-model="form.amountPeople"
-          class="w-full p-2 border rounded"
-          min="1"
-        />
+        <input type="number" v-model="form.amountPeople" class="w-full p-2 border rounded" min="1" />
       </div>
 
       <div class="bg-white p-4 rounded-xl shadow mb-8">
         <h3 class="font-semibold mb-2">Email</h3>
-        <input
-          type="email"
-          v-model="form.email"
-          class="w-full p-2 border rounded"
-        />
+        <input type="email" v-model="form.email" class="w-full p-2 border rounded" />
       </div>
 
 

@@ -30,22 +30,18 @@ const active = ref('Guests');
         </section>
         <h1 class="flex justify-center">Hoe werkt het</h1>
         <div class="flex flex-row gap-5 bg-white p-2 rounded-[10px] mb-[100px] max-[768px]:mb-[50px]">
-            <button
-            class="max-[768px]:w-[120px] max-[768px]:text-[12px]"
-            :class="{ 'bg-[#FF8000]' : active === 'Guests' }"
-            @click="active = 'Guests'">Gasten</button>
-            <button
-            class="max-[768px]:w-[120px] max-[768px]:text-[12px]"
-            :class="{ 'bg-[#FF8000]' : active === 'restaurantOwners' }"
-            @click="active = 'restaurantOwners'">Restaurant­eigenaren</button>
+            <button class="max-[768px]:w-[120px] max-[768px]:text-[12px]"
+                :class="{ 'bg-[#FF8000]': active === 'Guests' }" @click="active = 'Guests'">Gasten</button>
+            <button class="max-[768px]:w-[120px] max-[768px]:text-[12px]"
+                :class="{ 'bg-[#FF8000]': active === 'restaurantOwners' }"
+                @click="active = 'restaurantOwners'">Restaurant­eigenaren</button>
         </div>
-        <section v-if="active === 'Guests'"
-        id="Guests" class="flex flex-col justify-center w-[80%]">
-        <GuestText />
+        <section v-if="active === 'Guests'" id="Guests" class="flex flex-col justify-center w-[80%]">
+            <GuestText />
         </section>
-        <section v-if="active === 'restaurantOwners'"
-         id="restaurantOwners" class="flex flex-col justify-center w-[80%]">
-         <RestaurantOwnersText  />
+        <section v-if="active === 'restaurantOwners'" id="restaurantOwners"
+            class="flex flex-col justify-center w-[80%]">
+            <RestaurantOwnersText />
         </section>
     </main>
     <Footer />

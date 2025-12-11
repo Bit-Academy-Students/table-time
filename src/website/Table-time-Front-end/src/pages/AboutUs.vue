@@ -32,7 +32,7 @@ const active = ref('Guests');
                     Table Time zorgt ervoor dat voormalige voor nemers dezelfde bestemming bereiken: een vlotte gang van
                     zaken, minder gedoe achter de schermen en meer aandacht voor wat écht belangrijk is lekker eten,
                     blije gasten en een strak overzicht in je ​‍​‌‍​‍‌agenda.</p>
-                    <img src="../assets/img/AboutMe.png" alt="About Us Image" class="max-[768px]" />
+                <img src="../assets/img/AboutMe.png" alt="About Us Image" class="max-[768px]" />
 
             </div>
         </section>
