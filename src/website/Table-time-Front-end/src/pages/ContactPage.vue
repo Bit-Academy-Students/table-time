@@ -3,7 +3,7 @@ import NavBar from "../components/NavBar.vue";
 import NavbarMobile from "../components/NavbarMobile.vue";
 
 import { ref } from "vue";
-import emailjs from "emailjs-com";
+import * as emailjs from "@emailjs/browser";
 
 const form = ref({
   name: "",
