@@ -29,6 +29,13 @@ class MenuService
         if (!isset($data['productId']) || gettype($data['productId']) !== 'array') {
             throw new \InvalidArgumentException('veld productId is invalide');
         }
+
+        foreach ($data['productId'] as $p) {
+            if (!is_int($p)) {
+                throw new \InvalidArgumentException('Each productId must be an integer.');
+            }
+        }
+
         if (!isset($data['restaurantId']) || !is_int($data['restaurantId'])) {
             throw new \InvalidArgumentException('veld restaurantId is invalide');
         }
@@ -49,29 +56,29 @@ class MenuService
         try {
             $data = $this->sanitizeMenuData($data);
             $this->validateMenuData($data);
-            if (!isset($data['productId']) || !isset($data['restaurantId'])) {
-                throw new \InvalidArgumentException('Missing required fields: productId and restaurantId');
-            }
+
             $Menu = new MenuEntity();
-            foreach ($data['ProductId'] as $product) {
+
+            foreach ($data['productId'] as $product) {
                 $Menu->setProductIds($product);
             }
+
             $Menu->setRestaurantId($data['restaurantId']);
 
             $this->MenuRepository->save($Menu);
 
             return $Menu;
         } catch (\InvalidArgumentException $e) {
-            // Handle the exception as needed, e.g., log it or rethrow
             throw $e;
         }
     }
-    
+
     public function updateMenu(int $id, array $data): ?MenuEntity
     {
         try {
             $data = $this->sanitizeMenuData($data);
             $this->validateMenuData($data);
+
             $Menu = $this->MenuRepository->find($id);
             if (!$Menu) {
                 return null;
@@ -82,6 +89,7 @@ class MenuService
                     $Menu->setProductIds($product);
                 }
             }
+
             if (isset($data['restaurantId'])) {
                 $Menu->setRestaurantId($data['restaurantId']);
             }
@@ -90,7 +98,6 @@ class MenuService
 
             return $Menu;
         } catch (\InvalidArgumentException $e) {
-            // Handle the exception as needed, e.g., log it or rethrow
             throw $e;
         }
     }

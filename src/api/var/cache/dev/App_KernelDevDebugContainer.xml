@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
   <parameters>
-    <parameter key="kernel.project_dir">C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api</parameter>
+    <parameter key="kernel.project_dir">/var/www/html/api</parameter>
     <parameter key="kernel.environment">dev</parameter>
     <parameter key="kernel.runtime_environment">%env(default:kernel.environment:APP_RUNTIME_ENV)%</parameter>
     <parameter key="kernel.runtime_mode">%env(query_string:default:container.runtime_mode:APP_RUNTIME_MODE)%</parameter>
@@ -9,9 +9,9 @@
     <parameter key="kernel.runtime_mode.cli">%env(not:default:kernel.runtime_mode.web:)%</parameter>
     <parameter key="kernel.runtime_mode.worker">%env(bool:default::key:worker:default:kernel.runtime_mode:)%</parameter>
     <parameter key="kernel.debug">true</parameter>
-    <parameter key="kernel.build_dir">C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev</parameter>
-    <parameter key="kernel.cache_dir">C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev</parameter>
-    <parameter key="kernel.logs_dir">C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api/var/log</parameter>
+    <parameter key="kernel.build_dir">/var/www/html/api/var/cache/dev</parameter>
+    <parameter key="kernel.cache_dir">/var/www/html/api/var/cache/dev</parameter>
+    <parameter key="kernel.logs_dir">/var/www/html/api/var/log</parameter>
     <parameter key="kernel.bundles" type="collection">
       <parameter key="FrameworkBundle">Symfony\Bundle\FrameworkBundle\FrameworkBundle</parameter>
       <parameter key="DoctrineBundle">Doctrine\Bundle\DoctrineBundle\DoctrineBundle</parameter>
@@ -20,19 +20,19 @@
     </parameter>
     <parameter key="kernel.bundles_metadata" type="collection">
       <parameter key="FrameworkBundle" type="collection">
-        <parameter key="path">C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\vendor\symfony\framework-bundle</parameter>
+        <parameter key="path">/var/www/html/api/vendor/symfony/framework-bundle</parameter>
         <parameter key="namespace">Symfony\Bundle\FrameworkBundle</parameter>
       </parameter>
       <parameter key="DoctrineBundle" type="collection">
-        <parameter key="path">C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\vendor\doctrine\doctrine-bundle</parameter>
+        <parameter key="path">/var/www/html/api/vendor/doctrine/doctrine-bundle</parameter>
         <parameter key="namespace">Doctrine\Bundle\DoctrineBundle</parameter>
       </parameter>
       <parameter key="DoctrineMigrationsBundle" type="collection">
-        <parameter key="path">C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\vendor\doctrine\doctrine-migrations-bundle</parameter>
+        <parameter key="path">/var/www/html/api/vendor/doctrine/doctrine-migrations-bundle</parameter>
         <parameter key="namespace">Doctrine\Bundle\MigrationsBundle</parameter>
       </parameter>
       <parameter key="MakerBundle" type="collection">
-        <parameter key="path">C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\vendor\symfony\maker-bundle</parameter>
+        <parameter key="path">/var/www/html/api/vendor/symfony/maker-bundle</parameter>
         <parameter key="namespace">Symfony\Bundle\MakerBundle</parameter>
       </parameter>
     </parameter>
@@ -66,15 +66,15 @@
     <parameter key="kernel.trusted_headers">%env(default::SYMFONY_TRUSTED_HEADERS)%</parameter>
     <parameter key="debug.file_link_format">%env(default::SYMFONY_IDE)%</parameter>
     <parameter key="debug.error_handler.throw_at">-1</parameter>
-    <parameter key="debug.container.dump">C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev/App_KernelDevDebugContainer.xml</parameter>
+    <parameter key="debug.container.dump">/var/www/html/api/var/cache/dev/App_KernelDevDebugContainer.xml</parameter>
     <parameter key="router.request_context.host">localhost</parameter>
     <parameter key="router.request_context.scheme">http</parameter>
     <parameter key="router.request_context.base_url"></parameter>
     <parameter key="router.resource">kernel::loadRoutes</parameter>
-    <parameter key="router.cache_dir">C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev</parameter>
+    <parameter key="router.cache_dir">/var/www/html/api/var/cache/dev</parameter>
     <parameter key="request_listener.http_port">80</parameter>
     <parameter key="request_listener.https_port">443</parameter>
-    <parameter key="cache.prefix.seed">_C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api.App_KernelDevDebugContainer</parameter>
+    <parameter key="cache.prefix.seed">_/var/www/html/api.App_KernelDevDebugContainer</parameter>
     <parameter key="session.metadata.storage_key">_sf2_meta</parameter>
     <parameter key="session.storage.options" type="collection">
       <parameter key="cache_limiter" type="string">0</parameter>
@@ -151,7 +151,7 @@
     <parameter key="doctrine.orm.auto_generate_proxy_classes">true</parameter>
     <parameter key="doctrine.orm.enable_lazy_ghost_objects">true</parameter>
     <parameter key="doctrine.orm.enable_native_lazy_objects">false</parameter>
-    <parameter key="doctrine.orm.proxy_dir">C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev/doctrine/orm/Proxies</parameter>
+    <parameter key="doctrine.orm.proxy_dir">/var/www/html/api/var/cache/dev/doctrine/orm/Proxies</parameter>
     <parameter key="doctrine.orm.proxy_namespace">Proxies</parameter>
     <parameter key="doctrine.migrations.preferred_em">null</parameter>
     <parameter key="doctrine.migrations.preferred_connection">null</parameter>
@@ -162,25 +162,6 @@
     <service id="kernel" class="App\Kernel" public="true" synthetic="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="routing.route_loader"/>
-    </service>
-    <service id="App\Customers\CustomerController\CustomerController" class="App\Customers\CustomerController\CustomerController" public="true" autowire="true" autoconfigure="true">
-      <tag name="controller.service_arguments"/>
-      <tag name="container.service_subscriber"/>
-      <argument type="service" id="App\Customers\CustomerService\CustomerService"/>
-      <call method="setContainer">
-        <argument type="service" id=".service_locator.ZyP9f7K.App\Customers\CustomerController\CustomerController"/>
-      </call>
-    </service>
-    <service id="App\Customers\CustomerEntity\CustomerEntity" class="App\Customers\CustomerEntity\CustomerEntity" autowire="true" autoconfigure="true">
-      <tag name="container.excluded" source="because it's a Doctrine entity"/>
-      <tag name="container.excluded" source="with #[Doctrine\ORM\Mapping\Entity] attribute"/>
-    </service>
-    <service id="App\Customers\CustomerRepository\CustomerRepository" class="App\Customers\CustomerRepository\CustomerRepository" autowire="true" autoconfigure="true">
-      <tag name="doctrine.repository_service"/>
-      <argument type="service" id="doctrine"/>
-    </service>
-    <service id="App\Customers\CustomerService\CustomerService" class="App\Customers\CustomerService\CustomerService" autowire="true" autoconfigure="true">
-      <argument type="service" id="App\Customers\CustomerRepository\CustomerRepository"/>
     </service>
     <service id="App\Menus\MenusController\MenuController" class="App\Menus\MenusController\MenuController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
@@ -366,7 +347,7 @@
       </argument>
     </service>
     <service id="http_cache.store" class="Symfony\Component\HttpKernel\HttpCache\Store">
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev/http_cache</argument>
+      <argument>/var/www/html/api/var/cache/dev/http_cache</argument>
     </service>
     <service id="url_helper" class="Symfony\Component\HttpFoundation\UrlHelper">
       <argument type="service" id="request_stack"/>
@@ -376,7 +357,7 @@
       <tag name="container.no_preload"/>
       <argument type="tagged_iterator" tag="kernel.cache_warmer"/>
       <argument>true</argument>
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev/App_KernelDevDebugContainerDeprecations.log</argument>
+      <argument>/var/www/html/api/var/cache/dev/App_KernelDevDebugContainerDeprecations.log</argument>
     </service>
     <service id="cache_clearer" class="Symfony\Component\HttpKernel\CacheClearer\ChainCacheClearer">
       <argument type="tagged_iterator" tag="kernel.cache_clearer"/>
@@ -532,7 +513,7 @@
       </argument>
       <argument>UTF-8</argument>
       <argument type="service" id="debug.file_link_formatter" on-invalid="null"/>
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api</argument>
+      <argument>/var/www/html/api</argument>
       <argument type="service">
         <service>
           <argument type="service" id="request_stack"/>
@@ -568,7 +549,7 @@
       <tag name="console.command"/>
       <tag name="container.no_preload"/>
       <argument type="service" id="filesystem"/>
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api</argument>
+      <argument>/var/www/html/api</argument>
       <call method="setName">
         <argument>assets:install</argument>
       </call>
@@ -736,7 +717,7 @@
       <tag name="console.command"/>
       <tag name="container.no_preload"/>
       <argument>dev</argument>
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api</argument>
+      <argument>/var/www/html/api</argument>
       <call method="setName">
         <argument>debug:dotenv</argument>
       </call>
@@ -899,9 +880,9 @@
     <service id="cache.app" class="Symfony\Component\Cache\Adapter\FilesystemAdapter" public="true">
       <tag name="cache.pool"/>
       <tag name="kernel.reset" method="reset"/>
-      <argument>HX3bozee1z</argument>
+      <argument>2e7NdWO-hC</argument>
       <argument>0</argument>
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev/pools/app</argument>
+      <argument>/var/www/html/api/var/cache/dev/pools/app</argument>
       <argument type="service" id="cache.default_marshaller" on-invalid="ignore"/>
       <call method="setLogger">
         <argument type="service" id="logger" on-invalid="ignore"/>
@@ -914,40 +895,40 @@
     <service id="cache.system" class="Symfony\Component\Cache\Adapter\AdapterInterface" public="true">
       <tag name="cache.pool"/>
       <tag name="kernel.reset" method="reset"/>
-      <argument>5lR4Q457jA</argument>
+      <argument>aynkljwV1E</argument>
       <argument>0</argument>
       <argument>%container.build_id%</argument>
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev/pools/system</argument>
+      <argument>/var/www/html/api/var/cache/dev/pools/system</argument>
       <argument type="service" id="logger" on-invalid="ignore"/>
       <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
     </service>
     <service id="cache.validator" class="Symfony\Component\Cache\Adapter\AdapterInterface">
       <tag name="cache.pool"/>
       <tag name="kernel.reset" method="reset"/>
-      <argument>BgiE0mO9m9</argument>
+      <argument>TFQNWbIyGv</argument>
       <argument>0</argument>
       <argument>%container.build_id%</argument>
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev/pools/system</argument>
+      <argument>/var/www/html/api/var/cache/dev/pools/system</argument>
       <argument type="service" id="logger" on-invalid="ignore"/>
       <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
     </service>
     <service id="cache.serializer" class="Symfony\Component\Cache\Adapter\AdapterInterface">
       <tag name="cache.pool"/>
       <tag name="kernel.reset" method="reset"/>
-      <argument>rNOsDeVKNR</argument>
+      <argument>tfCMnNOniG</argument>
       <argument>0</argument>
       <argument>%container.build_id%</argument>
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev/pools/system</argument>
+      <argument>/var/www/html/api/var/cache/dev/pools/system</argument>
       <argument type="service" id="logger" on-invalid="ignore"/>
       <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
     </service>
     <service id="cache.property_info" class="Symfony\Component\Cache\Adapter\AdapterInterface">
       <tag name="cache.pool"/>
       <tag name="kernel.reset" method="reset"/>
-      <argument>joM2vKJ6yb</argument>
+      <argument>GOcjP1-5Py</argument>
       <argument>0</argument>
       <argument>%container.build_id%</argument>
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev/pools/system</argument>
+      <argument>/var/www/html/api/var/cache/dev/pools/system</argument>
       <argument type="service" id="logger" on-invalid="ignore"/>
       <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
     </service>
@@ -957,7 +938,7 @@
       <argument></argument>
       <argument>0</argument>
       <argument>%container.build_id%</argument>
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev/pools/system</argument>
+      <argument>/var/www/html/api/var/cache/dev/pools/system</argument>
       <argument type="service" id="logger" on-invalid="ignore"/>
       <factory class="Symfony\Component\Cache\Adapter\AbstractAdapter" method="createSystemCache"/>
     </service>
@@ -976,7 +957,7 @@
       <tag name="monolog.logger" channel="cache"/>
       <argument></argument>
       <argument>0</argument>
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev/pools/app</argument>
+      <argument>/var/www/html/api/var/cache/dev/pools/app</argument>
       <argument type="service" id="cache.default_marshaller" on-invalid="ignore"/>
       <call method="setLogger">
         <argument type="service" id="logger" on-invalid="ignore"/>
@@ -1434,7 +1415,7 @@
       <argument type="service" id=".service_locator.RTjHFcp.router.default"/>
       <argument>kernel::loadRoutes</argument>
       <argument type="collection">
-        <argument key="cache_dir">C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev</argument>
+        <argument key="cache_dir">/var/www/html/api/var/cache/dev</argument>
         <argument key="debug">true</argument>
         <argument key="generator_class">Symfony\Component\Routing\Generator\CompiledUrlGenerator</argument>
         <argument key="generator_dumper_class">Symfony\Component\Routing\Generator\Dumper\CompiledUrlGeneratorDumper</argument>
@@ -1472,7 +1453,7 @@
       <argument type="service" id="request_stack"/>
       <argument type="service" id="router.request_context" on-invalid="ignore"/>
       <argument type="service" id="logger" on-invalid="ignore"/>
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api</argument>
+      <argument>/var/www/html/api</argument>
       <argument>true</argument>
     </service>
     <service id="Symfony\Bundle\FrameworkBundle\Controller\RedirectController" class="Symfony\Bundle\FrameworkBundle\Controller\RedirectController" public="true">
@@ -1492,7 +1473,7 @@
       <argument>null</argument>
     </service>
     <service id="secrets.vault" class="Symfony\Bundle\FrameworkBundle\Secrets\SodiumVault">
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api/config/secrets/%env(default:kernel.environment:APP_RUNTIME_ENV)%</argument>
+      <argument>/var/www/html/api/config/secrets/%env(default:kernel.environment:APP_RUNTIME_ENV)%</argument>
       <argument type="service" id="secrets.decryption_key" on-invalid="ignore"/>
       <argument>APP_SECRET</argument>
     </service>
@@ -1505,7 +1486,7 @@
       <argument>base64:default::SYMFONY_DECRYPTION_SECRET</argument>
     </service>
     <service id="secrets.local_vault" class="Symfony\Bundle\FrameworkBundle\Secrets\DotenvVault">
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api/.env.%env(default:kernel.environment:APP_RUNTIME_ENV)%.local</argument>
+      <argument>/var/www/html/api/.env.%env(default:kernel.environment:APP_RUNTIME_ENV)%.local</argument>
     </service>
     <service id=".cache_connection.MfCypIA" class="Symfony\Component\Cache\Adapter\AbstractAdapter" constructor="createConnection">
       <argument>redis://localhost</argument>
@@ -1555,7 +1536,7 @@
       <argument>true</argument>
     </service>
     <service id="session.storage.factory.mock_file" class="Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorageFactory">
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev/sessions</argument>
+      <argument>/var/www/html/api/var/cache/dev/sessions</argument>
       <argument>MOCKSESSID</argument>
       <argument type="service">
         <service class="Symfony\Component\HttpFoundation\Session\Storage\MetadataBag">
@@ -1792,7 +1773,7 @@
     <service id="doctrine.orm.configuration" class="Doctrine\ORM\Configuration" abstract="true"/>
     <service id="doctrine.orm.entity_manager.abstract" class="Doctrine\ORM\EntityManager" lazy="true" abstract="true"/>
     <service id="doctrine.orm.container_repository_factory" class="Doctrine\Bundle\DoctrineBundle\Repository\ContainerRepositoryFactory">
-      <argument type="service" id=".service_locator.F_IzUQi"/>
+      <argument type="service" id=".service_locator.y_cTwdr"/>
     </service>
     <service id="doctrine.orm.manager_configurator.abstract" class="Doctrine\Bundle\DoctrineBundle\ManagerConfigurator" abstract="true">
       <argument type="collection"/>
@@ -1989,7 +1970,7 @@
         <argument type="service" id=".doctrine.orm.default_metadata_driver"/>
       </call>
       <call method="setProxyDir">
-        <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\var\cache\dev/doctrine/orm/Proxies</argument>
+        <argument>/var/www/html/api/var/cache/dev/doctrine/orm/Proxies</argument>
       </call>
       <call method="setProxyNamespace">
         <argument>Proxies</argument>
@@ -2032,19 +2013,17 @@
     </service>
     <service id="doctrine.orm.default_attribute_metadata_driver" class="Doctrine\ORM\Mapping\Driver\AttributeDriver">
       <argument type="collection">
-<<<<<<< HEAD
-        <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\src\Customers\CustomerEntity</argument>
-        <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\src\Reservations\ReservationEntity</argument>
-        <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\src\Restaurants\RestaurantEntity</argument>
-        <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\src\Products\ProductsEntity</argument>
-        <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api\src\Menus\MenusEntity</argument>
-=======
-        <argument>/var/www/html/api/src/Customers/CustomerEntity</argument>
         <argument>/var/www/html/api/src/Reservations/ReservationEntity</argument>
         <argument>/var/www/html/api/src/Restaurants/RestaurantEntity</argument>
         <argument>/var/www/html/api/src/Products/ProductsEntity</argument>
         <argument>/var/www/html/api/src/Menus/MenusEntity</argument>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
 >>>>>>> 694e9356e249ecb387ee9b5f51c627f35145ffbf
+>>>>>>> main
+=======
+>>>>>>> 02792a7abfe425c03ae9e283254896cdddeabdd6
       </argument>
       <argument>true</argument>
     </service>
@@ -2095,7 +2074,7 @@
     <service id="doctrine.migrations.configuration" class="Doctrine\Migrations\Configuration\Configuration">
       <call method="addMigrationsDirectory">
         <argument>DoctrineMigrations</argument>
-        <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api/migrations</argument>
+        <argument>/var/www/html/api/migrations</argument>
       </call>
       <call method="setAllOrNothing">
         <argument>false</argument>
@@ -2280,7 +2259,7 @@
       <argument type="service" id="filesystem"/>
       <argument type="service" id="maker.autoloader_util"/>
       <argument type="service" id="maker.file_link_formatter"/>
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api</argument>
+      <argument>/var/www/html/api</argument>
       <argument>null</argument>
     </service>
     <service id="maker.autoloader_finder" class="Symfony\Bundle\MakerBundle\Util\ComposerAutoloaderFinder">
@@ -2304,10 +2283,6 @@
       <argument type="service" id="doctrine" on-invalid="ignore"/>
       <argument type="collection">
         <argument key="default" type="collection">
-          <argument type="collection">
-            <argument>App\Customers\CustomerEntity</argument>
-            <argument type="service" id="doctrine.orm.default_attribute_metadata_driver"/>
-          </argument>
           <argument type="collection">
             <argument>App\Reservations\ReservationEntity</argument>
             <argument type="service" id="doctrine.orm.default_attribute_metadata_driver"/>
@@ -2474,7 +2449,7 @@
     </service>
     <service id="maker.maker.make_migration" class="Symfony\Bundle\MakerBundle\Maker\MakeMigration">
       <tag name="maker.command"/>
-      <argument>C:\Users\R\Desktop\Vscode\Bit-academy\portfolio_project\table-time\src\api</argument>
+      <argument>/var/www/html/api</argument>
       <argument type="service" id="maker.file_link_formatter"/>
     </service>
     <service id="maker.maker.make_stimulus_controller" class="Symfony\Bundle\MakerBundle\Maker\MakeStimulusController">
@@ -2496,13 +2471,6 @@
       <argument type="service" id="maker.file_manager"/>
       <argument type="service" id="maker.generator"/>
     </service>
-    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Customers\CustomerController\CustomerController" class="App\Customers\CustomerController\CustomerController" autowire="true" abstract="true"/>
-    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Customers\CustomerController\CustomerController" class="App\Customers\CustomerController\CustomerController" autowire="true" abstract="true"/>
-    <service id=".abstract.instanceof.App\Customers\CustomerController\CustomerController" class="App\Customers\CustomerController\CustomerController" autowire="true" autoconfigure="true" abstract="true"/>
-    <service id=".instanceof.App\Customers\CustomerEntity\CustomerEntity.0.App\Customers\CustomerEntity\CustomerEntity" class="App\Customers\CustomerEntity\CustomerEntity" autowire="true" abstract="true"/>
-    <service id=".abstract.instanceof.App\Customers\CustomerEntity\CustomerEntity" class="App\Customers\CustomerEntity\CustomerEntity" autowire="true" autoconfigure="true" abstract="true"/>
-    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Customers\CustomerRepository\CustomerRepository" class="App\Customers\CustomerRepository\CustomerRepository" autowire="true" abstract="true"/>
-    <service id=".abstract.instanceof.App\Customers\CustomerRepository\CustomerRepository" class="App\Customers\CustomerRepository\CustomerRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Menus\MenusController\MenuController" class="App\Menus\MenusController\MenuController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Menus\MenusController\MenuController" class="App\Menus\MenusController\MenuController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Menus\MenusController\MenuController" class="App\Menus\MenusController\MenuController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -3042,10 +3010,9 @@
         <argument key="doctrine.orm.default_listeners.attach_entity_listeners" type="service_closure" id="doctrine.orm.default_listeners.attach_entity_listeners"/>
       </argument>
     </service>
-    <service id=".service_locator.F_IzUQi" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.y_cTwdr" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
-        <argument key="App\Customers\CustomerRepository\CustomerRepository" type="service_closure" id="App\Customers\CustomerRepository\CustomerRepository"/>
         <argument key="App\Menus\MenusRepository\MenuRepository" type="service_closure" id="App\Menus\MenusRepository\MenuRepository"/>
         <argument key="App\Products\ProductsRepository\ProductsRepository" type="service_closure" id="App\Products\ProductsRepository\ProductsRepository"/>
         <argument key="App\Reservations\ReservationRepository\ReservationRepository" type="service_closure" id="App\Reservations\ReservationRepository\ReservationRepository"/>
@@ -3100,12 +3067,6 @@
         <argument key="http_kernel" type="service_closure" id="http_kernel" on-invalid="ignore"/>
         <argument key="parameter_bag" type="service_closure" id="parameter_bag" on-invalid="ignore"/>
       </argument>
-    </service>
-    <service id=".service_locator.ZyP9f7K.App\Customers\CustomerController\CustomerController" class="Symfony\Component\DependencyInjection\ServiceLocator">
-      <tag name="container.service_locator_context" id="App\Customers\CustomerController\CustomerController"/>
-      <argument>App\Customers\CustomerController\CustomerController</argument>
-      <argument type="service" id="service_container"/>
-      <factory service=".service_locator.ZyP9f7K" method="withContext"/>
     </service>
     <service id=".service_locator.ZyP9f7K.App\Menus\MenusController\MenuController" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="App\Menus\MenusController\MenuController"/>
@@ -3221,7 +3182,6 @@
       <call method="allowControllers">
         <argument type="collection">
           <argument>App\Kernel</argument>
-          <argument>App\Customers\CustomerController\CustomerController</argument>
           <argument>App\Menus\MenusController\MenuController</argument>
           <argument>App\Products\ProductsController\ProductsController</argument>
           <argument>App\Reservations\ReservationController\ReservationController</argument>
@@ -3247,10 +3207,6 @@
       <argument type="service" id=".service_locator.8J7i9pz"/>
     </service>
     <service id=".doctrine.orm.default_metadata_driver.inner" class="Doctrine\Persistence\Mapping\Driver\MappingDriverChain">
-      <call method="addDriver">
-        <argument type="service" id="doctrine.orm.default_attribute_metadata_driver"/>
-        <argument>App\Customers\CustomerEntity</argument>
-      </call>
       <call method="addDriver">
         <argument type="service" id="doctrine.orm.default_attribute_metadata_driver"/>
         <argument>App\Reservations\ReservationEntity</argument>

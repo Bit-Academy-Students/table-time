@@ -14,8 +14,8 @@ const active = ref('Guests');
     <main class="flex flex-col items-center max- pt-[100px]">
         <section class="flex flex-col justify-center max-[768px]:flex-col w-[80%] mb-[100px]">
             <div class="flex flex-col justify-center items-center text-center h-full">
-                <h1>"voor gasten soepel, voor restaurants helder"</h1>
-                <img src="../assets/img/logo TableTImes.png" alt="About Us Image" class="max-[768px]:w-[50%]" />
+                <h1 class="--h1Aboutus">"voor gasten soepel, voor restaurants helder"</h1>
+                <img src="../assets/img/logo TableTImes.png" alt="About Us Image" class="w-[300px] max-[768px]:w-[50%]" />
             </div>
             <div class="flex flex-col justify-center items-center text-center h-full">
                 <h2>Ons verhaal</h2>

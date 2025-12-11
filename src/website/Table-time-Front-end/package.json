@@ -9,6 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
+    "emailjs-com": "^3.2.0",
+=======
+    "dayjs": "^1.11.19",
+>>>>>>> 02792a7abfe425c03ae9e283254896cdddeabdd6
     "vue": "^3.5.24",
     "vue-router": "^4.6.3"
   },

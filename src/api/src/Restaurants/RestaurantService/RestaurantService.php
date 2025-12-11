@@ -121,4 +121,13 @@ class RestaurantService
 
         return true;
     }
+
+    public function authenticateRestaurant(array $data): ?RestaurantEntity
+    {
+        $Restaurant = $this->RestaurantRepository->findOneBy(['email' => $data['email'] ?? '']);
+        if ($Restaurant && password_verify($data['wachtwoord'] ?? '', $Restaurant->getWachtwoord())) {
+            return $Restaurant;
+        }
+        return null;
+    }
 }
