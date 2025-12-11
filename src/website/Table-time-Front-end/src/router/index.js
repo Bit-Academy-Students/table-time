@@ -5,8 +5,8 @@ import Home from '../pages/Home.vue';
 import Reservations from '../pages/Reservations.vue';
 import AllReservations from '../pages/ReservationDashboard.vue';
 import Login from '../pages/Login.vue';
-<<<<<<< HEAD
 import ContactPage from '../pages/ContactPage.vue';
+import AboutMe from '../pages/AboutUs.vue';
 
 const routes = [
     {
@@ -22,10 +22,10 @@ const routes = [
     {
         path: '/contact',
         name: 'contact',
-        component: Reservations,
+        component: ContactPage,
     },
     {
-        path: '/all-reservations',
+        path: '/allReservations',
         name: 'all-reservations',
         component: AllReservations,
     },
@@ -35,39 +35,10 @@ const routes = [
         component: Login,
     },
     {
-        path: '/ContactPage',
-        name: 'ConactPage',
-        component: ContactPage,
+      path: '/aboutUs',
+      name: 'about-me',
+      component: AboutMe,
     },
-=======
-import AboutUs from '../pages/AboutUs.vue';
-const routes = [
-  {
-      path: '/',
-      name: 'home',
-      component: Home,
-  },
-  {
-      path: '/reservations',
-      name: 'reservations',
-      component: Reservations,
-  },
-  {
-    path: '/all-reservations',
-    name: 'all-reservations',
-    component: AllReservations,
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: Login,
-  },
-  {
-    path: '/aboutUs',
-    name: 'aboutUs',
-    component: AboutUs,
-  }
->>>>>>> 02792a7abfe425c03ae9e283254896cdddeabdd6
 ];
 
 

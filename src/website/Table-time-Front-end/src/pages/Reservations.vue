@@ -44,8 +44,8 @@ export default {
       form: {
         date: "",
         time: "",
-        duration: "01:00",
-        amountPeople: null, // let user invullen eerst
+        duration: "01:00", // default duration
+        amountPeople: null,
         email: "",
       },
 
@@ -58,7 +58,6 @@ export default {
       loadingDay: false,
       loadingDayDate: null,
 
-      // de timeslots die je beschikbaar wilt tonen (pas aan wanneer nodig)
       timeSlots: [
         "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
         "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
@@ -97,8 +96,8 @@ export default {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        // Als gebruiker nog geen aantal personen invult -> disable alle dagen
-        if (!this.form.amountPeople || Number(this.form.amountPeople) <= 0) {
+        // Als gebruiker nog geen aantal personen OF duur invult -> disable alle dagen
+        if (!this.form.amountPeople || Number(this.form.amountPeople) <= 0 || !this.form.duration) {
           days.push({
             empty: false,
             day: d,
@@ -111,7 +110,6 @@ export default {
 
         // Voor de dag: bepaal of er minstens 1 timeslot beschikbaar is
         const anySlotHasSpace = this.timeSlots.some((slot) => {
-          // bouw tijd-check start voor die slot
           const startCheck = new Date(`${dateString}T${slot}:00`);
 
           // als startCheck in verleden -> niet beschikbaar
@@ -129,12 +127,10 @@ export default {
             .filter((r) => {
               const start = new Date(r.startDate.date);
               const end = new Date(r.endDate.date);
-              // overlap check
               return startCheck < end && endCheck > start;
             })
             .reduce((sum, r) => sum + r.amountPeople, 0);
 
-          // als deze slot ruimte heeft voor jouw aantal -> beschikbaar
           return (overlappingPeople + Number(this.form.amountPeople)) <= this.capacity;
         });
 
@@ -151,6 +147,23 @@ export default {
 
       return days;
     },
+  },
+
+  watch: {
+    // Watch voor wanneer duration verandert -> herbereken beschikbare dagen
+    'form.duration'() {
+      // Reset geselecteerde dag en tijd als duration verandert
+      this.selectedDay = null;
+      this.form.date = "";
+      this.form.time = "";
+    },
+    
+    // Watch voor wanneer amountPeople verandert
+    'form.amountPeople'() {
+      this.selectedDay = null;
+      this.form.date = "";
+      this.form.time = "";
+    }
   },
 
   methods: {
@@ -173,44 +186,31 @@ export default {
       }
     },
 
-    /**
-     * When user clicks a day:
-     * - if empty or definitely disabled -> return
-     * - else: quick validation (simulate a small check) and set date/time
-     * - loader used only while this quick check runs
-     */
     chooseDay(day) {
       if (day.empty) return;
 
-      // prevent selecting days that are clearly disabled
       if (day.disabled) {
-        // if it's disabled because all slots are full, we do a quick re-check with loader
-        // sometimes UI and reservations may be slightly out of sync, so try a fast recheck
         this.loadingDay = true;
         this.loadingDayDate = day.fullDate;
 
-        // quick async recheck (very short) to determine final state
         setTimeout(() => {
           const anySlotHasSpace = this._checkDayHasSpace(day.fullDate);
           this.loadingDay = false;
           this.loadingDayDate = null;
 
           if (!anySlotHasSpace) {
-            alert("Sorry — voor deze dag is momenteel geen beschikbare tijdslot meer voor dat aantal personen.");
+            alert("Sorry — voor deze dag is momenteel geen beschikbare tijdslot meer voor dat aantal personen en die duur.");
             return;
           } else {
-            // rare case: it became available again -> let user select
             this._selectDay(day);
           }
-        }, 150); // korte loader; alleen zichtbaar als echt nodig
+        }, 150);
         return;
       }
 
-      // normale flow: day is selectable
       this._selectDay(day);
     },
 
-    // helper om daadwerkelijk de dag als gekozen te markeren
     _selectDay(day) {
       this.selectedDay = day.day;
 
@@ -218,13 +218,14 @@ export default {
       const d = String(day.day).padStart(2, "0");
 
       this.form.date = `${this.currentYear}-${m}-${d}`;
-      this.form.time = ""; // reset tijd
+      this.form.time = "";
     },
 
-    // controleert (synchroon) voor een volledige dag of er minstens 1 slot ruimte heeft
     _checkDayHasSpace(dateString) {
-      // snelle guard: als amountPeople niet ingevuld -> geen ruimte
-      if (!this.form.amountPeople || Number(this.form.amountPeople) <= 0) return false;
+      // Check zowel amountPeople als duration
+      if (!this.form.amountPeople || Number(this.form.amountPeople) <= 0 || !this.form.duration) {
+        return false;
+      }
 
       const now = new Date();
 
@@ -249,54 +250,39 @@ export default {
       });
     },
 
-    // ------------------------------------------
-    // CHECK OF TIJD VOL / GEWEEST / OVERLAPT
-    // ------------------------------------------
     isTimeFull(time) {
       if (!this.form.date) return true;
       if (!this.form.amountPeople || Number(this.form.amountPeople) <= 0) return true;
+      if (!this.form.duration) return true;
 
-      // gefixeerde timestamp zonder timezone-bugs
       const startCheck = new Date(`${this.form.date}T${time}:00`);
 
       const now = new Date();
 
-      // FULL FIX — tijd in verleden = disabled
       if (startCheck.getTime() < now.getTime()) {
         return true;
       }
 
-      // bereken eindtijd van dit tijdslot
       const [durH, durM] = this.form.duration.split(":").map(Number);
       const endCheck = new Date(startCheck);
       endCheck.setHours(endCheck.getHours() + durH);
       endCheck.setMinutes(endCheck.getMinutes() + durM);
 
-      // check overlapping met reserveringen
       const overlappingPeople = this.reservations
         .filter((r) => {
           const start = new Date(r.startDate.date);
           const end = new Date(r.endDate.date);
-
-          // slot overlapt wanneer:
           return startCheck < end && endCheck > start;
         })
         .reduce((sum, r) => sum + r.amountPeople, 0);
 
-      // als dit boven capaciteit komt → tijdslot dicht
-      // LET OP: we voegen jouw aantal personen toe aan overlappingPeople om te checken of het past
       return (overlappingPeople + Number(this.form.amountPeople)) > this.capacity;
     },
 
-
-    //-------------------------------------------
-    // LOAD RESERVATIONS
-    //-------------------------------------------
     loadReservations() {
       fetch("http://localhost:8080/Reservations")
         .then((res) => res.json())
         .then((data) => {
-          // verwacht data.Reservations (zoals in jouw originele)
           this.reservations = data.Reservations || [];
         })
         .catch((e) => {
@@ -305,9 +291,6 @@ export default {
         });
     },
 
-    //-------------------------------------------
-    // JOUW EXACTE SUBMIT METHODE (NIET AANGEPAST)
-    //-------------------------------------------
     submitReservation() {
       try {
         const [hours, minutes] = this.form.time.split(":").map(Number);
@@ -346,7 +329,6 @@ export default {
               const json = JSON.parse(text);
               console.log("Reservering succesvol:", json);
               alert("Reservering succesvol aangemaakt!");
-              // herlaad reserveringen zodat UI up-to-date is
               this.loadReservations();
             } catch {
               console.warn("Server stuurde geen JSON terug:");
@@ -379,6 +361,7 @@ export default {
     <section class="w-[420px] h-auto pb-12">
 
       <h2 class="text-2xl font-semibold mb-4">Tafel reserveren</h2>
+      
       <div class="bg-white p-4 rounded-xl shadow mb-4">
         <h3 class="font-semibold mb-2">Aantal personen</h3>
         <input type="number" v-model.number="form.amountPeople" class="w-full p-2 border rounded" min="1" />
@@ -386,6 +369,19 @@ export default {
           Vul eerst het aantal personen in om beschikbare dagen te zien.
         </p>
       </div>
+
+      <div class="bg-white p-4 rounded-xl shadow mb-4">
+        <h3 class="font-semibold mb-2">Duur</h3>
+        <select v-model="form.duration" class="w-full p-2 border rounded">
+          <option value="01:00">1 uur</option>
+          <option value="01:30">1.5 uur</option>
+          <option value="02:00">2 uur</option>
+        </select>
+        <p v-if="!form.duration" class="text-xs text-gray-500 mt-2">
+          Selecteer een duur om beschikbare dagen te zien.
+        </p>
+      </div>
+
       <div class="bg-white border-[#03CAED] border-2 z-10 p-4 rounded-xl shadow mb-8 relative">
         <h3 class="text-center text-lg font-semibold mb-4">
           {{ monthName.charAt(0).toUpperCase() + monthName.slice(1) }} {{ currentYear }}
@@ -415,7 +411,6 @@ export default {
               {{ day.discount }}
             </span>
 
-            <!-- Loader overlay voor individuele dag wanneer nodig -->
             <div v-if="loadingDay && loadingDayDate === day.fullDate"
               class="absolute inset-0 flex items-center justify-center bg-white/70 rounded-lg">
               <div class="w-6 h-6 border-4 border-t-transparent rounded-full animate-spin"></div>
@@ -436,6 +431,7 @@ export default {
       </div>
 
       <div class="bg-white p-4 rounded-xl shadow mb-4">
+<<<<<<< HEAD
         <h3 class="font-semibold mb-2">Duur</h3>
         <select v-model="form.duration" class="w-full p-2 border rounded">
           <option value="01:00">1 uur</option>
@@ -450,6 +446,8 @@ export default {
       </div>
 
       <div class="bg-white p-4 rounded-xl shadow mb-4">
+=======
+>>>>>>> 9148e2e1aa14dd00b62b02e8d590217785adc0b4
         <h3 class="font-semibold mb-2">Email</h3>
         <input type="email" v-model="form.email" class="w-full p-2 border rounded" />
         <input type="email" v-model="form.email" class="w-full p-2 border rounded" />
@@ -466,7 +464,6 @@ export default {
 </template>
 
 <style scoped>
-/* eenvoudige loader style (kan je vervangen/met tailwind verbeteren) */
 @keyframes spin {
   to {
     transform: rotate(360deg);

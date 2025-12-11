@@ -239,7 +239,6 @@
     <service id="App\Restaurants\RestaurantService\RestaurantService" class="App\Restaurants\RestaurantService\RestaurantService" autowire="true" autoconfigure="true">
       <argument type="service" id="App\Restaurants\RestaurantRepository\RestaurantRepository"/>
     </service>
-    <service id="App\Menus\MenusService\MenusService" class="App\Menus\MenusService\MenusService" autowire="true" autoconfigure="true"/>
     <service id="argument_metadata_factory" class="Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactory"/>
     <service id="argument_resolver.backed_enum_resolver" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\BackedEnumValueResolver">
       <tag priority="100" name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\BackedEnumValueResolver">controller.argument_value_resolver</tag>
@@ -2017,13 +2016,6 @@
         <argument>/var/www/html/api/src/Restaurants/RestaurantEntity</argument>
         <argument>/var/www/html/api/src/Products/ProductsEntity</argument>
         <argument>/var/www/html/api/src/Menus/MenusEntity</argument>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 694e9356e249ecb387ee9b5f51c627f35145ffbf
->>>>>>> main
-=======
->>>>>>> 02792a7abfe425c03ae9e283254896cdddeabdd6
       </argument>
       <argument>true</argument>
     </service>
