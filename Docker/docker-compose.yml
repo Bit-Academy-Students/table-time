@@ -39,8 +39,8 @@ services:
       - "3000:3000"
     working_dir: /app
     volumes:
-      - ../src/website/Table-time-Front-end:/app
-      - /app/node_modules
+        - ../src/website/Table-time-Front-end:/app
+        - /app/node_modules
     networks:
       - app-network
 
