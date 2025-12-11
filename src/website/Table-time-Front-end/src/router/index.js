@@ -7,6 +7,8 @@ import AllReservations from '../pages/ReservationDashboard.vue';
 import Login from '../pages/Login.vue';
 import ContactPage from '../pages/ContactPage.vue';
 import AboutMe from '../pages/AboutUs.vue';
+import RestaurantInfo from '../pages/RestaurantInfo.vue';
+import RestaurantList from '../pages/RestaurantList.vue';
 
 const routes = [
     {
@@ -25,7 +27,7 @@ const routes = [
         component: ContactPage,
     },
     {
-        path: '/allReservations',
+        path: '/restaurant/:id/dashboard',
         name: 'all-reservations',
         component: AllReservations,
     },
@@ -38,6 +40,16 @@ const routes = [
       path: '/aboutUs',
       name: 'about-me',
       component: AboutMe,
+    },
+    {
+      path: '/RestaurantList',
+      name: 'RestaurantList',
+      component: RestaurantList,
+    },
+    {
+      path: '/restaurant/:id',
+      name: 'restaurantInfo',
+      component: RestaurantInfo,
     },
 ];
 

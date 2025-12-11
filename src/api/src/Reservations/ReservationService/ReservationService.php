@@ -4,25 +4,33 @@ namespace App\Reservations\ReservationService;
 
 use App\Reservations\ReservationEntity\ReservationEntity;
 use App\Reservations\ReservationRepository\ReservationRepository;
-use DateTimeImmutable;
-use App\Customers\CustomerEntity\CustomerEntity;
 use App\Restaurants\RestaurantEntity\RestaurantEntity;
+use App\Restaurants\RestaurantRepository\RestaurantRepository;
+use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ReservationService 
 {
     private ReservationRepository $ReservationRepository;
+    private RestaurantRepository $RestaurantRepository;
+    private EntityManagerInterface $entityManager;
 
-    public function __construct(ReservationRepository $ReservationRepository)
-    {
+    public function __construct(
+        ReservationRepository $ReservationRepository,
+        RestaurantRepository $RestaurantRepository,
+        EntityManagerInterface $entityManager
+    ) {
         $this->ReservationRepository = $ReservationRepository;
+        $this->RestaurantRepository = $RestaurantRepository;
+        $this->entityManager = $entityManager;
     }
 
     private function sanitizeReservationData(array $data): array
     {
-        if (isset($data['startDate']) && (!is_string($data['startDate']) || preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['startDate']) !== 1)) {
+        if (isset($data['startDate']) && (!is_string($data['startDate']) || preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(:\d{2})?$/', $data['startDate']) !== 1)) {
             throw new \InvalidArgumentException("Invalid input for start date");
         }
-        if (isset($data['endDate']) && (!is_string($data['endDate']) || preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['endDate']) !== 1)) {
+        if (isset($data['endDate']) && (!is_string($data['endDate']) || preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(:\d{2})?$/', $data['endDate']) !== 1)) {
             throw new \InvalidArgumentException("Invalid input for end date");
         }
         $data['startDate'] = isset($data['startDate']) ? new DateTimeImmutable($data['startDate']) : null;
@@ -32,40 +40,56 @@ class ReservationService
 
     private function validateReservationData(array $data): void
     {
-        if (empty($data['startDate']) || !gettype($data['startDate']) === 'DateTimeInterface') {
+        if (empty($data['startDate']) || !($data['startDate'] instanceof \DateTimeInterface)) {
             throw new \InvalidArgumentException("Start date is required");
         }
-        if (empty($data['endDate']) || !gettype($data['endDate']) === 'DateTimeInterface') {
+        if (empty($data['endDate']) || !($data['endDate'] instanceof \DateTimeInterface)) {
             throw new \InvalidArgumentException("End date is required");
         }
         if ($data['startDate'] >= $data['endDate']) {
             throw new \InvalidArgumentException("Start date must be before end date");
         }
         if (empty($data['amountPeople']) || !is_int($data['amountPeople']) || $data['amountPeople'] <= 0) {
-            throw new \InvalidArgumentException("invalid input for amount of people");
+            throw new \InvalidArgumentException("Invalid input for amount of people");
         }
-        if (isset($data['startDate']) && !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['startDate']->format('Y-m-d H:i'))) {
-            throw new \InvalidArgumentException("Invalid input for start date");
-        }
-        if (isset($data['endDate']) && !preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $data['endDate']->format('Y-m-d H:i'))) {
-            throw new \InvalidArgumentException("Invalid input for end date");
-        }
-        if (isset($data['Email']) && !filter_var($data['Email'], FILTER_VALIDATE_EMAIL)) {
+        if (isset($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             throw new \InvalidArgumentException("Invalid email format");
         }
+
+        // BELANGRIJK: Check of restaurantId bestaat
+        if (empty($data['restaurantId'])) {
+            throw new \InvalidArgumentException("Restaurant ID is required");
+        }
+
+        // Haal restaurant op
+        $restaurant = $this->RestaurantRepository->find($data['restaurantId']);
+        if (!$restaurant) {
+            throw new \InvalidArgumentException("Restaurant not found");
+        }
+
+        // Check overlapping reserveringen en capaciteit
         $reservations = $this->ReservationRepository->findAll();
-        $maxCapacity = $reservation['restaurant'] ?? 50;
-        $overlappingPeople = $data['amountPeople'] ?? 0;
+        $maxCapacity = $restaurant->getMaxCapacity();
+        $overlappingPeople = $data['amountPeople'];
+
         foreach ($reservations as $reservation) {
-            if (($reservation->getStartDate() > $data['startDate'] && $reservation->getStartDate() < $data['endDate'] ||
-                $reservation->getEndDate() > $data['startDate'] && $reservation->getEndDate() < $data['endDate'] ||
-                $reservation->getStartDate() <= $data['startDate'] && $reservation->getEndDate() >= $data['endDate']) &&
-                ($reservation->getRestaurant() ? $reservation->getRestaurant()->getId() : null) === ($data['restaurantId'] ?? null)) {
+            // Check of reservering overlapt EN bij hetzelfde restaurant is
+            $isOverlapping = (
+                ($reservation->getStartDate() > $data['startDate'] && $reservation->getStartDate() < $data['endDate']) ||
+                ($reservation->getEndDate() > $data['startDate'] && $reservation->getEndDate() < $data['endDate']) ||
+                ($reservation->getStartDate() <= $data['startDate'] && $reservation->getEndDate() >= $data['endDate'])
+            );
+
+            $isSameRestaurant = $reservation->getRestaurant() && 
+                                $reservation->getRestaurant()->getId() === $data['restaurantId'];
+
+            if ($isOverlapping && $isSameRestaurant) {
                 $overlappingPeople += $reservation->getAmountPeople();
             }
-            if ($overlappingPeople > $maxCapacity) {
-                throw new \InvalidArgumentException("Maximum capacity exceeded for the selected time slot");
-            }
+        }
+
+        if ($overlappingPeople > $maxCapacity) {
+            throw new \InvalidArgumentException("Maximum capacity exceeded for the selected time slot");
         }
     }
 
@@ -84,9 +108,16 @@ class ReservationService
         try {
             $data = $this->sanitizeReservationData($data);
             $this->validateReservationData($data);
+
+            // BELANGRIJK: Haal het Restaurant Entity object op
+            $restaurant = $this->RestaurantRepository->find($data['restaurantId']);
+            if (!$restaurant) {
+                throw new \InvalidArgumentException("Restaurant not found");
+            }
+
             $Reservation = new ReservationEntity();
             $Reservation->setEmail($data['email']);
-            $Reservation->setRestaurant($data['restaurantId'] ?? null);
+            $Reservation->setRestaurant($restaurant); // FIXED: Geef het hele restaurant object door!
             $Reservation->setStartDate($data['startDate']);
             $Reservation->setEndDate($data['endDate']);
             $Reservation->setAmountPeople($data['amountPeople']);
@@ -95,7 +126,6 @@ class ReservationService
 
             return $Reservation;
         } catch (\InvalidArgumentException $e) {
-            // Handle the exception as needed, e.g., log it or rethrow
             throw $e;
         }
     }
@@ -105,16 +135,20 @@ class ReservationService
         try {
             $data = $this->sanitizeReservationData($data);
             $Reservation = $this->ReservationRepository->find($id);
+            
             if (!$Reservation) {
                 return null;
             }
 
-            if (isset($data['Email'])) {
-                $Reservation->setEmail($data['email']);
-            }
+            // Update restaurant als restaurantId is gegeven
             if (isset($data['restaurantId'])) {
-                $Reservation->setRestaurantId($data['restaurantId']);
+                $restaurant = $this->RestaurantRepository->find($data['restaurantId']);
+                if (!$restaurant) {
+                    throw new \InvalidArgumentException("Restaurant not found");
+                }
+                $Reservation->setRestaurant($restaurant);
             }
+
             if (isset($data['startDate'])) {
                 $Reservation->setStartDate($data['startDate']);
             }
@@ -124,7 +158,6 @@ class ReservationService
             if (isset($data['amountPeople'])) {
                 $Reservation->setAmountPeople($data['amountPeople']);
             }
-
             if (isset($data['email'])) {
                 $Reservation->setEmail($data['email']);
             }
@@ -133,7 +166,6 @@ class ReservationService
 
             return $Reservation;
         } catch (\InvalidArgumentException $e) {
-            // Handle the exception as needed, e.g., log it or rethrow
             throw $e;
         }
     }
@@ -148,5 +180,11 @@ class ReservationService
         $this->ReservationRepository->remove($Reservation);
 
         return true;
+    }
+
+    // BONUS: Filter reserveringen op restaurant
+    public function getReservationsByRestaurant(int $restaurantId): array
+    {
+        return $this->ReservationRepository->findBy(['RestaurantId' => $restaurantId]);
     }
 }

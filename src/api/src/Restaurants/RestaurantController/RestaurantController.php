@@ -20,6 +20,17 @@ class RestaurantController extends AbstractController
     public function FindAll(): Response
     {
         $Restaurants = $this->RestaurantService->getAllRestaurants();
+        $Restaurants = array_map(function ($Restaurant) {
+            return [
+                'id' => $Restaurant->getId(),
+                'naam' => $Restaurant->getNaam(),
+                'locatie' => $Restaurant->getLocatie(),
+                'telefoonnummer' => $Restaurant->getTelefoonnummer(),
+                'maxcapacity' => $Restaurant->getMaxCapacity(),
+                'email' => $Restaurant->getEmail(),
+            ];
+        }, $Restaurants);
+
 
         return new JsonResponse(
             ['Restaurants' => $Restaurants]
@@ -29,9 +40,17 @@ class RestaurantController extends AbstractController
     public function FindById(int $id): Response
     {
         $Restaurant = $this->RestaurantService->getRestaurantById($id);
+        $Restaurants = [
+                'id' => $Restaurant->getId(),
+                'naam' => $Restaurant->getNaam(),
+                'locatie' => $Restaurant->getLocatie(),
+                'telefoonnummer' => $Restaurant->getTelefoonnummer(),
+                'maxcapacity' => $Restaurant->getMaxCapacity(),
+                'email' => $Restaurant->getEmail(),
+            ];
 
         return new JsonResponse(
-            ['Restaurant' => $Restaurant]
+            ['Restaurant' => $Restaurants]
         );
     }
 

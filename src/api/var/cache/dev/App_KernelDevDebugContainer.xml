@@ -219,6 +219,8 @@
     </service>
     <service id="App\Reservations\ReservationService\ReservationService" class="App\Reservations\ReservationService\ReservationService" autowire="true" autoconfigure="true">
       <argument type="service" id="App\Reservations\ReservationRepository\ReservationRepository"/>
+      <argument type="service" id="App\Restaurants\RestaurantRepository\RestaurantRepository"/>
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
     </service>
     <service id="App\Restaurants\RestaurantController\RestaurantController" class="App\Restaurants\RestaurantController\RestaurantController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>

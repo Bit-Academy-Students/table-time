@@ -21,9 +21,10 @@ return [
             [['_route' => 'createReservation', '_controller' => 'App\\Reservations\\ReservationController\\ReservationController::Create'], null, ['POST' => 0], null, false, false, null],
         ],
         '/Restaurants' => [
-            [['_route' => 'getAllRestaurants', '_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::FindAll'], null, ['GET' => 0], null, false, false, null],
-            [['_route' => 'createRestaurant', '_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::Create'], null, ['POST' => 0], null, false, false, null],
+            [['_route' => 'restaurant_list', '_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::FindAll'], null, ['GET' => 0], null, false, false, null],
+            [['_route' => 'restaurant_create', '_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::Create'], null, ['POST' => 0], null, false, false, null],
         ],
+        '/Restaurants/authenticate' => [[['_route' => 'restaurant_authenticate', '_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::Authenticate'], null, ['POST' => 0], null, false, false, null]],
     ],
     [ // $regexpList
         0 => '{^(?'
@@ -37,11 +38,11 @@ return [
                     .'|ervations/([^/]++)(?'
                         .'|(*:90)'
                     .')'
-                    .'|taurants/([^/]++)(?'
-                        .'|(*:118)'
+                    .'|taurants/(\\d+)(?'
+                        .'|(*:115)'
                     .')'
                 .')'
-                .'|/_error/(\\d+)(?:\\.([^/]++))?(*:156)'
+                .'|/_error/(\\d+)(?:\\.([^/]++))?(*:153)'
             .')/?$}sDu',
     ],
     [ // $dynamicRoutes
@@ -60,12 +61,12 @@ return [
             [['_route' => 'updateReservation', '_controller' => 'App\\Reservations\\ReservationController\\ReservationController::Update'], ['id'], ['PUT' => 0], null, false, true, null],
             [['_route' => 'deleteReservation', '_controller' => 'App\\Reservations\\ReservationController\\ReservationController::Delete'], ['id'], ['DELETE' => 0], null, false, true, null],
         ],
-        118 => [
-            [['_route' => 'getRestaurantById', '_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::FindById'], ['id'], ['GET' => 0], null, false, true, null],
-            [['_route' => 'updateRestaurant', '_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::Update'], ['id'], ['PUT' => 0], null, false, true, null],
-            [['_route' => 'deleteRestaurant', '_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::Delete'], ['id'], ['DELETE' => 0], null, false, true, null],
+        115 => [
+            [['_route' => 'restaurant_show', '_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::FindById'], ['id'], ['GET' => 0], null, false, true, null],
+            [['_route' => 'restaurant_update', '_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::Update'], ['id'], ['PUT' => 0], null, false, true, null],
+            [['_route' => 'restaurant_delete', '_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::Delete'], ['id'], ['DELETE' => 0], null, false, true, null],
         ],
-        156 => [
+        153 => [
             [['_route' => '_preview_error', '_controller' => 'error_controller::preview', '_format' => 'html'], ['code', '_format'], null, null, false, true, null],
             [null, null, null, null, false, false, 0],
         ],

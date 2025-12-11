@@ -1,24 +1,46 @@
-getAllRestaurants:
-    path:       /Restaurants
-    methods:    [GET]
+# ============================================
+# RESTAURANT ROUTES
+# Bestand: config/routes.yaml
+# ============================================
+
+# GET alle restaurants
+restaurant_list:
+    path: /Restaurants
     controller: App\Restaurants\RestaurantController\RestaurantController::FindAll
+    methods: [GET]
 
-getRestaurantById:
-    path:       /Restaurants/{id}
-    methods:    [GET]
+# GET specifiek restaurant
+restaurant_show:
+    path: /Restaurants/{id}
     controller: App\Restaurants\RestaurantController\RestaurantController::FindById
+    methods: [GET]
+    requirements:
+        id: '\d+'
 
-createRestaurant:
-    path:       /Restaurants
-    methods:    [POST]
+# POST nieuw restaurant
+restaurant_create:
+    path: /Restaurants
     controller: App\Restaurants\RestaurantController\RestaurantController::Create
+    methods: [POST]
 
-updateRestaurant:
-    path:       /Restaurants/{id}
-    methods:    [PUT]
+# PUT update restaurant
+restaurant_update:
+    path: /Restaurants/{id}
     controller: App\Restaurants\RestaurantController\RestaurantController::Update
+    methods: [PUT]
+    requirements:
+        id: '\d+'
 
-deleteRestaurant:
-    path:       /Restaurants/{id}
-    methods:    [DELETE]
+# DELETE restaurant
+restaurant_delete:
+    path: /Restaurants/{id}
     controller: App\Restaurants\RestaurantController\RestaurantController::Delete
+    methods: [DELETE]
+    requirements:
+        id: '\d+'
+
+# POST authenticate restaurant
+restaurant_authenticate:
+    path: /Restaurants/authenticate
+    controller: App\Restaurants\RestaurantController\RestaurantController::Authenticate
+    methods: [POST]

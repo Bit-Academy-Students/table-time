@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 namespace App\Reservations\ReservationController;
 
@@ -17,17 +17,29 @@ class ReservationController extends AbstractController
         $this->ReservationService = $ReservationService;
     }
 
+    // GET /api/Reservations - Alle reserveringen
     public function FindAll(): Response
     {
         $Reservations = $this->ReservationService->getAllReservations();
         $Reservations = array_map(function ($Reservation) {
+            // NULL-CHECK voor restaurant!
+            $restaurant = $Reservation->getRestaurant();
+            
             return [
                 'id' => $Reservation->getId(),
-                'restaurant' => $Reservation->getRestaurant(),
-                'startDate' => $Reservation->getStartDate(),
-                'endDate' => $Reservation->getEndDate(),
+                'startDate' => $Reservation->getStartDate()->format('Y-m-d H:i:s'),
+                'endDate' => $Reservation->getEndDate()->format('Y-m-d H:i:s'),
                 'amountPeople' => $Reservation->getAmountPeople(),
                 'email' => $Reservation->getEmail(),
+                // Alleen restaurant info toevoegen als het bestaat
+                'restaurant' => $restaurant ? [
+                    'id' => $restaurant->getId(),
+                    'naam' => $restaurant->getNaam(),
+                    'locatie' => $restaurant->getLocatie(),
+                    'telefoonnummer' => $restaurant->getTelefoonnummer(),
+                    'maxcapacity' => $restaurant->getMaxCapacity(),
+                    'email' => $restaurant->getEmail(),
+                ] : null
             ];
         }, $Reservations);
 
@@ -35,69 +47,144 @@ class ReservationController extends AbstractController
             ['Reservations' => $Reservations]
         );
     }
-
+    
+    // GET /api/Reservations/{id} - Specifieke reservering
     public function FindById(int $id): Response
     {
         $Reservation = $this->ReservationService->getReservationById($id);
-
-        if ($Reservation) {
-            $Reservation = [
-                'id' => $Reservation->getId(),
-            ];
+        
+        if (!$Reservation) {
+            return new JsonResponse(
+                ['error' => 'Reservering niet gevonden'],
+                Response::HTTP_NOT_FOUND
+            );
         }
+        
+        $restaurant = $Reservation->getRestaurant();
+        
+        $ReservationData = [
+            'id' => $Reservation->getId(),
+            'startDate' => $Reservation->getStartDate()->format('Y-m-d H:i:s'),
+            'endDate' => $Reservation->getEndDate()->format('Y-m-d H:i:s'),
+            'amountPeople' => $Reservation->getAmountPeople(),
+            'email' => $Reservation->getEmail(),
+            'restaurant' => $restaurant ? [
+                'id' => $restaurant->getId(),
+                'naam' => $restaurant->getNaam(),
+                'locatie' => $restaurant->getLocatie(),
+                'telefoonnummer' => $restaurant->getTelefoonnummer(),
+                'maxcapacity' => $restaurant->getMaxCapacity(),
+                'email' => $restaurant->getEmail(),
+            ] : null
+        ];
 
         return new JsonResponse(
-            ['Reservation' => $Reservation]
+            ['Reservation' => $ReservationData]
         );
     }
 
+    // POST /api/Reservations - Nieuwe reservering (MET restaurantId!)
     public function Create(Request $request): Response
     {
+        $data = json_decode($request->getContent(), true);
+        
+        // Validatie
+        if (!isset($data['restaurantId'])) {
+            return new JsonResponse(
+                ['error' => 'restaurantId is verplicht'],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+        
+        if (!isset($data['startDate']) || !isset($data['endDate']) || 
+            !isset($data['amountPeople']) || !isset($data['email'])) {
+            return new JsonResponse(
+                ['error' => 'startDate, endDate, amountPeople en email zijn verplicht'],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
         try {
-            $data = json_decode($request->getContent(), true);
             $Reservation = $this->ReservationService->createReservation($data);
+            $restaurant = $Reservation->getRestaurant();
 
             return new JsonResponse(
-                ['Reservation' => $Reservation, 'response' => 'created']
+                [
+                    'Reservation' => [
+                        'id' => $Reservation->getId(),
+                        'startDate' => $Reservation->getStartDate()->format('Y-m-d H:i:s'),
+                        'endDate' => $Reservation->getEndDate()->format('Y-m-d H:i:s'),
+                        'amountPeople' => $Reservation->getAmountPeople(),
+                        'email' => $Reservation->getEmail(),
+                        'restaurant' => $restaurant ? [
+                            'id' => $restaurant->getId(),
+                            'naam' => $restaurant->getNaam(),
+                        ] : null
+                    ],
+                    'response' => 'created'
+                ],
+                Response::HTTP_CREATED
             );
-        } catch (\InvalidArgumentException $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(
                 ['error' => $e->getMessage()],
                 Response::HTTP_BAD_REQUEST
             );
         }
     }
-
+    
+    // PUT /api/Reservations/{id} - Update reservering
     public function Update(int $id, Request $request): Response
     {
-        try {
-            $data = json_decode($request->getContent(), true);
-            $Reservation = $this->ReservationService->getReservationById($id);
+        $data = json_decode($request->getContent(), true);
 
-            $this->ReservationService->updateReservation($id, $data);
+        try {
+            $Reservation = $this->ReservationService->updateReservation($id, $data);
+            
+            if (!$Reservation) {
+                return new JsonResponse(
+                    ['error' => 'Reservering niet gevonden'],
+                    Response::HTTP_NOT_FOUND
+                );
+            }
 
             return new JsonResponse(
-                ['Reservation' => $Reservation, 'response' => 'updated']
+                [
+                    'Reservation' => [
+                        'id' => $Reservation->getId(),
+                        'startDate' => $Reservation->getStartDate()->format('Y-m-d H:i:s'),
+                        'endDate' => $Reservation->getEndDate()->format('Y-m-d H:i:s'),
+                        'amountPeople' => $Reservation->getAmountPeople(),
+                        'email' => $Reservation->getEmail(),
+                    ],
+                    'response' => 'updated'
+                ]
             );
-        } catch (\InvalidArgumentException $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(
                 ['error' => $e->getMessage()],
                 Response::HTTP_BAD_REQUEST
             );
         }
     }
-
+    
+    // DELETE /api/Reservations/{id} - Verwijder reservering
     public function Delete(int $id): Response
     {
         try {
-            $Reservation = $this->ReservationService->getReservationById($id);
-
-            $this->ReservationService->deleteReservation($id);
+            $deleted = $this->ReservationService->deleteReservation($id);
+            
+            if (!$deleted) {
+                return new JsonResponse(
+                    ['error' => 'Reservering niet gevonden'],
+                    Response::HTTP_NOT_FOUND
+                );
+            }
 
             return new JsonResponse(
-                ['Reservation' => $Reservation, 'response' => 'deleted']
+                ['response' => 'deleted']
             );
-        } catch (\InvalidArgumentException $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(
                 ['error' => $e->getMessage()],
                 Response::HTTP_BAD_REQUEST
