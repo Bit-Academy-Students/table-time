@@ -5,7 +5,7 @@ namespace App\Restaurants\RestaurantService;
 use App\Restaurants\RestaurantEntity\RestaurantEntity;
 use App\Restaurants\RestaurantRepository\RestaurantRepository;
 
-class RestaurantService 
+class RestaurantService
 {
     private RestaurantRepository $RestaurantRepository;
 
@@ -72,7 +72,7 @@ class RestaurantService
             throw $e;
         }
     }
-    
+
     public function updateRestaurant(int $id, array $data): ?RestaurantEntity
     {
         try {
@@ -121,13 +121,17 @@ class RestaurantService
 
         return true;
     }
-
     public function authenticateRestaurant(array $data): ?RestaurantEntity
     {
-        $Restaurant = $this->RestaurantRepository->findOneBy(['email' => $data['email'] ?? '']);
-        if ($Restaurant && password_verify($data['wachtwoord'] ?? '', $Restaurant->getWachtwoord())) {
+        if (empty($data['email']) || empty($data['wachtwoord'])) {
+            throw new \InvalidArgumentException("Email and password are required for authentication");
+        }
+
+        $Restaurant = $this->RestaurantRepository->findOneBy(['email' => $data['email']]);
+        if ($Restaurant && password_verify($data['wachtwoord'], $Restaurant->getWachtwoord())) {
             return $Restaurant;
         }
+
         return null;
     }
 }

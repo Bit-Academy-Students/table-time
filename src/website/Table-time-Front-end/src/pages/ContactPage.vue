@@ -1,6 +1,7 @@
 <script setup>
 import NavBar from "../components/NavBar.vue";
 import NavbarMobile from "../components/NavbarMobile.vue";
+import Footer from "../components/Footer.vue";
 
 import { ref } from "vue";
 import * as emailjs from "@emailjs/browser";
@@ -93,7 +94,7 @@ const sendEmail = () => {
 
               <button
                 type="submit"
-                class="mt-2 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+                class="mt-2 w-full"
               >
                 Verstuur
               </button>
@@ -114,4 +115,5 @@ const sendEmail = () => {
       </section>
     </div>
   </main>
+  <Footer />
 </template>

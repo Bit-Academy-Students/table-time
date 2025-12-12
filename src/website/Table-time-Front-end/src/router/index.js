@@ -2,9 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 // Pagina-componenten importeren
 import Home from '../pages/Home.vue';
-import Reservations from '../pages/Reservations.vue';
 import AllReservations from '../pages/ReservationDashboard.vue';
 import Login from '../pages/Login.vue';
+import RestaurantLogin from '../pages/RestaurantLogin.vue';
 import ContactPage from '../pages/ContactPage.vue';
 import AboutMe from '../pages/AboutUs.vue';
 import RestaurantInfo from '../pages/RestaurantInfo.vue';
@@ -17,11 +17,6 @@ const routes = [
         component: Home,
     },
     {
-        path: '/reservations',
-        name: 'reservations',
-        component: Reservations,
-    },
-    {
         path: '/contact',
         name: 'contact',
         component: ContactPage,
@@ -32,9 +27,14 @@ const routes = [
         component: AllReservations,
     },
     {
-        path: '/login',
+        path: '/register',
         name: 'login',
         component: Login,
+    },
+    {
+        path: '/restaurant/login',
+        name: 'RestaurantLogin',
+        component: RestaurantLogin,
     },
     {
       path: '/aboutUs',

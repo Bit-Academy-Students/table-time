@@ -1,7 +1,9 @@
 <template>
-    <main class="flex justify-center flex-col items-center gap-8 mt-16">
-        <h1 class="text-2xl font-bold">Restaurant Registratie</h1>
-        <form @submit.prevent="submitForm" class="flex flex-col gap-4 justify-center items-center w-[400px]">
+    <NavBar />
+    <NavbarMobile />
+    <main class="flex justify-center flex-col items-center gap-8 pt-[100px]">
+        <h2>Restaurant Registratie</h2>
+        <form @submit.prevent="submitForm" class="flex bg-white p-10 rounded-xl flex-col gap-4 justify-center items-center w-[400px]">
             <input 
                 v-model="form.naam" 
                 type="text" 
@@ -57,13 +59,32 @@
             </button>
         </form>
 
-        <div v-if="message" class="mt-4 p-4 rounded" :class="messageType === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
+        <div v-if="message" class="mt-4 mb-4 p-4 rounded" :class="messageType === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
             {{ message }}
         </div>
+
+        <!-- Link naar inlogpagina -->
+        <p class="text-gray-600">
+            Heb je al een account? 
+            <router-link to="/restaurant/login" class="text-[#03CAED] hover:underline font-semibold">
+                Log hier in
+            </router-link>
+        </p>
     </main>
+    <Footer />
 </template>
 
+<script setup>
+import NavBar from '../components/NavBar.vue';
+import NavbarMobile from '../components/NavbarMobile.vue';
+import Footer from '../components/Footer.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+</script>
+
 <script>
+
 export default {
     data() {
         return {
@@ -123,10 +144,12 @@ export default {
                 const data = await response.json();
                 console.log('Success:', data);
 
-                this.showMessage('Restaurant succesvol geregistreerd!', 'success');
+                this.showMessage('Restaurant succesvol geregistreerd! Je wordt doorgestuurd naar de inlogpagina...', 'success');
 
-                // Reset het formulier
-                this.resetForm();
+                // Wacht 2 seconden en ga dan naar de inlogpagina
+                setTimeout(() => {
+                    this.$router.push('/restaurant-login');
+                }, 2000);
 
             } catch (error) {
                 console.error('Error:', error);
@@ -138,11 +161,13 @@ export default {
             this.message = msg;
             this.messageType = type;
 
-            // Verberg bericht na 5 seconden
-            setTimeout(() => {
-                this.message = '';
-                this.messageType = '';
-            }, 5000);
+            // Verberg bericht na 5 seconden (alleen bij error)
+            if (type === 'error') {
+                setTimeout(() => {
+                    this.message = '';
+                    this.messageType = '';
+                }, 5000);
+            }
         },
 
         resetForm() {

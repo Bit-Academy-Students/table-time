@@ -9,6 +9,12 @@ restaurant_list:
     controller: App\Restaurants\RestaurantController\RestaurantController::FindAll
     methods: [GET]
 
+# POST authenticate restaurant (MOVE THIS BEFORE restaurant_show)
+restaurant_authenticate:
+    path: /Restaurants/authenticate
+    controller: App\Restaurants\RestaurantController\RestaurantController::Authenticate
+    methods: [POST]
+
 # GET specifiek restaurant
 restaurant_show:
     path: /Restaurants/{id}
@@ -38,9 +44,3 @@ restaurant_delete:
     methods: [DELETE]
     requirements:
         id: '\d+'
-
-# POST authenticate restaurant
-restaurant_authenticate:
-    path: /Restaurants/authenticate
-    controller: App\Restaurants\RestaurantController\RestaurantController::Authenticate
-    methods: [POST]

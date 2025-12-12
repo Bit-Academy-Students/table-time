@@ -19,10 +19,10 @@ return [
     'updateReservation' => [['id'], ['_controller' => 'App\\Reservations\\ReservationController\\ReservationController::Update'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/Reservations']], [], [], []],
     'deleteReservation' => [['id'], ['_controller' => 'App\\Reservations\\ReservationController\\ReservationController::Delete'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/Reservations']], [], [], []],
     'restaurant_list' => [[], ['_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::FindAll'], [], [['text', '/Restaurants']], [], [], []],
+    'restaurant_authenticate' => [[], ['_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::Authenticate'], [], [['text', '/Restaurants/authenticate']], [], [], []],
     'restaurant_show' => [['id'], ['_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::FindById'], ['id' => '\\d+'], [['variable', '/', '\\d+', 'id', true], ['text', '/Restaurants']], [], [], []],
     'restaurant_create' => [[], ['_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::Create'], [], [['text', '/Restaurants']], [], [], []],
     'restaurant_update' => [['id'], ['_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::Update'], ['id' => '\\d+'], [['variable', '/', '\\d+', 'id', true], ['text', '/Restaurants']], [], [], []],
     'restaurant_delete' => [['id'], ['_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::Delete'], ['id' => '\\d+'], [['variable', '/', '\\d+', 'id', true], ['text', '/Restaurants']], [], [], []],
-    'restaurant_authenticate' => [[], ['_controller' => 'App\\Restaurants\\RestaurantController\\RestaurantController::Authenticate'], [], [['text', '/Restaurants/authenticate']], [], [], []],
     '_preview_error' => [['code', '_format'], ['_controller' => 'error_controller::preview', '_format' => 'html'], ['code' => '\\d+'], [['variable', '.', '[^/]++', '_format', true], ['variable', '/', '\\d+', 'code', true], ['text', '/_error']], [], [], []],
 ];

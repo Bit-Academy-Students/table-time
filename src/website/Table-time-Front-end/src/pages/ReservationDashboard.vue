@@ -3,7 +3,6 @@
   <NavbarMobile />
   <main class="p-[100px]">
 
-    <!-- Restaurant Info Header -->
     <div v-if="restaurant" class="mb-6 bg-white rounded-xl shadow-lg p-6">
       <h1 class="text-3xl font-bold text-[#03CAED] mb-2">Dashboard: {{ restaurant.naam }}</h1>
       <div class="flex gap-6 text-gray-600">
@@ -14,7 +13,7 @@
     </div>
 
     <div class="flex justify-between items-center mb-6">
-      <button @click="prevDay" class="px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+      <button @click="prevDay">
         ← Vorige dag
       </button>
 
@@ -22,12 +21,11 @@
         Reserveringen op {{ selectedDate }}
       </h2>
 
-      <button @click="nextDay" class="px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+      <button @click="nextDay">
         Volgende dag →
       </button>
     </div>
 
-    <!-- Terug naar restaurant info knop -->
     <div class="mb-4">
       <button 
         @click="router.push(`/restaurant/${restaurantId}`)"
@@ -39,7 +37,7 @@
 
     <!-- LOADER overlay -->
     <div v-if="isLoading"
-      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-[999]">
+      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-999">
       <div class="flex flex-col items-center">
         <div class="animate-spin rounded-full h-20 w-20 border-t-4 border-b-4 border-[#02c9ef]"></div>
         <p class="text-white mt-4 text-xl">Laden...</p>
@@ -47,11 +45,11 @@
     </div>
 
     <!-- Timeline -->
-    <div class="relative bg-gray-300 rounded-lg" style="min-height: 1240px;">
+    <div class="relative rounded-lg" style="min-height: 1240px;">
       <div v-for="(t, i) in timeLabels" :key="i"
         class="absolute flex items-center"
         :style="{ top: (i * 80) + 'px', left:'0', height:'80px', width:'100%' }">
-        <div class="w-[100px] text-right pr-10 text-[28px] text-[#03CAED]">
+        <div class="w-[100px] font-jockey text-right pr-10 text-[28px] text-[#03CAED]">
           {{ t }}
         </div>
         <div style="flex:1; height: 3px; background: orange;"></div>
@@ -70,17 +68,11 @@
           {{ r.amountPeople }}p
         </div>
       </div>
-
-      <!-- Geen reserveringen message -->
-      <div v-if="reservationsForSelectedDay.length === 0" 
-        class="absolute inset-0 flex items-center justify-center">
-        <p class="text-gray-500 text-xl">Geen reserveringen op deze dag</p>
-      </div>
     </div>
 
     <!-- RIGHT DRAWER -->
     <div v-if="showDrawer" class="fixed inset-0 z-[176] flex" aria-hidden="false">
-      <div class="fixed inset-0 bg-black bg-opacity-50" @click="closeDrawer"></div>
+      <div class="fixed inset-0" @click="closeDrawer"></div>
 
       <aside class="ml-auto bg-white shadow-xl h-full w-[620px] p-6 transform transition-transform relative z-10 overflow-y-auto">
         <div class="flex justify-between items-start mb-4">
@@ -103,7 +95,7 @@
             v-for="t in timeSlots"
             :key="t"
             @click="!isTimeFullForEdit(t) && (editTime = t)"
-            class="p-2 border rounded text-sm transition"
+            class="w-[75px] p-2 border rounded text-sm transition"
             :class="{
               'bg-[#FF8000] text-white': editTime === t,
               'hover:bg-gray-200 cursor-pointer': !isTimeFullForEdit(t),
@@ -158,6 +150,7 @@
     </div>
 
   </main>
+  <Footer />
 </template>
 
 <script setup>
@@ -165,6 +158,7 @@ import { ref, computed, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import NavBar from "../components/NavBar.vue";
 import NavbarMobile from "../components/NavbarMobile.vue";
+import Footer from "../components/Footer.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -201,6 +195,35 @@ const timeSlots = [
 ];
 
 const capacity = computed(() => restaurant.value?.maxcapacity || 60);
+
+// -------------------- Authentication Check --------------------
+function checkAuth() {
+  const isLoggedIn = localStorage.getItem('isLoggedIn');
+  const restaurantData = localStorage.getItem('restaurantData');
+  
+  if (isLoggedIn !== 'true' || !restaurantData) {
+    alert('Je moet inloggen om toegang te krijgen tot het dashboard');
+    router.push('/restaurant/login');
+    return false;
+  }
+  
+  try {
+    const data = JSON.parse(restaurantData);
+    
+    // Check of het ingelogde restaurant hetzelfde is als het dashboard ID
+    if (data.id !== restaurantId.value) {
+      alert('Je hebt geen toegang tot dit dashboard');
+      router.push(`/restaurant/${data.id}/dashboard`);
+      return false;
+    }
+    
+    return true;
+  } catch (e) {
+    console.error('Error parsing restaurant data:', e);
+    router.push('/restaurant/login');
+    return false;
+  }
+}
 
 // -------------------- Load restaurant info --------------------
 function loadRestaurant() {
@@ -240,9 +263,15 @@ function loadReservations() {
 onMounted(() => {
   if (!restaurantId.value) {
     alert("Geen restaurant geselecteerd");
-    router.push('/restaurants');
+    router.push('/');
     return;
   }
+  
+  // Check authenticatie voordat data wordt geladen
+  if (!checkAuth()) {
+    return;
+  }
+  
   loadRestaurant();
   loadReservations();
 });
