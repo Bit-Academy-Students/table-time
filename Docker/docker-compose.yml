@@ -48,10 +48,10 @@ services:
     build: ./phpunit
     container_name: phpunit
     volumes:
-      - ../src:/var/www/html
-    depends_on:
-      - php
-    entrypoint: ["tail", "-f", "/dev/null"]
+      - ../src:/var/www/html/src
+      - ../tests:/var/www/html/tests
+      - ../vendor:/var/www/html/vendor
+    working_dir: /var/www/html
     networks:
       - app-network
 

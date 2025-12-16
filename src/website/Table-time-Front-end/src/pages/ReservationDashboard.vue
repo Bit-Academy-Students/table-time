@@ -1,3 +1,413 @@
+<!--
+/**
+ * Bestandsnaam: RestaurantDashboard.vue
+ *
+ * Beschrijving:
+ * Dit script verzorgt de volledige logica van het restaurantdashboard.
+ * Het dashboard toont reserveringen per dag in een tijdlijn, biedt
+ * mogelijkheden om reserveringen te bewerken of te annuleren en
+ * controleert of de gebruiker geautoriseerd is.
+ *
+ * Auteur: Alexander Zoet
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.0
+ * - Laatste wijziging: <datum invullen>
+ * - Beheer: Git
+ */
+-->
+<script setup>
+/*
+ * Vue Composition API utilities
+ */
+import { ref, computed, onMounted } from "vue";
+
+/*
+ * Vue Router voor navigatie en ophalen van routeparameters
+ */
+import { useRouter, useRoute } from "vue-router";
+
+/*
+ * Layout componenten
+ */
+import NavBar from "../components/NavBar.vue";
+import NavbarMobile from "../components/NavbarMobile.vue";
+import Footer from "../components/Footer.vue";
+
+/*
+ * Router instanties
+ */
+const router = useRouter();
+const route = useRoute();
+
+/*
+ * Configuratie van de tijdlijn (start- en einduur)
+ */
+const startHour = 8;
+const endHour = 23.5;
+
+/*
+ * State: reserveringen en restaurantgegevens
+ */
+const reservations = ref([]);
+const restaurant = ref(null);
+const restaurantId = ref(Number(route.params.id));
+
+/*
+ * Geselecteerde datum (standaard vandaag)
+ */
+const selectedDate = ref(new Date().toISOString().split("T")[0]);
+
+/*
+ * Drawer (detailbewerking reservering)
+ */
+const showDrawer = ref(false);
+const selectedReservation = ref(null);
+
+/*
+ * Edit-formulier state
+ */
+const editDate = ref("");
+const editTime = ref("");
+const editDuration = ref("01:00");
+const editPeople = ref("");
+const editEmail = ref("");
+
+/*
+ * Loaders voor UX-feedback
+ */
+const isLoading = ref(false);
+const loadingSave = ref(false);
+const loadingDelete = ref(false);
+
+/*
+ * Beschikbare tijdslots voor reserveringen
+ */
+const timeSlots = [
+  "12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30",
+  "16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30",
+  "20:00","20:30","21:00","21:30"
+];
+
+/**
+ * Maximale capaciteit van het restaurant
+ */
+const capacity = computed(() => restaurant.value?.maxcapacity || 60);
+
+/**
+ * Controleert of de gebruiker geauthenticeerd is
+ *
+ * Verifieert of de ingelogde restaurant-ID overeenkomt
+ * met het dashboard dat wordt bezocht.
+ */
+function checkAuth() {
+  const isLoggedIn = localStorage.getItem('isLoggedIn');
+  const restaurantData = localStorage.getItem('restaurantData');
+
+  if (isLoggedIn !== 'true' || !restaurantData) {
+    alert('Je moet inloggen om toegang te krijgen tot het dashboard');
+    router.push('/restaurant/login');
+    return false;
+  }
+
+  try {
+    const data = JSON.parse(restaurantData);
+
+    if (data.id !== restaurantId.value) {
+      alert('Je hebt geen toegang tot dit dashboard');
+      router.push(`/restaurant/${data.id}/dashboard`);
+      return false;
+    }
+
+    return true;
+  } catch (e) {
+    console.error('Fout bij parsen restaurantdata:', e);
+    router.push('/restaurant/login');
+    return false;
+  }
+}
+
+/**
+ * Laadt restaurantgegevens vanuit de backend
+ */
+function loadRestaurant() {
+  fetch(`http://localhost:8080/Restaurants/${restaurantId.value}`)
+    .then(res => res.json())
+    .then(data => {
+      restaurant.value = data.Restaurant || data;
+    })
+    .catch(e => {
+      console.error("Fout bij laden restaurant:", e);
+    });
+}
+
+/**
+ * Laadt alle reserveringen voor het geselecteerde restaurant
+ */
+function loadReservations() {
+  isLoading.value = true;
+
+  fetch(`http://localhost:8080/Reservations`)
+    .then(r => r.json())
+    .then(data => {
+      const all = data.Reservations || [];
+      reservations.value = all.filter(r =>
+        r.restaurant && r.restaurant.id === restaurantId.value
+      );
+    })
+    .catch(e => {
+      console.error("Fout bij laden reserveringen:", e);
+      reservations.value = [];
+    })
+    .finally(() => {
+      isLoading.value = false;
+    });
+}
+
+/*
+ * Initialisatie bij laden van de pagina
+ */
+onMounted(() => {
+  if (!restaurantId.value) {
+    alert("Geen restaurant geselecteerd");
+    router.push('/');
+    return;
+  }
+
+  if (!checkAuth()) return;
+
+  loadRestaurant();
+  loadReservations();
+});
+
+/**
+ * Hulpfuncties voor datum- en tijdverwerking
+ */
+function parseDateToDecimal(dateString) {
+  const [, time] = dateString.split(" ");
+  const [h, m] = time.split(":").map(Number);
+  return h + m / 60;
+}
+
+function formatTimeFromDate(dateString) {
+  const [, time] = dateString.split(" ");
+  return time.slice(0, 5);
+}
+
+function pad(n) {
+  return String(n).padStart(2, "0");
+}
+
+function formatDateTimeForAPI(dateObj) {
+  return `${dateObj.getFullYear()}-${pad(dateObj.getMonth()+1)}-${pad(dateObj.getDate())} ${pad(dateObj.getHours())}:${pad(dateObj.getMinutes())}:00`;
+}
+
+/**
+ * Verdeelt overlappende reserveringen over kolommen
+ * zodat ze visueel naast elkaar worden weergegeven
+ */
+function assignColumns(resList) {
+  const sorted = [...resList].sort(
+    (a, b) => parseDateToDecimal(a.startDate) - parseDateToDecimal(b.startDate)
+  );
+
+  const columns = [];
+
+  sorted.forEach(res => {
+    const start = parseDateToDecimal(res.startDate);
+    const end = parseDateToDecimal(res.endDate);
+    let placed = false;
+
+    for (let i = 0; i < columns.length; i++) {
+      const last = columns[i][columns[i].length - 1];
+      if (start >= parseDateToDecimal(last.endDate)) {
+        columns[i].push(res);
+        res.columnIndex = i;
+        placed = true;
+        break;
+      }
+    }
+
+    if (!placed) {
+      columns.push([res]);
+      res.columnIndex = columns.length - 1;
+    }
+  });
+
+  return sorted;
+}
+
+/**
+ * Reserveringen gefilterd op geselecteerde datum
+ */
+const reservationsForSelectedDay = computed(() => {
+  const today = reservations.value.filter(r =>
+    r.startDate.startsWith(selectedDate.value)
+  );
+  return assignColumns(today);
+});
+
+/**
+ * Berekent de inline CSS-styling van een reservering in de tijdlijn
+ */
+function reservationStyle(r) {
+  const start = parseDateToDecimal(r.startDate);
+  const end = parseDateToDecimal(r.endDate);
+
+  return {
+    position: "absolute",
+    top: (start - startHour) * 80 + "px",
+    left: (120 + r.columnIndex * 140) + "px",
+    width: "130px",
+    height: (end - start) * 80 + "px",
+    background: "#02c9ef",
+    borderRadius: "6px",
+    color: "white",
+    padding: "8px",
+    fontSize: "20px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    cursor: "pointer",
+    zIndex: 10
+  };
+}
+
+/**
+ * Opent de drawer en vult het edit-formulier
+ */
+function openDrawerFor(res) {
+  selectedReservation.value = res;
+  editDate.value = res.startDate.split(" ")[0];
+  editTime.value = formatTimeFromDate(res.startDate);
+  editPeople.value = res.amountPeople;
+  editEmail.value = res.email;
+
+  const diff = (new Date(res.endDate) - new Date(res.startDate)) / 60000;
+  editDuration.value = diff === 60 ? "01:00" : diff === 90 ? "01:30" : "02:00";
+
+  showDrawer.value = true;
+}
+
+/**
+ * Sluit de drawer
+ */
+function closeDrawer() {
+  showDrawer.value = false;
+  selectedReservation.value = null;
+}
+
+/**
+ * Controleert of een tijdslot beschikbaar is
+ */
+function isTimeFullForEdit(time) {
+  if (!editDate.value || !editPeople.value) return true;
+
+  const startCheck = new Date(`${editDate.value}T${time}:00`);
+  const now = new Date();
+  if (startCheck < now) return true;
+
+  const [h, m] = editDuration.value.split(":").map(Number);
+  const endCheck = new Date(startCheck);
+  endCheck.setHours(endCheck.getHours() + h);
+  endCheck.setMinutes(endCheck.getMinutes() + m);
+
+  const used = reservations.value
+    .filter(r =>
+      r.id !== selectedReservation.value?.id &&
+      startCheck < new Date(r.endDate) &&
+      endCheck > new Date(r.startDate)
+    )
+    .reduce((sum, r) => sum + r.amountPeople, 0);
+
+  return used + Number(editPeople.value) > capacity.value;
+}
+
+/**
+ * Slaat wijzigingen aan een reservering op
+ */
+function saveChanges() {
+  if (!selectedReservation.value) return;
+  loadingSave.value = true;
+
+  const [h, m] = editTime.value.split(":").map(Number);
+  const [dh, dm] = editDuration.value.split(":").map(Number);
+
+  const start = new Date(editDate.value);
+  start.setHours(h, m, 0);
+
+  const end = new Date(start);
+  end.setHours(end.getHours() + dh);
+  end.setMinutes(end.getMinutes() + dm);
+
+  fetch(`http://localhost:8080/Reservations/${selectedReservation.value.id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      startDate: formatDateTimeForAPI(start),
+      endDate: formatDateTimeForAPI(end),
+      amountPeople: Number(editPeople.value),
+      email: editEmail.value
+    })
+  })
+    .then(() => {
+      loadReservations();
+      closeDrawer();
+      alert("Reservering succesvol aangepast!");
+    })
+    .catch(() => alert("Opslaan mislukt"))
+    .finally(() => loadingSave.value = false);
+}
+
+/**
+ * Verwijdert een reservering
+ */
+function deleteReservation() {
+  if (!selectedReservation.value) return;
+  if (!confirm("Weet je zeker dat je deze reservering wilt annuleren?")) return;
+
+  loadingDelete.value = true;
+
+  fetch(`http://localhost:8080/Reservations/${selectedReservation.value.id}`, {
+    method: "DELETE"
+  })
+    .then(() => {
+      loadReservations();
+      closeDrawer();
+      alert("Reservering succesvol geannuleerd!");
+    })
+    .catch(() => alert("Verwijderen mislukt"))
+    .finally(() => loadingDelete.value = false);
+}
+
+/**
+ * Navigatie tussen dagen
+ */
+function nextDay() {
+  const d = new Date(selectedDate.value);
+  d.setDate(d.getDate() + 1);
+  selectedDate.value = d.toISOString().split("T")[0];
+}
+
+function prevDay() {
+  const d = new Date(selectedDate.value);
+  d.setDate(d.getDate() - 1);
+  selectedDate.value = d.toISOString().split("T")[0];
+}
+
+/**
+ * Tijdlabels voor de tijdlijn
+ */
+const timeLabels = computed(() => {
+  const labels = [];
+  for (let h = startHour; h <= endHour; h++) {
+    if (h % 1 === 0) labels.push(`${Math.floor(h)}:00`);
+  }
+  return labels;
+});
+</script>
+
 <template>
   <NavBar />
   <NavbarMobile />
@@ -35,7 +445,6 @@
       </button>
     </div>
 
-    <!-- LOADER overlay -->
     <div v-if="isLoading"
       class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-999">
       <div class="flex flex-col items-center">
@@ -44,7 +453,6 @@
       </div>
     </div>
 
-    <!-- Timeline -->
     <div class="relative rounded-lg" style="min-height: 1240px;">
       <div v-for="(t, i) in timeLabels" :key="i"
         class="absolute flex items-center"
@@ -55,7 +463,6 @@
         <div style="flex:1; height: 3px; background: orange;"></div>
       </div>
 
-      <!-- Reservations -->
       <div v-for="r in reservationsForSelectedDay"
         :key="r.id"
         :style="reservationStyle(r)"
@@ -70,7 +477,6 @@
       </div>
     </div>
 
-    <!-- RIGHT DRAWER -->
     <div v-if="showDrawer" class="fixed inset-0 z-[176] flex" aria-hidden="false">
       <div class="fixed inset-0" @click="closeDrawer"></div>
 
@@ -153,371 +559,7 @@
   <Footer />
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import NavBar from "../components/NavBar.vue";
-import NavbarMobile from "../components/NavbarMobile.vue";
-import Footer from "../components/Footer.vue";
 
-const router = useRouter();
-const route = useRoute();
-
-const startHour = 8;
-const endHour = 23.5;
-
-const reservations = ref([]);
-const selectedDate = ref(new Date().toISOString().split("T")[0]);
-const restaurant = ref(null);
-const restaurantId = ref(Number(route.params.id));
-
-// Drawer / popup
-const showDrawer = ref(false);
-const selectedReservation = ref(null);
-
-// Edit form
-const editDate = ref("");
-const editTime = ref("");
-const editDuration = ref("01:00");
-const editPeople = ref("");
-const editEmail = ref("");
-
-// Loaders
-const isLoading = ref(false);
-const loadingSave = ref(false);
-const loadingDelete = ref(false);
-
-// Tijdslots
-const timeSlots = [
-  "12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30",
-  "16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30",
-  "20:00","20:30","21:00","21:30"
-];
-
-const capacity = computed(() => restaurant.value?.maxcapacity || 60);
-
-// -------------------- Authentication Check --------------------
-function checkAuth() {
-  const isLoggedIn = localStorage.getItem('isLoggedIn');
-  const restaurantData = localStorage.getItem('restaurantData');
-  
-  if (isLoggedIn !== 'true' || !restaurantData) {
-    alert('Je moet inloggen om toegang te krijgen tot het dashboard');
-    router.push('/restaurant/login');
-    return false;
-  }
-  
-  try {
-    const data = JSON.parse(restaurantData);
-    
-    // Check of het ingelogde restaurant hetzelfde is als het dashboard ID
-    if (data.id !== restaurantId.value) {
-      alert('Je hebt geen toegang tot dit dashboard');
-      router.push(`/restaurant/${data.id}/dashboard`);
-      return false;
-    }
-    
-    return true;
-  } catch (e) {
-    console.error('Error parsing restaurant data:', e);
-    router.push('/restaurant/login');
-    return false;
-  }
-}
-
-// -------------------- Load restaurant info --------------------
-function loadRestaurant() {
-  fetch(`http://localhost:8080/Restaurants/${restaurantId.value}`)
-    .then(res => res.json())
-    .then(data => {
-      restaurant.value = data.Restaurant || data;
-    })
-    .catch(e => {
-      console.error("Fout bij laden restaurant:", e);
-    });
-}
-
-// -------------------- Load reservations voor specifiek restaurant --------------------
-function loadReservations() {
-  isLoading.value = true;
-  
-  fetch(`http://localhost:8080/Reservations`)
-    .then((r) => r.json())
-    .then((data) => {
-      const allReservations = data.Reservations || [];
-      
-      // Filter alleen reserveringen van dit specifieke restaurant
-      reservations.value = allReservations.filter(r => 
-        r.restaurant && r.restaurant.id === restaurantId.value
-      );
-    })
-    .catch((e) => {
-      console.error("Fout bij laden:", e);
-      reservations.value = [];
-    })
-    .finally(() => {
-      isLoading.value = false;
-    });
-}
-
-onMounted(() => {
-  if (!restaurantId.value) {
-    alert("Geen restaurant geselecteerd");
-    router.push('/');
-    return;
-  }
-  
-  // Check authenticatie voordat data wordt geladen
-  if (!checkAuth()) {
-    return;
-  }
-  
-  loadRestaurant();
-  loadReservations();
-});
-
-// -------------------- Date/time helpers --------------------
-function parseDateToDecimal(dateString) {
-  const [, time] = dateString.split(" ");
-  const [h, m] = time.split(":").map(Number);
-  return h + m / 60;
-}
-
-function formatTimeFromDate(dateString) {
-  const [, time] = dateString.split(" ");
-  const [h, m] = time.split(":");
-  return `${h}:${m}`;
-}
-
-function pad(n) { return String(n).padStart(2, "0"); }
-
-function formatDateTimeForAPI(dateObj) {
-  return `${dateObj.getFullYear()}-${pad(dateObj.getMonth()+1)}-${pad(dateObj.getDate())} ${pad(dateObj.getHours())}:${pad(dateObj.getMinutes())}:00`;
-}
-
-// -------------------- Timeline column algorithm --------------------
-function assignColumns(resList) {
-  const sorted = [...resList].sort((a, b) =>
-    parseDateToDecimal(a.startDate) - parseDateToDecimal(b.startDate)
-  );
-
-  const columns = [];
-
-  sorted.forEach(res => {
-    const start = parseDateToDecimal(res.startDate);
-    const end = parseDateToDecimal(res.endDate);
-
-    let assigned = false;
-
-    for (let i = 0; i < columns.length; i++) {
-      const last = columns[i][columns[i].length - 1];
-      const lastEnd = parseDateToDecimal(last.endDate);
-
-      if (start >= lastEnd) {
-        columns[i].push(res);
-        res.columnIndex = i;
-        assigned = true;
-        break;
-      }
-    }
-
-    if (!assigned) {
-      columns.push([res]);
-      res.columnIndex = columns.length - 1;
-    }
-  });
-
-  return sorted;
-}
-
-const reservationsForSelectedDay = computed(() => {
-  const today = reservations.value.filter(r =>
-    r.startDate.startsWith(selectedDate.value)
-  );
-  return assignColumns(today);
-});
-
-// -------------------- Reservation styles --------------------
-function reservationStyle(r) {
-  const start = parseDateToDecimal(r.startDate);
-  const end = parseDateToDecimal(r.endDate);
-
-  const top = (start - startHour) * 80;
-  const height = (end - start) * 80;
-
-  const columnWidth = 130;
-  const gap = 10;
-
-  return {
-    position: "absolute",
-    top: top + "px",
-    left: (120 + r.columnIndex * (columnWidth + gap)) + "px",
-    width: columnWidth + "px",
-    height: height + "px",
-    background: "#02c9ef",
-    borderRadius: "6px",
-    color: "white",
-    padding: "8px",
-    fontSize: "20px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    cursor: "pointer",
-    zIndex: 10
-  };
-}
-
-// -------------------- Drawer open/close & prefill --------------------
-function openDrawerFor(res) {
-  selectedReservation.value = res;
-  editDate.value = res.startDate.split(" ")[0];
-  editTime.value = formatTimeFromDate(res.startDate);
-  
-  const start = new Date(res.startDate);
-  const end = new Date(res.endDate);
-  const diffMinutes = Math.round((end - start) / 60000);
-  if (diffMinutes === 60) editDuration.value = "01:00";
-  else if (diffMinutes === 90) editDuration.value = "01:30";
-  else editDuration.value = "02:00";
-  
-  editPeople.value = res.amountPeople;
-  editEmail.value = res.email;
-
-  showDrawer.value = true;
-}
-
-function closeDrawer() {
-  showDrawer.value = false;
-  selectedReservation.value = null;
-}
-
-// -------------------- isTimeFull checker --------------------
-function isTimeFullForEdit(time) {
-  if (!editDate.value) return true;
-  if (!editPeople.value || Number(editPeople.value) <= 0) return true;
-
-  const startCheck = new Date(`${editDate.value}T${time}:00`);
-  const now = new Date();
-  if (startCheck.getTime() < now.getTime()) return true;
-
-  const [durH, durM] = editDuration.value.split(":").map(Number);
-  const endCheck = new Date(startCheck);
-  endCheck.setHours(endCheck.getHours() + durH);
-  endCheck.setMinutes(endCheck.getMinutes() + durM);
-
-  const overlappingPeople = reservations.value
-    .filter((r) => {
-      if (!selectedReservation.value) return true;
-      if (r.id === selectedReservation.value.id) return false;
-
-      const start = new Date(r.startDate);
-      const end = new Date(r.endDate);
-      return startCheck < end && endCheck > start;
-    })
-    .reduce((sum, r) => sum + r.amountPeople, 0);
-
-  return (overlappingPeople + Number(editPeople.value)) > capacity.value;
-}
-
-// -------------------- Save / Delete --------------------
-function saveChanges() {
-  if (!selectedReservation.value) return;
-  loadingSave.value = true;
-
-  try {
-    const [hours, minutes] = editTime.value.split(":").map(Number);
-    const [durHours, durMinutes] = editDuration.value.split(":").map(Number);
-
-    const start = new Date(editDate.value);
-    start.setHours(hours, minutes, 0, 0);
-
-    const end = new Date(start);
-    end.setHours(end.getHours() + durHours);
-    end.setMinutes(end.getMinutes() + durMinutes);
-
-    const body = {
-      startDate: formatDateTimeForAPI(start),
-      endDate: formatDateTimeForAPI(end),
-      amountPeople: Number(editPeople.value),
-      email: editEmail.value
-    };
-
-    fetch(`http://localhost:8080/Reservations/${selectedReservation.value.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Niet succesvol");
-        return res.json().catch(() => ({}));
-      })
-      .then(() => {
-        loadReservations();
-        closeDrawer();
-        alert("Reservering succesvol aangepast!");
-      })
-      .catch((e) => {
-        console.error("Fout bij opslaan:", e);
-        alert("Opslaan is mislukt.");
-      })
-      .finally(() => {
-        loadingSave.value = false;
-      });
-  } catch (err) {
-    console.error(err);
-    loadingSave.value = false;
-  }
-}
-
-function deleteReservation() {
-  if (!selectedReservation.value) return;
-  if (!confirm("Weet je zeker dat je deze reservering wilt annuleren?")) return;
-  
-  loadingDelete.value = true;
-
-  fetch(`http://localhost:8080/Reservations/${selectedReservation.value.id}`, {
-    method: "DELETE"
-  })
-    .then((res) => {
-      if (!res.ok) throw new Error("Niet succesvol");
-      return res.text().catch(() => "");
-    })
-    .then(() => {
-      loadReservations();
-      closeDrawer();
-      alert("Reservering succesvol geannuleerd!");
-    })
-    .catch((e) => {
-      console.error("Fout bij verwijderen:", e);
-      alert("Verwijderen is mislukt.");
-    })
-    .finally(() => {
-      loadingDelete.value = false;
-    });
-}
-
-// -------------------- Navigation days --------------------
-function nextDay() {
-  const d = new Date(selectedDate.value);
-  d.setDate(d.getDate() + 1);
-  selectedDate.value = d.toISOString().split("T")[0];
-}
-
-function prevDay() {
-  const d = new Date(selectedDate.value);
-  d.setDate(d.getDate() - 1);
-  selectedDate.value = d.toISOString().split("T")[0];
-}
-
-const timeLabels = computed(() => {
-  const labels = [];
-  for (let h = startHour; h <= endHour; h++) {
-    const hour = Math.floor(h);
-    if (h % 1 === 0) labels.push(`${hour}:00`);
-  }
-  return labels;
-});
-</script>
 
 <style scoped>
 @keyframes spin {

@@ -1,3 +1,181 @@
+<!--
+/**
+ * Bestandsnaam: Login.vue
+ *
+ * Beschrijving:
+ * Dit bestand bevat de logica voor het registreren van een restaurant.
+ * Het script verzorgt formulierbeheer, validatie, communicatie met de backend
+ * en gebruikersfeedback via statusmeldingen.
+ *
+ * Auteur: Alexander Zoet
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.0
+ * - Laatste wijziging: <datum invullen>
+ * - Beheer: Git
+ */
+-->
+<script setup>
+/*
+ * Importeert de navigatiecomponent voor desktopgebruik
+ */
+import NavBar from '../components/NavBar.vue';
+
+/*
+ * Importeert de navigatiecomponent voor mobiel gebruik
+ */
+import NavbarMobile from '../components/NavbarMobile.vue';
+
+/*
+ * Importeert de footercomponent
+ */
+import Footer from '../components/Footer.vue';
+
+/*
+ * Vue Router composable voor programmatische navigatie
+ */
+import { useRouter } from 'vue-router';
+
+/*
+ * Router-instantie voor navigatie na succesvolle registratie
+ */
+const router = useRouter();
+</script>
+
+
+<script>
+export default {
+    /**
+     * Component state
+     *
+     * Bevat formulierdata voor restaurantregistratie
+     * en statusmeldingen voor gebruikersfeedback.
+     */
+    data() {
+        return {
+            form: {
+                naam: '',
+                email: '',
+                locatie: '',
+                telefoonnummer: '',
+                wachtwoord: '',
+                maxCapacity: 50,
+                afbeelding: ''
+            },
+            message: '',
+            messageType: ''
+        };
+    },
+
+    methods: {
+        /**
+         * Verwerkt het registratieformulier
+         *
+         * Valideert verplichte velden, stelt het request body object samen
+         * en verstuurt de gegevens naar de backend API.
+         *
+         * Bij succes wordt een bevestigingsbericht getoond en de gebruiker
+         * automatisch doorgestuurd naar de inlogpagina.
+         */
+        async submitForm() {
+            try {
+                // Basisvalidatie van verplichte velden
+                if (!this.form.naam || !this.form.email || !this.form.wachtwoord) {
+                    this.showMessage('Vul alle verplichte velden in', 'error');
+                    return;
+                }
+
+                /*
+                 * Samenstellen van het request body object
+                 * Optionele velden worden als null verzonden
+                 */
+                const body = {
+                    naam: this.form.naam,
+                    email: this.form.email,
+                    wachtwoord: this.form.wachtwoord,
+                    locatie: this.form.locatie || null,
+                    telefoonnummer: this.form.telefoonnummer
+                        ? this.form.telefoonnummer.replace(/\s+/g, '')
+                        : null,
+                    maxCapacity: this.form.maxCapacity || 50,
+                };
+
+                console.log('Verzenden naar API:', body);
+
+                // API-aanroep voor restaurantregistratie
+                const response = await fetch("http://localhost:8080/Restaurants", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                // Controle op HTTP-fouten
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error ${response.status}: ${errorText}`);
+                }
+
+                await response.json();
+
+                // Succesmelding en automatische redirect
+                this.showMessage(
+                    'Restaurant succesvol geregistreerd! Je wordt doorgestuurd naar de inlogpagina...',
+                    'success'
+                );
+
+                setTimeout(() => {
+                    this.$router.push('/restaurant/login');
+                }, 2000);
+
+            } catch (error) {
+                console.error('Registratiefout:', error);
+                this.showMessage(
+                    'Er is iets misgegaan bij het registreren: ' + error.message,
+                    'error'
+                );
+            }
+        },
+
+        /**
+         * Toont een statusmelding aan de gebruiker
+         *
+         * @param {string} msg - De te tonen melding
+         * @param {string} type - Type melding ('success' of 'error')
+         */
+        showMessage(msg, type) {
+            this.message = msg;
+            this.messageType = type;
+
+            // Verberg foutmeldingen automatisch na 5 seconden
+            if (type === 'error') {
+                setTimeout(() => {
+                    this.message = '';
+                    this.messageType = '';
+                }, 5000);
+            }
+        },
+
+        /**
+         * Reset het formulier naar de standaardwaarden
+         */
+        resetForm() {
+            this.form = {
+                naam: '',
+                email: '',
+                locatie: '',
+                telefoonnummer: '',
+                wachtwoord: '',
+                maxCapacity: 50,
+                afbeelding: ''
+            };
+        }
+    }
+};
+</script>
+
 <template>
     <NavBar />
     <NavbarMobile />
@@ -45,12 +223,6 @@
                 class="w-full p-3 border rounded"
                 min="1"
             />
-            <input 
-                v-model="form.afbeelding" 
-                type="text" 
-                placeholder="Afbeelding URL (optioneel)" 
-                class="w-full p-3 border rounded"
-            />
             <button 
                 type="submit" 
                 class="w-full bg-[#03CAED] text-white p-3 rounded hover:bg-[#02B5D5] transition"
@@ -74,116 +246,8 @@
     <Footer />
 </template>
 
-<script setup>
-import NavBar from '../components/NavBar.vue';
-import NavbarMobile from '../components/NavbarMobile.vue';
-import Footer from '../components/Footer.vue';
-import { useRouter } from 'vue-router';
 
-const router = useRouter();
-</script>
 
-<script>
-
-export default {
-    data() {
-        return {
-            form: {
-                naam: '',
-                email: '',
-                locatie: '',
-                telefoonnummer: '',
-                wachtwoord: '',
-                maxCapacity: 50,
-                afbeelding: ''
-            },
-            message: '',
-            messageType: ''
-        };
-    },
-    methods: {
-        async submitForm() {
-            try {
-                // Validatie
-                if (!this.form.naam || !this.form.email || !this.form.wachtwoord) {
-                    this.showMessage('Vul alle verplichte velden in', 'error');
-                    return;
-                }
-
-                // Maak het request body object
-                const body = {
-                    naam: this.form.naam,
-                    email: this.form.email,
-                    wachtwoord: this.form.wachtwoord,
-                    locatie: this.form.locatie || null,
-                    // Verwijder spaties en andere tekens uit telefoonnummer
-                    telefoonnummer: this.form.telefoonnummer ? this.form.telefoonnummer.replace(/\s+/g, '') : null,
-                    maxCapacity: this.form.maxCapacity || 50,
-                    afbeelding: this.form.afbeelding || null
-                };
-
-                console.log('Verzenden naar API:', body);
-                console.log('Request body as JSON:', JSON.stringify(body));
-
-                // Verstuur naar de API
-                const response = await fetch("http://localhost:8080/Restaurants", {
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json" 
-                    },
-                    body: JSON.stringify(body)
-                });
-
-                // Controleer of het request succesvol was
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('Server error response:', errorText);
-                    throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
-                }
-
-                const data = await response.json();
-                console.log('Success:', data);
-
-                this.showMessage('Restaurant succesvol geregistreerd! Je wordt doorgestuurd naar de inlogpagina...', 'success');
-
-                // Wacht 2 seconden en ga dan naar de inlogpagina
-                setTimeout(() => {
-                    this.$router.push('/restaurant-login');
-                }, 2000);
-
-            } catch (error) {
-                console.error('Error:', error);
-                this.showMessage('Er is iets misgegaan bij het registreren: ' + error.message, 'error');
-            }
-        },
-
-        showMessage(msg, type) {
-            this.message = msg;
-            this.messageType = type;
-
-            // Verberg bericht na 5 seconden (alleen bij error)
-            if (type === 'error') {
-                setTimeout(() => {
-                    this.message = '';
-                    this.messageType = '';
-                }, 5000);
-            }
-        },
-
-        resetForm() {
-            this.form = {
-                naam: '',
-                email: '',
-                locatie: '',
-                telefoonnummer: '',
-                wachtwoord: '',
-                maxCapacity: 50,
-                afbeelding: ''
-            };
-        }
-    }
-};
-</script>
 
 <style scoped>
 input:focus {

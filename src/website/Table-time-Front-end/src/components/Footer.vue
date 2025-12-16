@@ -1,3 +1,21 @@
+<!--
+/**
+ * Bestandsnaam: Footer.vue
+ *
+ * Beschrijving:
+ * Dit component toont de footer van de applicatie.
+ * De footer bevat het bedrijfslogo, navigatielinks naar belangrijke pagina's
+ * en bedrijfsinformatie zoals copyright.
+ *
+ * Auteur: Alexander Zoet
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.0
+ * - Laatste wijziging: <datum invullen>
+ * - Beheer: Git
+ */
+-->
 <template>
     <footer class="bg-white border-t-4 border-[#FF8000] flex flex-col justify-center p-4 mt-4">
         <div class="flex flex-row justify-around p-4 mt-4">

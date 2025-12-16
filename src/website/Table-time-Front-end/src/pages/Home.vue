@@ -1,13 +1,61 @@
+<!--
+/**
+ * Bestandsnaam: Home.vue
+ *
+ * Beschrijving:
+ * Dit script bevat de logica voor de homepage van de applicatie.
+ * De pagina toont algemene informatie over Table Time en schakelt
+ * dynamisch tussen content voor gasten en restauranteigenaren.
+ *
+ * Auteur: Alexander Zoet
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.6.0
+ * - Laatste wijziging: <datum invullen>
+ * - Beheer: Git
+ */
+-->
 <script setup>
-import Footer from '../components/Footer.vue';
-import GuestText from '../components/homePageText/GuestText.vue';
-import RestaurantOwnersText from '../components/homePageText/RestaurantOwnersText.vue';
+/*
+ * Importeert de navigatiecomponent voor desktopgebruik
+ */
 import NavBar from '../components/NavBar.vue';
-import { ref } from 'vue';
+
+/*
+ * Importeert de navigatiecomponent voor mobiel gebruik
+ */
 import NavbarMobile from '../components/NavbarMobile.vue';
 
-const active = ref('Guests');
+/*
+ * Importeert de footercomponent
+ */
+import Footer from '../components/Footer.vue';
 
+/*
+ * Importeert de tekstcomponent voor gasten
+ */
+import GuestText from '../components/homePageText/GuestText.vue';
+
+/*
+ * Importeert de tekstcomponent voor restauranteigenaren
+ */
+import RestaurantOwnersText from '../components/homePageText/RestaurantOwnersText.vue';
+
+/*
+ * Vue Composition API:
+ * ref wordt gebruikt voor het beheren van de actieve contentstatus
+ */
+import { ref } from 'vue';
+
+/**
+ * Actieve contentstatus
+ *
+ * Bepaalt welke sectie wordt weergegeven op de homepage:
+ * - 'Guests' voor gast-informatie
+ * - 'restaurantOwners' voor informatie voor restauranteigenaren
+ */
+const active = ref('Guests');
 </script>
 
 <template>

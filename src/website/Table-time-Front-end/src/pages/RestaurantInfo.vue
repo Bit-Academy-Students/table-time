@@ -1,4 +1,356 @@
-<template name="RestaurantInfo">
+<!--
+/**
+ * Bestandsnaam: RestaurantInfo.vue
+ *
+ * Beschrijving:
+ * Dit component toont publieke restaurantinformatie en faciliteert
+ * het plaatsen van een reservering door eindgebruikers.
+ *
+ * Functionaliteiten:
+ * - Ophalen en tonen van restaurantgegevens
+ * - Dynamische kalender met beschikbaarheidscontrole
+ * - Capaciteitscontrole per tijdslot
+ * - Reservering aanmaken via backend API
+ *
+ * Auteur: Alexander Zoet
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.0
+ * - Laatste wijziging: <datum invullen>
+ */
+-->
+<script setup>
+/*
+ * Globale layoutcomponenten
+ * Worden gebruikt voor consistente navigatie en footer
+ */
+import NavBar from '../components/NavBar.vue';
+import NavbarMobile from '../components/NavbarMobile.vue';
+import Footer from '../components/Footer.vue';
+</script>
+
+
+<script>
+export default {
+    /**
+     * Lokale state van het component
+     */
+    data() {
+        return {
+            /*
+             * Restaurantgegevens
+             */
+            restaurant: null,
+            restaurantId: null,
+
+            /*
+             * Alle reserveringen van dit restaurant
+             */
+            reservations: [],
+
+            /*
+             * UI-status bij verzenden reservering
+             */
+            submitting: false,
+
+            /*
+             * Reserveringsformulier
+             */
+            form: {
+                date: "",
+                time: "",
+                duration: "01:00",
+                amountPeople: null,
+                email: "",
+            },
+
+            /*
+             * Kalenderstatus
+             */
+            currentYear: new Date().getFullYear(),
+            currentMonth: new Date().getMonth(),
+            selectedDay: null,
+
+            /*
+             * Loading-indicator bij klikken op volle dag
+             */
+            loadingDay: false,
+            loadingDayDate: null,
+
+            /*
+             * Beschikbare tijdslots
+             */
+            timeSlots: [
+                "12:00","12:30","13:00","13:30","14:00","14:30",
+                "15:00","15:30","16:00","16:30","17:00","17:30",
+                "18:00","18:30","19:00","19:30","20:00","20:30",
+                "21:00","21:30"
+            ],
+        };
+    },
+
+    /**
+     * Afgeleide data
+     */
+    computed: {
+        /**
+         * Maximale capaciteit van het restaurant
+         */
+        capacity() {
+            return this.restaurant?.maxcapacity || 60;
+        },
+
+        /**
+         * Naam van de huidige maand (NL)
+         */
+        monthName() {
+            return new Date(this.currentYear, this.currentMonth)
+                .toLocaleString("nl-NL", { month: "long" });
+        },
+
+        /**
+         * Kalenderstructuur inclusief:
+         * - lege dagen
+         * - disabled status
+         * - kortingsindicatie
+         */
+        daysInMonth() {
+            const year = this.currentYear;
+            const month = this.currentMonth;
+            const total = new Date(year, month + 1, 0).getDate();
+            const firstDay = new Date(year, month, 1).getDay() || 7;
+            const days = [];
+
+            // Lege vakjes vóór de eerste dag
+            for (let i = 1; i < firstDay; i++) {
+                days.push({ empty: true });
+            }
+
+            for (let d = 1; d <= total; d++) {
+                const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+                const dateObj = new Date(dateString);
+                dateObj.setHours(0, 0, 0, 0);
+
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                /*
+                 * Zonder ingevuld formulier is elke dag disabled
+                 */
+                if (!this.form.amountPeople || Number(this.form.amountPeople) <= 0 || !this.form.duration) {
+                    days.push({
+                        empty: false,
+                        day: d,
+                        fullDate: dateString,
+                        disabled: true,
+                        discount: d >= 26 ? "-50%" : null,
+                    });
+                    continue;
+                }
+
+                /*
+                 * Controle of er minimaal één beschikbaar tijdslot is
+                 */
+                const anySlotHasSpace = this.timeSlots.some((slot) => {
+                    const startCheck = new Date(`${dateString}T${slot}:00`);
+                    if (startCheck < new Date()) return false;
+
+                    const [durH, durM] = this.form.duration.split(":").map(Number);
+                    const endCheck = new Date(startCheck);
+                    endCheck.setHours(endCheck.getHours() + durH);
+                    endCheck.setMinutes(endCheck.getMinutes() + durM);
+
+                    const overlappingPeople = this.reservations
+                        .filter(r => r.restaurant?.id === this.restaurantId)
+                        .filter(r => {
+                            const start = new Date(r.startDate.replace(' ', 'T'));
+                            const end = new Date(r.endDate.replace(' ', 'T'));
+                            return startCheck < end && endCheck > start;
+                        })
+                        .reduce((sum, r) => sum + r.amountPeople, 0);
+
+                    return overlappingPeople + Number(this.form.amountPeople) <= this.capacity;
+                });
+
+                days.push({
+                    empty: false,
+                    day: d,
+                    fullDate: dateString,
+                    disabled: dateObj < today || !anySlotHasSpace,
+                    discount: d >= 26 ? "-50%" : null,
+                });
+            }
+
+            return days;
+        },
+    },
+
+    /**
+     * Watchers resetten de selectie
+     * zodra duur of groepsgrootte wijzigt
+     */
+    watch: {
+        'form.duration'() {
+            this.selectedDay = null;
+            this.form.date = "";
+            this.form.time = "";
+        },
+        'form.amountPeople'() {
+            this.selectedDay = null;
+            this.form.date = "";
+            this.form.time = "";
+        }
+    },
+
+    /**
+     * Methoden
+     */
+    methods: {
+        /**
+         * Haalt restaurantgegevens op
+         */
+        loadRestaurant() {
+            fetch(`http://localhost:8080/Restaurants/${this.restaurantId}`)
+                .then(res => res.json())
+                .then(data => {
+                    this.restaurant = data.Restaurant || data;
+                })
+                .catch(e => console.error("Fout bij laden restaurant:", e));
+        },
+
+        /**
+         * Haalt alle reserveringen van dit restaurant op
+         */
+        loadReservations() {
+            fetch(`http://localhost:8080/Reservations`)
+                .then(res => res.json())
+                .then(data => {
+                    this.reservations = (data.Reservations || [])
+                        .filter(r => r.restaurant?.id === this.restaurantId);
+                })
+                .catch(() => this.reservations = []);
+        },
+
+        /**
+         * Navigatie tussen maanden
+         */
+        prevMonth() {
+            this.currentMonth === 0
+                ? (this.currentMonth = 11, this.currentYear--)
+                : this.currentMonth--;
+        },
+
+        nextMonth() {
+            this.currentMonth === 11
+                ? (this.currentMonth = 0, this.currentYear++)
+                : this.currentMonth++;
+        },
+
+        /**
+         * Selecteert een dag in de kalender
+         */
+        chooseDay(day) {
+            if (day.empty) return;
+
+            if (day.disabled) {
+                this.loadingDay = true;
+                this.loadingDayDate = day.fullDate;
+
+                setTimeout(() => {
+                    this.loadingDay = false;
+                    this.loadingDayDate = null;
+                    alert("Geen beschikbaar tijdslot voor deze dag.");
+                }, 150);
+
+                return;
+            }
+
+            this.selectedDay = day.day;
+            this.form.date = day.fullDate;
+            this.form.time = "";
+        },
+
+        /**
+         * Controleert of een tijdslot vol is
+         */
+        isTimeFull(time) {
+            if (!this.form.date || !this.form.amountPeople || !this.form.duration) return true;
+
+            const start = new Date(`${this.form.date}T${time}:00`);
+            if (start < new Date()) return true;
+
+            const [h, m] = this.form.duration.split(":").map(Number);
+            const end = new Date(start);
+            end.setHours(end.getHours() + h);
+            end.setMinutes(end.getMinutes() + m);
+
+            const used = this.reservations
+                .filter(r => {
+                    const s = new Date(r.startDate.replace(' ', 'T'));
+                    const e = new Date(r.endDate.replace(' ', 'T'));
+                    return start < e && end > s;
+                })
+                .reduce((sum, r) => sum + r.amountPeople, 0);
+
+            return used + Number(this.form.amountPeople) > this.capacity;
+        },
+
+        /**
+         * Verstuurt een nieuwe reservering naar de backend
+         */
+        submitReservation() {
+            this.submitting = true;
+
+            try {
+                const start = new Date(`${this.form.date}T${this.form.time}:00`);
+                const [h, m] = this.form.duration.split(":").map(Number);
+                const end = new Date(start);
+                end.setHours(end.getHours() + h);
+                end.setMinutes(end.getMinutes() + m);
+
+                const pad = n => String(n).padStart(2, "0");
+                const fmt = d =>
+                    `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
+
+                fetch("http://localhost:8080/Reservations", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        restaurantId: this.restaurantId,
+                        startDate: fmt(start),
+                        endDate: fmt(end),
+                        amountPeople: Number(this.form.amountPeople),
+                        email: this.form.email,
+                    }),
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error();
+                    alert("Reservering succesvol aangemaakt!");
+                    this.$router.push("/");
+                })
+                .catch(() => alert("Reserveren mislukt"))
+                .finally(() => this.submitting = false);
+
+            } catch {
+                alert("Ongeldige invoer");
+                this.submitting = false;
+            }
+        },
+    },
+
+    /**
+     * Initialisatie bij laden van de pagina
+     */
+    mounted() {
+        this.restaurantId = Number(this.$route.params.id);
+        this.loadRestaurant();
+        this.loadReservations();
+    },
+};
+</script>
+
+<template>
     <NavBar />
     <NavbarMobile />
 
@@ -109,388 +461,7 @@
     <Footer />
 </template>
 
-<script setup>
-import NavBar from '../components/NavBar.vue';
-import NavbarMobile from '../components/NavbarMobile.vue';
-import Footer from '../components/Footer.vue';
-</script>
 
-<script>
-export default {
-    name: 'RestaurantInfo',
-    data() {
-        return {
-            restaurant: null,
-            restaurantId: null,
-            reservations: [],
-            submitting: false,
-
-            form: {
-                date: "",
-                time: "",
-                duration: "01:00",
-                amountPeople: null,
-                email: "",
-            },
-
-            currentYear: new Date().getFullYear(),
-            currentMonth: new Date().getMonth(),
-            selectedDay: null,
-
-            loadingDay: false,
-            loadingDayDate: null,
-
-            timeSlots: [
-                "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
-                "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
-                "20:00", "20:30", "21:00", "21:30"
-            ],
-        };
-    },
-
-    computed: {
-        capacity() {
-            return this.restaurant?.maxcapacity || 60;
-        },
-
-        monthName() {
-            return new Date(this.currentYear, this.currentMonth)
-                .toLocaleString("nl-NL", { month: "long" });
-        },
-
-        daysInMonth() {
-            const year = this.currentYear;
-            const month = this.currentMonth;
-            const total = new Date(year, month + 1, 0).getDate();
-            const firstDay = new Date(year, month, 1).getDay() || 7;
-            const days = [];
-
-            for (let i = 1; i < firstDay; i++) {
-                days.push({ empty: true });
-            }
-
-            for (let d = 1; d <= total; d++) {
-                const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-                const dateObj = new Date(dateString);
-                dateObj.setHours(0, 0, 0, 0);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-
-                if (!this.form.amountPeople || Number(this.form.amountPeople) <= 0 || !this.form.duration) {
-                    days.push({
-                        empty: false,
-                        day: d,
-                        fullDate: dateString,
-                        disabled: true,
-                        discount: d >= 26 ? "-50%" : null,
-                    });
-                    continue;
-                }
-
-                const anySlotHasSpace = this.timeSlots.some((slot) => {
-                    const startCheck = new Date(`${dateString}T${slot}:00`);
-                    const now = new Date();
-                    if (startCheck.getTime() < now.getTime()) return false;
-
-                    const [durH, durM] = this.form.duration.split(":").map(Number);
-                    const endCheck = new Date(startCheck);
-                    endCheck.setHours(endCheck.getHours() + durH);
-                    endCheck.setMinutes(endCheck.getMinutes() + durM);
-
-                    const overlappingPeople = this.reservations
-                        .filter((r) => {
-                            if (!r.restaurant) return true;
-                            return r.restaurant.id === this.restaurantId;
-                        })
-                        .filter((r) => {
-                            const startStr = typeof r.startDate === 'string' ? r.startDate : r.startDate.date;
-                            const endStr = typeof r.endDate === 'string' ? r.endDate : r.endDate.date;
-
-                            const start = new Date(startStr.replace(' ', 'T'));
-                            const end = new Date(endStr.replace(' ', 'T'));
-
-                            return startCheck < end && endCheck > start;
-                        })
-                        .reduce((sum, r) => sum + r.amountPeople, 0);
-
-                    return (overlappingPeople + Number(this.form.amountPeople)) <= this.capacity;
-                });
-
-                const disabled = dateObj < today || !anySlotHasSpace;
-
-                days.push({
-                    empty: false,
-                    day: d,
-                    fullDate: dateString,
-                    disabled,
-                    discount: d >= 26 ? "-50%" : null,
-                });
-            }
-
-            return days;
-        },
-    },
-
-    watch: {
-        'form.duration'() {
-            this.selectedDay = null;
-            this.form.date = "";
-            this.form.time = "";
-        },
-        'form.amountPeople'() {
-            this.selectedDay = null;
-            this.form.date = "";
-            this.form.time = "";
-        }
-    },
-
-    methods: {
-        loadRestaurant() {
-            fetch(`http://localhost:8080/Restaurants/${this.restaurantId}`)
-                .then(res => res.json())
-                .then(data => {
-                    this.restaurant = data.Restaurant || data;
-                    console.log("Restaurant geladen:", this.restaurant);
-                })
-                .catch(e => {
-                    console.error("Fout bij laden restaurant:", e);
-                });
-        },
-
-        loadReservations() {
-            fetch(`http://localhost:8080/Reservations`)
-                .then((res) => res.json())
-                .then((data) => {
-                    const allReservations = data.Reservations || [];
-
-                    this.reservations = allReservations.filter(r => {
-                        if (!r.restaurant) return true;
-                        return r.restaurant.id === this.restaurantId;
-                    });
-
-                    console.log(`✅ Geladen reserveringen voor restaurant ${this.restaurantId}:`, this.reservations);
-                })
-                .catch((e) => {
-                    console.error("Fout bij laden:", e);
-                    this.reservations = [];
-                });
-        },
-
-        prevMonth() {
-            if (this.currentMonth === 0) {
-                this.currentMonth = 11;
-                this.currentYear--;
-            } else {
-                this.currentMonth--;
-            }
-        },
-
-        nextMonth() {
-            if (this.currentMonth === 11) {
-                this.currentMonth = 0;
-                this.currentYear++;
-            } else {
-                this.currentMonth++;
-            }
-        },
-
-        chooseDay(day) {
-            if (day.empty) return;
-
-            if (day.disabled) {
-                this.loadingDay = true;
-                this.loadingDayDate = day.fullDate;
-
-                setTimeout(() => {
-                    const anySlotHasSpace = this._checkDayHasSpace(day.fullDate);
-                    this.loadingDay = false;
-                    this.loadingDayDate = null;
-
-                    if (!anySlotHasSpace) {
-                        alert("Sorry — voor deze dag is momenteel geen beschikbare tijdslot meer voor dat aantal personen en die duur.");
-                        return;
-                    } else {
-                        this._selectDay(day);
-                    }
-                }, 150);
-                return;
-            }
-
-            this._selectDay(day);
-        },
-
-        _selectDay(day) {
-            this.selectedDay = day.day;
-            const m = String(this.currentMonth + 1).padStart(2, "0");
-            const d = String(day.day).padStart(2, "0");
-            this.form.date = `${this.currentYear}-${m}-${d}`;
-            this.form.time = "";
-        },
-
-        _checkDayHasSpace(dateString) {
-            if (!this.form.amountPeople || Number(this.form.amountPeople) <= 0 || !this.form.duration) {
-                return false;
-            }
-
-            const now = new Date();
-
-            return this.timeSlots.some((slot) => {
-                const startCheck = new Date(`${dateString}T${slot}:00`);
-                if (startCheck.getTime() < now.getTime()) return false;
-
-                const [durH, durM] = this.form.duration.split(":").map(Number);
-                const endCheck = new Date(startCheck);
-                endCheck.setHours(endCheck.getHours() + durH);
-                endCheck.setMinutes(endCheck.getMinutes() + durM);
-
-                const overlappingPeople = this.reservations
-                    .filter((r) => {
-                        const startStr = typeof r.startDate === 'string' ? r.startDate : r.startDate.date;
-                        const endStr = typeof r.endDate === 'string' ? r.endDate : r.endDate.date;
-                        const start = new Date(startStr.replace(' ', 'T'));
-                        const end = new Date(endStr.replace(' ', 'T'));
-                        return startCheck < end && endCheck > start;
-                    })
-                    .reduce((sum, r) => sum + r.amountPeople, 0);
-
-                return (overlappingPeople + Number(this.form.amountPeople)) <= this.capacity;
-            });
-        },
-
-        isTimeFull(time) {
-            if (!this.form.date || !this.form.amountPeople || !this.form.duration) return true;
-
-            const startCheck = new Date(`${this.form.date}T${time}:00`);
-            const now = new Date();
-            if (startCheck.getTime() < now.getTime()) return true;
-
-            const [durH, durM] = this.form.duration.split(":").map(Number);
-            const endCheck = new Date(startCheck);
-            endCheck.setHours(endCheck.getHours() + durH);
-            endCheck.setMinutes(endCheck.getMinutes() + durM);
-
-            // DEBUG
-            console.log(`Slot ${time} op ${this.form.date}:`);
-
-            const overlappingPeople = this.reservations
-                .filter(r => r.restaurant?.id === this.restaurantId)
-                .filter((r) => {
-                    const startStr = typeof r.startDate === 'string' ? r.startDate : r.startDate.date;
-                    const endStr = typeof r.endDate === 'string' ? r.endDate : r.endDate.date;
-                    const start = new Date(startStr.replace(' ', 'T'));
-                    const end = new Date(endStr.replace(' ', 'T'));
-
-                    // WIJZIGING: gebruik <= en >= om exacte grenzen NIET als overlap te tellen
-                    const hasOverlap = startCheck < end && endCheck > start;
-
-                    if (hasOverlap) {
-                        console.log(`  - Overlap met reservering ${r.id}: ${startStr} tot ${endStr} (${r.amountPeople} personen)`);
-                    }
-
-                    return hasOverlap;
-                })
-                .reduce((sum, r) => sum + r.amountPeople, 0);
-
-            const totaal = overlappingPeople + Number(this.form.amountPeople);
-            const isFull = totaal > this.capacity;
-
-            console.log(`  {overlappingPeople: ${overlappingPeople}, nieuwePeople: ${this.form.amountPeople}, totaal: ${totaal}, capacity: ${this.capacity}, isFull: ${isFull}}`);
-
-            return isFull;
-        },
-
-        submitReservation() {
-            this.submitting = true;
-
-            try {
-                if (!this.form.date || !this.form.time) throw new Error("Datum of tijd niet ingevuld");
-
-                const [hours, minutes] = this.form.time.split(":").map(Number);
-                const [durHours, durMinutes] = this.form.duration.split(":").map(Number);
-
-                const start = new Date(`${this.form.date}T${this.form.time}:00`);
-                const end = new Date(start);
-                end.setHours(end.getHours() + durHours);
-                end.setMinutes(end.getMinutes() + durMinutes);
-
-                const pad = (n) => String(n).padStart(2, "0");
-                const fmt = (d) =>
-                    `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(
-                        d.getHours()
-                    )}:${pad(d.getMinutes())}:00`;
-
-                const body = {
-                    restaurantId: this.restaurantId,
-                    startDate: fmt(start),
-                    endDate: fmt(end),
-                    amountPeople: Number(this.form.amountPeople),
-                    email: this.form.email,
-                };
-
-                console.log("=== DEBUG INFO ===");
-                console.log("restaurantId:", this.restaurantId, "type:", typeof this.restaurantId);
-                console.log("startDate:", body.startDate);
-                console.log("endDate:", body.endDate);
-                console.log("amountPeople:", body.amountPeople, "type:", typeof body.amountPeople);
-                console.log("email:", body.email);
-                console.log("Volledige body:", JSON.stringify(body, null, 2));
-
-                fetch("http://localhost:8080/Reservations", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(body),
-                })
-                    .then(async (res) => {
-                        const text = await res.text();
-                        console.log("Response status:", res.status);
-                        console.log("Response body:", text);
-
-                        if (!res.ok) {
-                            // Probeer error message te lezen
-                            try {
-                                const errorData = JSON.parse(text);
-                                console.error("Server error:", errorData);
-                                alert(`Fout: ${errorData.error || 'Onbekende fout'}`);
-                            } catch {
-                                console.error("Raw error:", text);
-                                alert("Er ging iets fout bij het reserveren");
-                            }
-                            throw new Error("Reservering mislukt");
-                        }
-
-                        try {
-                            const json = JSON.parse(text);
-                            console.log("Reservering succesvol:", json);
-                            alert("Reservering succesvol aangemaakt!");
-                            this.$router.push(`/`);
-                        } catch {
-                            console.warn("Server stuurde geen JSON terug:", text);
-                            alert("Reservering aangemaakt!");
-                            this.$router.push(`/`);
-                        }
-                    })
-                    .catch((err) => {
-                        console.error("Fout bij reserveren:", err);
-                    })
-                    .finally(() => {
-                        this.submitting = false;
-                    });
-
-            } catch (err) {
-                console.error("Fout bij het verwerken:", err);
-                alert("Er is iets misgegaan bij het verwerken van de reservering.");
-                this.submitting = false;
-            }
-        },
-    },
-
-    mounted() {
-        this.restaurantId = Number(this.$route.params.id);
-        this.loadRestaurant();
-        this.loadReservations();
-    },
-};
-</script>
 
 <style scoped>
 @keyframes spin {

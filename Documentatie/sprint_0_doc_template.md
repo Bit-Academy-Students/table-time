@@ -47,13 +47,12 @@
 - [ ] `Als bezoeker wil ik op de homepagina een introductie van hoe de app werkt, zodat de bezoekers een beetje een idee krijgen van hoe de app werkt.`
 - [ ] `Als beheerder wil ik dat mijn restaurant een account kan maken en de mogelijke zit plekken bepalen, zodat het restaurant niet te veel reserveringen krijgt.`
 - [ ] `Als beheerder wil ik de details zoals datum en tijdsloten van de reservaties invullen, zodat de bezoekers niet te vroeg of te laat zijn/wegaan.`  
-- [ ] `Als beheerder wil ik dat het restaurant de mogelijkheid heeft om gerechten te uploaden, zodat klanten het menu online al kunnen bekijken.`
 - [ ] `Als beheerder wil ik mijn eigen dashboard, zodat ik en de klanten hun reserveringen kunnen zien.`
-- [ ] `Als gebruiker wil ik een tafel kunnen boeken door de datum, tijd, aantal gasten en overige opties, zoals opmerkingen voor voedsel alergiën, speciale aanvragen of andere informatie invullen, zodat het restaurant er rekening mee kan houden.`
-- [ ] `Als gebruiker wil ik een reservering bekijken en annuleren binnen de restaurant algemene tijd voorwaarden, zodat als ik later van werk of een andere gebeurtenis, waardoor ik niet kan of later ben de reservatietijd eventueel kan veranderen en als dat niet kan dat ik hem kan annuleren.`
+- [ ] `Als gebruiker wil ik een tafel kunnen boeken door de datum, tijd, aantal gasten en Email, zodat het restaurant er weet wanner wij komen en hoelaat.`
 
 ### 🟠 Should have (S)
 - [ ] `Als beheerder wil ik dagelijkse en weekelijkse aanbiedingen toepassen, zodat de gebruiker een bijgewerkt overzicht ziet van beschikbare aanbiedingen.`
+- [ ] `Als beheerder wil ik dat het restaurant de mogelijkheid heeft om gerechten te uploaden, zodat klanten het menu online al kunnen bekijken.`
 - [ ] `Als beheerder wil ik dat het restaurant de mogelijkheid heeft om gebruikers te informeren over succesvolle boekingen en reserveringsupdates door middel van een notificatie, zodat ze weten dat hun reservering succesvol was of dat er iets veranderd is.`
 - [ ] `Als gebruiker wil ik een reservering aanpassen, zodat als iemand anders eventueel mee wil dat ik dan mischien een extra plekje of een andere tafel kan reserveren.`
 - [ ] `Als gebruiker wil ik kunnen aangeven met hoeveel mensen je komt, zodat het restaurant daarmee rekening kan houden.`
@@ -82,9 +81,9 @@ volgende week 11 uur
 | ----------------------------------------- | ------------- | ------ | -------------------------  |
 | Sprint 1 **planning**                      | `13 11 2025` | `10:00` | Lokaal Mars               |
 | Sprint meeting **retro**                   | `20 11 2025` | `10:15` | Lokaal Mars               |
-| Sprint 2 **review + planning**             | `21 11 2025` | `10:00` | Lokaal Mars               |
+| Sprint 2 **review + planning**             | `21 11 2025` | `10:30` | Lokaal Mars               |
 | Sprint 3 **planning + halfway presentatie**| `28 11 2025` | `10:00` | Lokaal Mars               |
-| Sprint 4 **review + planning + retro**     | `5 12 2025`  | `10:00` | Lokaal Mars               |
+| Sprint 4 **review + planning + retro**     | `18 12 2025`  | `10:00` | Lokaal Mars               |
 | Sprint 5 **review + eindpresentatie**      | `12 12 2025` | `10:00` | Lokaal Mars               |
 
 > Pas data aan op basis van jouw kalender. Alle meetings zijn fysiek, tenzij anders afgesproken met de coach/klant.
@@ -104,7 +103,7 @@ volgende week 11 uur
 
 **Afwezigheid & afspraken**
 - [ ] Ziek/afwezig vóór **08:30** melden via **Mattermost**
-- [ ] Te laat? Direct melden in **teamchat** of whatsapp
+- [ ] Te laat? Direct melden in **teamchat** of **whatsapp**
 - [ ] Bij langdurige afwezigheid: taken herverdelen (Scrum Master)
 
 **Communicatiekanalen**
@@ -147,6 +146,6 @@ Een user story is *Done* als:
 ## 📎 Bijlagen (optioneel)
 
 - Link naar repo: `https://github.com/Allexwnl/Table-time`  
-- Link naar designs/wireframes: `<url>`  
+- Link naar designs/wireframes: `https://www.figma.com/design/TkurafAegXjpW1pqJxkzoZ/Untitled?node-id=0-1&p=f&t=S74KkWiYoBoK2hQp-0`  
 - Link naar product backlog: `https://github.com/orgs/Bit-Academy-Students/projects/11`  
 - Contactgegevens klant (adres/locatie): `<adres>`

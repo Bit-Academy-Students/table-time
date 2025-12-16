@@ -1,11 +1,55 @@
+<!--
+/**
+ * Bestandsnaam: ContactPage.vue
+ *
+ * Beschrijving:
+ * Dit script verzorgt de logica voor de contactpagina.
+ * Het bevat de formulierstatus en de functionaliteit
+ * voor het verzenden van e-mails via EmailJS.
+ *
+ * Auteur: Keano Broekman
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.3.0
+ * - Laatste wijziging: <datum invullen>
+ * - Beheer: Git
+ */
+-->
 <script setup>
+/*
+ * Importeert de navigatiecomponent voor desktopgebruik
+ */
 import NavBar from "../components/NavBar.vue";
+
+/*
+ * Importeert de navigatiecomponent voor mobiel gebruik
+ */
 import NavbarMobile from "../components/NavbarMobile.vue";
+
+/*
+ * Importeert de footercomponent
+ */
 import Footer from "../components/Footer.vue";
 
+/*
+ * Vue Composition API:
+ * ref wordt gebruikt voor reactieve formulierdata
+ */
 import { ref } from "vue";
+
+/*
+ * EmailJS library voor het verzenden van e-mails
+ * zonder eigen backend
+ */
 import * as emailjs from "@emailjs/browser";
 
+/**
+ * Reactief formulierobject
+ *
+ * Bevat alle invoervelden van het contactformulier
+ * en wordt gebruikt bij het verzenden van de e-mail.
+ */
 const form = ref({
   name: "",
   email: "",
@@ -13,30 +57,42 @@ const form = ref({
   message: ""
 });
 
+/**
+ * Verstuurt het contactformulier via EmailJS
+ *
+ * Deze functie wordt aangeroepen bij het submitten
+ * van het formulier. De gegevens uit het reactieve
+ * formulierobject worden doorgestuurd naar EmailJS.
+ *
+ * Bij succes ontvangt de gebruiker een bevestiging.
+ * Bij een foutmelding wordt deze gelogd en getoond.
+ */
 const sendEmail = () => {
   emailjs
     .send(
-      "service_iki89mq",     // vervang
-      "template_ryo3sgk",    // vervang
+      "service_iki89mq",      // EmailJS service ID
+      "template_ryo3sgk",     // EmailJS template ID
       {
         from_name: form.value.name,
         from_email: form.value.email,
         phone: form.value.phone,
         message: form.value.message,
-        // ontvanger
-        to_email: "alexanderzoet@gmail.com",
+        to_email: "alexanderzoet@gmail.com", // Ontvangend e-mailadres
       },
-      "BR1aGpy3A5r2nJ38Z"      // vervang
+      "BR1aGpy3A5r2nJ38Z"      // EmailJS public key
     )
     .then(() => {
+      // Bevestiging bij succesvol verzenden
       alert("Email succesvol verstuurd!");
     })
     .catch((error) => {
+      // Foutafhandeling bij mislukte verzending
       console.error("Email error:", error);
       alert("Er ging iets mis bij het versturen.");
     });
 };
 </script>
+
 
 <template>
   <NavBar />
