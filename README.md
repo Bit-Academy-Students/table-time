@@ -17,7 +17,7 @@ In opdracht van onze klant is het project **TableTime** gestart: een webapplicat
 
 De aanleiding voor dit project is het ontbreken van een overzichtelijk en schaalbaar reserveringssysteem waarin meerdere restaurants samenkomen. Bestaande oplossingen zijn vaak beperkt in flexibiliteit of niet geschikt om zowel bezoekers als restauranteigenaren efficiënt te ondersteunen binnen één platform.
 
-Met TableTime wordt dit probleem opgelost door een gebruiksvriendelijke applicatie te ontwikkelen waarin bezoekers hun reserveringen kunnen beheren, terwijl restauranteigenaren volledige controle hebben over beschikbaarheid, tijdsloten en capaciteit. Hierbij staat duidelijkheid en eenvoud centraal voor beide doelgroepen.
+Met TableTime wordt dit probleem opgelost door een gebruiksvriendelijke applicatie te ontwikkelen waarin bezoekers hun reserveringen kunnen plaatsen, terwijl restauranteigenaren volledige controle hebben over beschikbaarheid, tijdsloten en capaciteit. Hierbij staat duidelijkheid en eenvoud centraal voor beide doelgroepen.
 
 Het project is opgezet met een toekomstgerichte visie, waarbij schaalbaarheid, onderhoudbaarheid en een consistente gebruikerservaring belangrijke uitgangspunten zijn.
 
