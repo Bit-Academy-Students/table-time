@@ -1,3 +1,22 @@
+<!--
+/**
+ * Bestandsnaam: ProductsEntity.php
+ *
+ * Beschrijving:
+    * Dit bestand bevat de ProductsEntity klasse die de Products-entiteit in de applicatie definieert.
+    * De entiteit bevat eigenschappen zoals id, naam, prijs, soort, ingredients en de relatie met Menu-entiteiten.
+ *
+ * Auteur: Keano Broekman
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.4
+ * - Laatste wijziging: 25 November 2025
+ * - Beheer: Git
+ */
+-->
+
+
 <?php
 
 namespace App\Products\ProductsEntity;

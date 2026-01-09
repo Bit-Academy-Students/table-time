@@ -1,3 +1,21 @@
+<!--
+/**
+ * Bestandsnaam: MenuRepository.php
+ *
+ * Beschrijving:
+    * Dit bestand bevat de MenuRepository klasse die verantwoordelijk is voor het beheren van Menu-entiteiten in de applicatie.
+    * De repository biedt methoden voor het opslaan en verwijderen van Menu's via Doctrine ORM.
+ *
+ * Auteur: Johan Tol
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.2
+ * - Laatste wijziging: 20 November 2025
+ * - Beheer: Git
+ */
+-->
+
 <?php
 
 namespace App\Menus\MenusRepository;
@@ -27,29 +45,4 @@ class MenuRepository extends ServiceEntityRepository
         $this->getEntityManager()->remove($entity);
         $this->getEntityManager()->flush();
     }
-
-    //    /**
-    //     * @return Menu[] Returns an array of Menu objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Menu
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }

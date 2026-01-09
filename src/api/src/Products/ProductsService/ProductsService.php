@@ -1,3 +1,22 @@
+<!--
+/**
+ * Bestandsnaam: ProductsService.php
+ *
+ * Beschrijving:
+    * Dit bestand bevat de ProductsService klasse die verantwoordelijk is voor het afhandelen van HTTP-verzoeken
+    * met betrekking tot Products-entiteiten in de applicatie. De service biedt methoden voor het ophalen,
+    * aanmaken, bijwerken en verwijderen van Products via de ProductsRepository.
+ *
+ * Auteur: Keano Broekman
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.3
+ * - Laatste wijziging: 20 November 2025
+ * - Beheer: Git
+ */
+-->
+
 <?php
 
 namespace App\Products\ProductsService;

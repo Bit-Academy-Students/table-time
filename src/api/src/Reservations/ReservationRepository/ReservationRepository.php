@@ -1,3 +1,21 @@
+<!--
+/**
+ * Bestandsnaam: ReservationRepository.php
+ *
+ * Beschrijving:
+    * Dit bestand bevat de ReservationRepository klasse die verantwoordelijk is voor het beheren van Reservation-entiteiten in de applicatie.
+    * De repository biedt methoden voor het opslaan en verwijderen van Reservation via Doctrine ORM.
+ *
+ * Auteur: Johan Tol
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.1
+ * - Laatste wijziging: 14 November 2025
+ * - Beheer: Git
+ */
+-->
+
 <?php
 
 namespace App\Reservations\ReservationRepository;

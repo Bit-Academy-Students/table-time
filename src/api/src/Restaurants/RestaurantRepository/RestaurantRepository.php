@@ -1,3 +1,21 @@
+<!--
+/**
+ * Bestandsnaam: RestaurantsRepository.php
+ *
+ * Beschrijving:
+    * Dit bestand bevat de RestaurantsRepository klasse die verantwoordelijk is voor het beheren van Restaurants-entiteiten in de applicatie.
+    * De repository biedt methoden voor het opslaan en verwijderen van Restaurants via Doctrine ORM.
+ *
+ * Auteur: Keano Broekman
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.2
+ * - Laatste wijziging: 14 November 2025
+ * - Beheer: Git
+ */
+-->
+
 <?php
 
 namespace App\Restaurants\RestaurantRepository;

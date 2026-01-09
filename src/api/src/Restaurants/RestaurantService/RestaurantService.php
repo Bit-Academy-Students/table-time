@@ -1,3 +1,22 @@
+<!--
+/**
+ * Bestandsnaam: RestaurantsService.php
+ *
+ * Beschrijving:
+    * Dit bestand bevat de RestaurantsService klasse die verantwoordelijk is voor het afhandelen van HTTP-verzoeken
+    * met betrekking tot Restaurants-entiteiten in de applicatie. De service biedt methoden voor het ophalen,
+    * aanmaken, bijwerken en verwijderen van Restaurants via de RestaurantsRepository.
+ *
+ * Auteur: Keano Broekman
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.5
+ * - Laatste wijziging: 12 December 2025
+ * - Beheer: Git
+ */
+-->
+
 <?php
 
 namespace App\Restaurants\RestaurantService;

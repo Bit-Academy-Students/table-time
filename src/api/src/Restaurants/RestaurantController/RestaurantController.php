@@ -1,3 +1,22 @@
+<!--
+/**
+ * Bestandsnaam: RestaurantsController.php
+ *
+ * Beschrijving:
+    * Dit bestand bevat de RestaurantsController klasse die verantwoordelijk is voor het afhandelen van HTTP-verzoeken
+    * met betrekking tot Restaurants-entiteiten in de applicatie. De controller biedt methoden voor het ophalen,
+    * aanmaken, bijwerken en verwijderen van Restaurants via de RestaurantsService.
+ *
+ * Auteur: Keano Broekman
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.5
+ * - Laatste wijziging: 12 December 2025
+ * - Beheer: Git
+ */
+-->
+
 <?php
 
 namespace App\Restaurants\RestaurantController;

@@ -1,3 +1,22 @@
+<!--
+/**
+ * Bestandsnaam: ProductsController.php
+ *
+ * Beschrijving:
+    * Dit bestand bevat de ProductsController klasse die verantwoordelijk is voor het afhandelen van HTTP-verzoeken
+    * met betrekking tot Products-entiteiten in de applicatie. De controller biedt methoden voor het ophalen,
+    * aanmaken, bijwerken en verwijderen van Products via de ProductsService.
+ *
+ * Auteur: Keano Broekman
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.7
+ * - Laatste wijziging: 4 December 2025
+ * - Beheer: Git
+ */
+-->
+
 <?php
 
 namespace App\Products\ProductsController;

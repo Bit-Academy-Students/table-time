@@ -1,3 +1,22 @@
+<!--
+/**
+ * Bestandsnaam: MenuService.php
+ *
+ * Beschrijving:
+    * Dit bestand bevat de MenuService klasse die verantwoordelijk is voor het afhandelen van HTTP-verzoeken
+    * met betrekking tot Menu-entiteiten in de applicatie. De service biedt methoden voor het ophalen,
+    * aanmaken, bijwerken en verwijderen van Menu's via de MenuRepository.
+ *
+ * Auteur: Johan Tol
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.6
+ * - Laatste wijziging: 10 December 2025
+ * - Beheer: Git
+ */
+-->
+
 <?php
 
 namespace App\Menus\MenusService;

@@ -1,3 +1,22 @@
+<!--
+/**
+ * Bestandsnaam: ReservationController.php
+ *
+ * Beschrijving:
+    * Dit bestand bevat de ReservationController klasse die verantwoordelijk is voor het afhandelen van HTTP-verzoeken
+    * met betrekking tot Reservation-entiteiten in de applicatie. De controller biedt methoden voor het ophalen,
+    * aanmaken, bijwerken en verwijderen van Reservations via de ReservationService.
+ *
+ * Auteur: Johan Tol
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.7
+ * - Laatste wijziging: 11 December 2025
+ * - Beheer: Git
+ */
+-->
+
 <?php 
 
 namespace App\Reservations\ReservationController;
