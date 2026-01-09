@@ -12,7 +12,7 @@
  *
  * Versiebeheer:
  * - Versie: 1.0.0
- * - Laatste wijziging: <datum invullen>
+ * - Laatste wijziging: 19 December 2025
  * - Beheer: Git
  */
 -->

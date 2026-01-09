@@ -44,8 +44,8 @@
 ## 🧍‍♀️ User Stories (MoSCoW)
 
 ### ✅ Must have (M)
-- [ ] `Als bezoeker wil ik op de homepagina een introductie van hoe de app werkt, zodat de bezoekers een beetje een idee krijgen van hoe de app werkt.`
-- [ ] `Als beheerder wil ik dat mijn restaurant een account kan maken en de mogelijke zit plekken bepalen, zodat het restaurant niet te veel reserveringen krijgt.`
+- [ ] `Als bezoeker wil ik op de homepagina een introductie van hoe de app werkt, zodat ik een beetje een idee krijgen van hoe de app werkt.`
+- [ ] `Als beheerder wil ik dat mijn restaurant een account kan maken en de mogelijke zit plekken bepalen, zodat ik niet te veel reserveringen krijgt.`
 - [ ] `Als beheerder wil ik de details zoals datum en tijdsloten van de reservaties invullen, zodat de bezoekers niet te vroeg of te laat zijn/wegaan.`  
 - [ ] `Als beheerder wil ik mijn eigen dashboard, zodat ik en de klanten hun reserveringen kunnen zien.`
 - [ ] `Als gebruiker wil ik een tafel kunnen boeken door de datum, tijd, aantal gasten en Email, zodat het restaurant er weet wanner wij komen en hoelaat.`
@@ -83,7 +83,7 @@ volgende week 11 uur
 | Sprint meeting **retro**                   | `20 11 2025` | `10:15` | Lokaal Mars               |
 | Sprint 2 **review + planning**             | `21 11 2025` | `10:30` | Lokaal Mars               |
 | Sprint 3 **planning + halfway presentatie**| `28 11 2025` | `10:00` | Lokaal Mars               |
-| Sprint 4 **review + planning + retro**     | `18 12 2025`  | `10:00` | Lokaal Mars               |
+| Sprint 4 **review + planning + retro**     | `18 12 2025` | `10:00` | Lokaal Mars               |
 | Sprint 5 **review + eindpresentatie**      | `12 12 2025` | `10:00` | Lokaal Mars               |
 
 > Pas data aan op basis van jouw kalender. Alle meetings zijn fysiek, tenzij anders afgesproken met de coach/klant.

@@ -1,4 +1,5 @@
-<!--
+
+<script setup>
 /**
  * Bestandsnaam: RestaurantInfo.vue
  *
@@ -16,11 +17,10 @@
  * Bedrijf: Unc B.V.
  *
  * Versiebeheer:
- * - Versie: 1.0.0
- * - Laatste wijziging: <datum invullen>
+ * - Versie: 2.7.0
+ * - Laatste wijziging: 16 december 2025
+ *  * - Beheer: Git
  */
--->
-<script setup>
 /*
  * Globale layoutcomponenten
  * Worden gebruikt voor consistente navigatie en footer
@@ -356,7 +356,6 @@ export default {
 
     <main class="flex flex-col items-center pt-[100px] px-4">
 
-        <!-- Restaurant Info Card -->
         <section v-if="restaurant" class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8 mb-8">
             <h1 class="text-4xl font-bold text-[#03CAED] mb-4">{{ restaurant.naam }}</h1>
             <div class="space-y-2 text-lg">
@@ -367,7 +366,6 @@ export default {
             </div>
         </section>
 
-        <!-- Reserverings Formulier -->
         <section class="w-[420px] h-auto pb-12">
             <h2 class="text-2xl font-semibold mb-4">Tafel reserveren bij {{ restaurant?.naam }}</h2>
 
@@ -392,7 +390,6 @@ export default {
                 </select>
             </div>
 
-            <!-- Kalender -->
             <div class="bg-white border-[#03CAED] border-2 z-10 p-4 rounded-xl shadow mb-8 relative">
                 <h3 class="text-center text-lg font-semibold mb-4">
                     {{ monthName.charAt(0).toUpperCase() + monthName.slice(1) }} {{ currentYear }}
@@ -428,7 +425,6 @@ export default {
                 </div>
             </div>
 
-            <!-- Tijdslots -->
             <div class="grid grid-cols-4 gap-2 mb-4">
                 <button v-for="t in timeSlots" :key="t" @click="!isTimeFull(t) && (form.time = t)"
                     class="p-2 border w-[75px] rounded text-sm" :class="{

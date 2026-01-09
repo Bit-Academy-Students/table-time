@@ -1,3 +1,26 @@
+<!--
+/**
+ * Bestandsnaam: GuestText.vue
+ *
+ * Beschrijving:
+ * Deze component toont het "Hoe het werkt"-gedeelte van de applicatie.
+ * Het legt stap voor stap uit hoe een restaurantbeheerder zijn/haar restaurant kan laten registreren:
+ * 1. Maak een account aan
+ * 2. Bepaal capaciteit & tijdsloten
+ * 3. Volg reserveringen live
+ * 4. Beheer en bevestig
+ * 5. Hou controle
+ * Elke stap bevat een illustratieve afbeelding en korte uitleg.
+ *
+ * Auteur: Alexander Zoet
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.0
+ * - Laatste wijziging: 16 december 2025
+ * - Beheer: Git
+ */
+-->
 <template>
     <div class="border-t-4 border-[#FF8000] --hWHContainer">
         <div class="flex flex-row justify-between w-full">

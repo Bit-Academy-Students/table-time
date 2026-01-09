@@ -11,8 +11,8 @@
  * Bedrijf: Unc B.V.
  *
  * Versiebeheer:
- * - Versie: 1.0.0
- * - Laatste wijziging: <datum invullen>
+ * - Versie: 1.4.0
+ * - Laatste wijziging: 16 december 2025
  * - Beheer: Git
  */
 -->
@@ -235,7 +235,6 @@ export default {
             {{ message }}
         </div>
 
-        <!-- Link naar inlogpagina -->
         <p class="text-gray-600">
             Heb je al een account? 
             <router-link to="/restaurant/login" class="text-[#03CAED] hover:underline font-semibold">

@@ -14,8 +14,10 @@
  * Auteur: Alexander Zoet
  * Bedrijf: Unc B.V.
  *
- * Versie:
- * - 1.0.0
+ * Versiebeheer:
+ * - Laatste wijziging: 16 december 2025
+ * - 1.0.1
+  * - Beheer: Git
  */
 -->
 
@@ -131,4 +133,3 @@ export default {
     </main>
     <Footer />
 </template>
-

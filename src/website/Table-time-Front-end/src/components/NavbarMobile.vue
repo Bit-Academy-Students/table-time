@@ -12,8 +12,8 @@
  * Bedrijf: Unc B.V.
  *
  * Versiebeheer:
- * - Versie: 1.0.0
- * - Laatste wijziging: <datum invullen>
+ * - Versie: 1.2.0
+ * - Laatste wijziging: 16 december 2025
  * - Beheer: Git
  */
 -->
@@ -21,12 +21,10 @@
     <header class="flex justify-center">
         <nav class="max-[768px]:flex max-[768px]:justify-center min-[768px]:hidden mt-4 z-50">
             <div class="flex flex-row justify-between items-center w-full">
-                <!-- Logo -->
                 <div class="flex items-center justify-between">
                     <div class="w-[50px]"><img src="../assets/img/logo TableTImes.png" alt="Table Times Logo"></div>
                 </div>
 
-                <!-- Hamburger knop -->
                 <button class="--hamburgerBtn" @click="toggleMenu">
                     <span class="text-black bg-black block h-1 rounded transition-all duration-300"
                         :class="{ 'rotate-45 translate-y-2': isMenuOpen }"></span>
@@ -37,7 +35,6 @@
         </nav>
     </header>
 
-    <!-- Mobiel menu -->
     <transition name="slide-side">
         <ul v-if="isMenuOpen" class="--navbarMenuMobile">
             <li><a @click="closeMenu" class="transition-colors hover:cursor-pointer" href="/">Home</a></li>

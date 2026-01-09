@@ -12,8 +12,8 @@
  * Bedrijf: Unc B.V.
  *
  * Versiebeheer:
- * - Versie: 1.0.0
- * - Laatste wijziging: <datum invullen>
+ * - Versie: 1.6.0
+ * - Laatste wijziging: 16 december 2025
  * - Beheer: Git
  */
 -->

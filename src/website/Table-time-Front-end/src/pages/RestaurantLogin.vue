@@ -16,8 +16,11 @@
  * Auteur: Alexander Zoet
  * Bedrijf: Unc B.V.
  *
- * Versie:
+ * Versiebeheer:
+ * - Laatste wijziging: 16 december 2025
  * - 1.2.0
+ * - Beheer: Git
+
  */
 -->
 
@@ -197,7 +200,6 @@ export default {
             {{ message }}
         </div>
 
-        <!-- Link naar registratiepagina -->
         <p class="text-gray-600">
             Nog geen account? 
             <router-link to="/restaurant-register" class="text-[#03CAED] hover:underline font-semibold">
