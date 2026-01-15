@@ -1,4 +1,7 @@
-<!--
+<?php
+
+namespace App\Products\ProductsService;
+
 /**
  * Bestandsnaam: ProductsService.php
  *
@@ -15,11 +18,6 @@
  * - Laatste wijziging: 20 November 2025
  * - Beheer: Git
  */
--->
-
-<?php
-
-namespace App\Products\ProductsService;
 
 use App\Products\ProductsEntity\ProductsEntity;
 use App\Products\ProductsRepository\ProductsRepository;

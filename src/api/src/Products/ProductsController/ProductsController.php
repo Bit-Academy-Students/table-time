@@ -1,4 +1,7 @@
-<!--
+<?php
+
+namespace App\Products\ProductsController;
+
 /**
  * Bestandsnaam: ProductsController.php
  *
@@ -15,11 +18,6 @@
  * - Laatste wijziging: 4 December 2025
  * - Beheer: Git
  */
--->
-
-<?php
-
-namespace App\Products\ProductsController;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

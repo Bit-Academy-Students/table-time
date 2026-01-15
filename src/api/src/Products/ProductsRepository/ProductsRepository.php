@@ -1,4 +1,7 @@
-<!--
+<?php
+
+namespace App\Products\ProductsRepository;
+
 /**
  * Bestandsnaam: ProductsRepository.php
  *
@@ -14,11 +17,6 @@
  * - Laatste wijziging: 19 November 2025
  * - Beheer: Git
  */
--->
-
-<?php
-
-namespace App\Products\ProductsRepository;
 
 use App\Products\ProductsEntity\ProductsEntity as Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

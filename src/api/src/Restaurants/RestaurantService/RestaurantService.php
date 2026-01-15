@@ -1,4 +1,7 @@
-<!--
+<?php
+
+namespace App\Restaurants\RestaurantService;
+
 /**
  * Bestandsnaam: RestaurantsService.php
  *
@@ -15,11 +18,6 @@
  * - Laatste wijziging: 12 December 2025
  * - Beheer: Git
  */
--->
-
-<?php
-
-namespace App\Restaurants\RestaurantService;
 
 use App\Restaurants\RestaurantEntity\RestaurantEntity;
 use App\Restaurants\RestaurantRepository\RestaurantRepository;

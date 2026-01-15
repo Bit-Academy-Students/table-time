@@ -1,4 +1,7 @@
-<!--
+<?php
+
+namespace App\Menus\MenusRepository;
+
 /**
  * Bestandsnaam: MenuRepository.php
  *
@@ -14,11 +17,6 @@
  * - Laatste wijziging: 20 November 2025
  * - Beheer: Git
  */
--->
-
-<?php
-
-namespace App\Menus\MenusRepository;
 
 use App\Menus\MenusEntity\MenuEntity as Menu;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

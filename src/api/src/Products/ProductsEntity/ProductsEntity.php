@@ -1,4 +1,7 @@
-<!--
+<?php
+
+namespace App\Products\ProductsEntity;
+
 /**
  * Bestandsnaam: ProductsEntity.php
  *
@@ -14,12 +17,6 @@
  * - Laatste wijziging: 25 November 2025
  * - Beheer: Git
  */
--->
-
-
-<?php
-
-namespace App\Products\ProductsEntity;
 
 use App\Products\ProductsRepository\ProductsRepository;
 use Doctrine\ORM\Mapping as ORM;

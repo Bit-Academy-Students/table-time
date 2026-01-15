@@ -1,4 +1,7 @@
-<!--
+<?php
+
+namespace App\Menus\MenusEntity;
+
 /**
  * Bestandsnaam: MenuEntity.php
  *
@@ -13,11 +16,6 @@
  * - Laatste wijziging: 4 December 2025
  * - Beheer: Git
  */
--->
-
-<?php
-
-namespace App\Menus\MenusEntity;
 
 use App\Products\ProductsEntity\ProductsEntity;
 use App\Restaurants\RestaurantEntity\RestaurantEntity;

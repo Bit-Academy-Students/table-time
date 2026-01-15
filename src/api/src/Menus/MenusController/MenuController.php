@@ -1,4 +1,7 @@
-<!--
+<?php
+
+namespace App\Menus\MenusController;
+
 /**
  * Bestandsnaam: MenuController.php
  *
@@ -15,11 +18,6 @@
  * - Laatste wijziging: 27 November 2025
  * - Beheer: Git
  */
--->
-
-<?php
-
-namespace App\Menus\MenusController;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

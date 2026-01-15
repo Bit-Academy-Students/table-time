@@ -1,4 +1,7 @@
-<!--
+<?php
+
+namespace App\Menus\MenusService;
+
 /**
  * Bestandsnaam: MenuService.php
  *
@@ -15,11 +18,6 @@
  * - Laatste wijziging: 10 December 2025
  * - Beheer: Git
  */
--->
-
-<?php
-
-namespace App\Menus\MenusService;
 
 use App\Menus\MenusEntity\MenuEntity;
 use App\Menus\MenusRepository\MenuRepository;

@@ -1,4 +1,7 @@
-<!--
+<?php
+
+namespace App\Restaurants\RestaurantController;
+
 /**
  * Bestandsnaam: RestaurantsController.php
  *
@@ -15,11 +18,6 @@
  * - Laatste wijziging: 12 December 2025
  * - Beheer: Git
  */
--->
-
-<?php
-
-namespace App\Restaurants\RestaurantController;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
