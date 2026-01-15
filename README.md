@@ -106,7 +106,7 @@ cd table-time/Docker
 Build de Docker containers zonder cache:
 
 ```bash
-docker compose build --no-cache
+docker compose up -d --build
 ```
 
 Controleer of de containers draaien:
@@ -123,14 +123,20 @@ Je zou onder andere de volgende services moeten zien:
 Ga nu de PHP-container in:
 
 ```bash
-docker compose exec bash
+docker exec -it php bash
 ```
 
 Ga naar de API-map en controleer de PHP-versie:
 
 ```bash
-cd /var/www/html/api
+cd api
 php -v
+```
+
+Migrate de entities naar de database:
+
+```bash
+php bin/console d:m:m
 ```
 
 Je zou hier **PHP 8.2.x** moeten zien.
