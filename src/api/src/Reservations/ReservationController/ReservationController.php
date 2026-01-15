@@ -1,4 +1,7 @@
-<!--
+<?php 
+
+namespace App\Reservations\ReservationController;
+
 /**
  * Bestandsnaam: ReservationController.php
  *
@@ -15,11 +18,6 @@
  * - Laatste wijziging: 11 December 2025
  * - Beheer: Git
  */
--->
-
-<?php 
-
-namespace App\Reservations\ReservationController;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

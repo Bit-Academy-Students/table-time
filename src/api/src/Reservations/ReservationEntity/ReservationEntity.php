@@ -1,4 +1,7 @@
-<!--
+<?php
+
+namespace App\Reservations\ReservationEntity;
+
 /**
  * Bestandsnaam: ReservationEntity.php
  *
@@ -14,11 +17,6 @@
  * - Laatste wijziging: 28 November 2025
  * - Beheer: Git
  */
--->
-
-<?php
-
-namespace App\Reservations\ReservationEntity;
 
 use App\Restaurants\RestaurantEntity\RestaurantEntity;
 use App\Reservations\ReservationRepository\ReservationRepository;

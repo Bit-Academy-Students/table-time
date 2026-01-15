@@ -1,4 +1,7 @@
-<!--
+<?php
+
+namespace App\Restaurants\RestaurantRepository;
+
 /**
  * Bestandsnaam: RestaurantsRepository.php
  *
@@ -14,11 +17,6 @@
  * - Laatste wijziging: 14 November 2025
  * - Beheer: Git
  */
--->
-
-<?php
-
-namespace App\Restaurants\RestaurantRepository;
 
 use App\Restaurants\RestaurantEntity\RestaurantEntity as Restaurant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

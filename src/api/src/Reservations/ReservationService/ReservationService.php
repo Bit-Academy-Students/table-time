@@ -1,4 +1,7 @@
-<!--
+<?php
+
+namespace App\Reservations\ReservationService;
+
 /**
  * Bestandsnaam: ReservationService.php
  *
@@ -15,11 +18,6 @@
  * - Laatste wijziging: 11 December 2025
  * - Beheer: Git
  */
--->
-
-<?php
-
-namespace App\Reservations\ReservationService;
 
 use App\Reservations\ReservationEntity\ReservationEntity;
 use App\Reservations\ReservationRepository\ReservationRepository;

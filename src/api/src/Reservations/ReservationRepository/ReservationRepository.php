@@ -1,4 +1,7 @@
-<!--
+<?php
+
+namespace App\Reservations\ReservationRepository;
+
 /**
  * Bestandsnaam: ReservationRepository.php
  *
@@ -14,11 +17,6 @@
  * - Laatste wijziging: 14 November 2025
  * - Beheer: Git
  */
--->
-
-<?php
-
-namespace App\Reservations\ReservationRepository;
 
 use App\Reservations\ReservationEntity\ReservationEntity as Reservation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

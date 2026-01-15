@@ -1,4 +1,7 @@
-<!--
+<?php
+
+namespace App\Restaurants\RestaurantEntity;
+
 /**
  * Bestandsnaam: RestaurantsEntity.php
  *
@@ -14,11 +17,6 @@
  * - Laatste wijziging: 11 December 2025
  * - Beheer: Git
  */
--->
-
-<?php
-
-namespace App\Restaurants\RestaurantEntity;
 
 use App\Restaurants\RestaurantRepository\RestaurantRepository;
 use Doctrine\ORM\Mapping as ORM;
