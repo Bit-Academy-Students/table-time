@@ -2,7 +2,22 @@
 
 namespace App\Reservations\ReservationEntity;
 
-use App\Customers\CustomerEntity\CustomerEntity;
+/**
+ * Bestandsnaam: ReservationEntity.php
+ *
+ * Beschrijving:
+    * Dit bestand bevat de ReservationEntity klasse die de Reservation-entiteit in de applicatie definieert.
+    * De entiteit bevat eigenschappen zoals id, naam, prijs, soort, ingredients en de relatie met Menu-entiteiten.
+ *
+ * Auteur: Johan Tol
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.6
+ * - Laatste wijziging: 28 November 2025
+ * - Beheer: Git
+ */
+
 use App\Restaurants\RestaurantEntity\RestaurantEntity;
 use App\Reservations\ReservationRepository\ReservationRepository;
 use Doctrine\ORM\Mapping\ManyToOne;

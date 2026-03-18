@@ -2,6 +2,21 @@
 
 namespace App\Menus\MenusEntity;
 
+/**
+ * Bestandsnaam: MenuEntity.php
+ *
+ * Beschrijving:
+    * Dit bestand bevat de MenuEntity klasse die de structuur en relaties van een menu in de applicatie definieert.
+ *
+ * Auteur: Johan Tol
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.6
+ * - Laatste wijziging: 4 December 2025
+ * - Beheer: Git
+ */
+
 use App\Products\ProductsEntity\ProductsEntity;
 use App\Restaurants\RestaurantEntity\RestaurantEntity;
 use App\Menus\MenusRepository\MenuRepository;
@@ -29,7 +44,7 @@ class MenuEntity
 
     function __construct()
     {
-        $this->ProductsIds = new ArrayCollection();
+        $this->ProductIds = new ArrayCollection();
     }
 
     public function getId(): int

@@ -2,9 +2,25 @@
 
 namespace App\Reservations\ReservationService;
 
+/**
+ * Bestandsnaam: ReservationService.php
+ *
+ * Beschrijving:
+    * Dit bestand bevat de ReservationService klasse die verantwoordelijk is voor het afhandelen van HTTP-verzoeken
+    * met betrekking tot Reservation-entiteiten in de applicatie. De service biedt methoden voor het ophalen,
+    * aanmaken, bijwerken en verwijderen van Reservation via de ReservationRepository.
+ *
+ * Auteur: Johan Tol
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.20
+ * - Laatste wijziging: 11 December 2025
+ * - Beheer: Git
+ */
+
 use App\Reservations\ReservationEntity\ReservationEntity;
 use App\Reservations\ReservationRepository\ReservationRepository;
-use App\Restaurants\RestaurantEntity\RestaurantEntity;
 use App\Restaurants\RestaurantRepository\RestaurantRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;

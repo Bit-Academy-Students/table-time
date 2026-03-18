@@ -2,6 +2,22 @@
 
 namespace App\Restaurants\RestaurantEntity;
 
+/**
+ * Bestandsnaam: RestaurantsEntity.php
+ *
+ * Beschrijving:
+    * Dit bestand bevat de RestaurantsEntity klasse die de Restaurants-entiteit in de applicatie definieert.
+    * De entiteit bevat eigenschappen zoals id, naam, prijs, soort, ingredients en de relatie met Menu-entiteiten.
+ *
+ * Auteur: Keano Broekman
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.6
+ * - Laatste wijziging: 11 December 2025
+ * - Beheer: Git
+ */
+
 use App\Restaurants\RestaurantRepository\RestaurantRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToMany;

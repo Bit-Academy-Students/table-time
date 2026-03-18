@@ -2,6 +2,22 @@
 
 namespace App\Products\ProductsRepository;
 
+/**
+ * Bestandsnaam: ProductsRepository.php
+ *
+ * Beschrijving:
+    * Dit bestand bevat de ProductsRepository klasse die verantwoordelijk is voor het beheren van Products-entiteiten in de applicatie.
+    * De repository biedt methoden voor het opslaan en verwijderen van Products via Doctrine ORM.
+ *
+ * Auteur: Keano Broekman
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.2
+ * - Laatste wijziging: 19 November 2025
+ * - Beheer: Git
+ */
+
 use App\Products\ProductsEntity\ProductsEntity as Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;

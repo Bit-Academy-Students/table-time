@@ -2,6 +2,22 @@
 
 namespace App\Products\ProductsEntity;
 
+/**
+ * Bestandsnaam: ProductsEntity.php
+ *
+ * Beschrijving:
+    * Dit bestand bevat de ProductsEntity klasse die de Products-entiteit in de applicatie definieert.
+    * De entiteit bevat eigenschappen zoals id, naam, prijs, soort, ingredients en de relatie met Menu-entiteiten.
+ *
+ * Auteur: Keano Broekman
+ * Bedrijf: Unc B.V.
+ *
+ * Versiebeheer:
+ * - Versie: 1.0.4
+ * - Laatste wijziging: 25 November 2025
+ * - Beheer: Git
+ */
+
 use App\Products\ProductsRepository\ProductsRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToOne;
