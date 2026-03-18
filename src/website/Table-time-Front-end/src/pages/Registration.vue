@@ -17,20 +17,6 @@
  */
 -->
 <script setup>
-/*
- * Importeert de navigatiecomponent voor desktopgebruik
- */
-import NavBar from '../components/NavBar.vue';
-
-/*
- * Importeert de navigatiecomponent voor mobiel gebruik
- */
-import NavbarMobile from '../components/NavbarMobile.vue';
-
-/*
- * Importeert de footercomponent
- */
-import Footer from '../components/Footer.vue';
 
 /*
  * Vue Router composable voor programmatische navigatie
@@ -177,9 +163,6 @@ export default {
 </script>
 
 <template>
-    <NavBar />
-    <NavbarMobile />
-    <main class="flex justify-center flex-col items-center gap-8 pt-[100px]">
         <h2>Restaurant Registratie</h2>
         <form @submit.prevent="submitForm" class="flex bg-white p-10 rounded-xl flex-col gap-4 justify-center items-center w-[400px]">
             <input 
@@ -241,8 +224,6 @@ export default {
                 Log hier in
             </router-link>
         </p>
-    </main>
-    <Footer />
 </template>
 
 

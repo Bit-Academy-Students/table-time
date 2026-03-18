@@ -26,13 +26,6 @@
 
 <script setup>
 /*
- * Layoutcomponenten voor consistente navigatie
- */
-import NavBar from '../components/NavBar.vue';
-import NavbarMobile from '../components/NavbarMobile.vue';
-import Footer from '../components/Footer.vue';
-
-/*
  * Vue Router instance voor navigatie
  */
 import { useRouter } from 'vue-router';
@@ -169,9 +162,6 @@ export default {
 };
 </script>
 <template>
-    <NavBar />
-    <NavbarMobile />
-    <main class="flex justify-center flex-col items-center gap-8 pt-[100px] min-h-[calc(100vh-200px)]">
         <h2>Restaurant Inloggen</h2>
         <form @submit.prevent="submitLogin" class="flex flex-col gap-4 justify-center items-center w-[400px] bg-white p-10 rounded-xl">
             <input 
@@ -206,6 +196,4 @@ export default {
                 Registreer hier
             </router-link>
         </p>
-    </main>
-    <Footer />
 </template>
