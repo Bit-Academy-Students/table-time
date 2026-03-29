@@ -75,4 +75,4 @@ Deze tests controleren de hulpfuncties die de tijdlijn in het dashboard laten we
 
 Alle 10 tests slagen. De tests laten zien dat de reserveringslogica correct werkt voor de belangrijkste situaties: een tijdslot is geblokkeerd als de capaciteit vol is, tijdsloten in het verleden zijn niet beschikbaar, en reserveringen die niet overlappen tellen niet mee voor de capaciteitscheck. Dit geeft vertrouwen dat de kern van het reserveringssysteem betrouwbaar werkt.
 
-Er zijn nog scenario's die niet getest zijn, zoals wat er gebeurt als de datuminput een verkeerd formaat heeft. Dit is beschreven in het verbetervoorstellen document (`verbeterVoorstellen.md`).
+Er zijn nog scenario's die niet getest zijn, zoals wat er gebeurt als de datuminput een verkeerd formaat heeft. Dit is beschreven in het verbetervoorstellen document (`../Opdracht 5 - Verbetervoorstellen/verbeterVoorstellen.md`).
