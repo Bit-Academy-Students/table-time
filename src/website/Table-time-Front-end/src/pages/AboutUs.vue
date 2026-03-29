@@ -16,29 +16,8 @@
  * - Beheer: Git
  */
 -->
-<script setup>
-/*
- * Importeert de desktop navigatiebalk component
- */
-import NavBar from '../components/NavBar.vue';
-
-/*
- * Importeert de mobiele navigatiebalk component
- */
-import NavbarMobile from '../components/NavbarMobile.vue';
-
-/*
- * Importeert de footer component
- */
-import Footer from '../components/Footer.vue';
-</script>
 
 <template>
-    <NavBar />
-
-    <NavbarMobile />
-
-    <main class="flex flex-col items-center pt-[100px]">
         <section class="flex flex-col justify-center max-[768px]:flex-col w-[80%] mb-[100px]">
 
             <div class="flex flex-col justify-center items-center text-center h-full">
@@ -79,7 +58,4 @@ import Footer from '../components/Footer.vue';
             </div>
 
         </section>
-    </main>
-
-    <Footer />
 </template>

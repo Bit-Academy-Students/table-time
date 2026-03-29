@@ -23,8 +23,8 @@ import { createRouter, createWebHistory } from 'vue-router';
  */
 import Home from '../pages/Home.vue';
 import AllReservations from '../pages/ReservationDashboard.vue';
-import Login from '../pages/Login.vue';
-import RestaurantLogin from '../pages/RestaurantLogin.vue';
+import Register from '../pages/Registration.vue';
+import Login from '../pages/RestaurantLogin.vue';
 import ContactPage from '../pages/ContactPage.vue';
 import AboutMe from '../pages/AboutUs.vue';
 import RestaurantInfo from '../pages/RestaurantInfo.vue';
@@ -70,7 +70,7 @@ const routes = [
          */
         path: '/register',
         name: 'login',
-        component: Login,
+        component: Register,
     },
     {
         /*
@@ -78,7 +78,7 @@ const routes = [
          */
         path: '/restaurant/login',
         name: 'RestaurantLogin',
-        component: RestaurantLogin,
+        component: Login,
     },
     {
         /*

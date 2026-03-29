@@ -1,5 +1,5 @@
+<!--
 
-<script setup>
 /**
  * Bestandsnaam: RestaurantInfo.vue
  *
@@ -21,14 +21,7 @@
  * - Laatste wijziging: 16 december 2025
  *  * - Beheer: Git
  */
-/*
- * Globale layoutcomponenten
- * Worden gebruikt voor consistente navigatie en footer
- */
-import NavBar from '../components/NavBar.vue';
-import NavbarMobile from '../components/NavbarMobile.vue';
-import Footer from '../components/Footer.vue';
-</script>
+-->
 
 
 <script>
@@ -82,10 +75,10 @@ export default {
              * Beschikbare tijdslots
              */
             timeSlots: [
-                "12:00","12:30","13:00","13:30","14:00","14:30",
-                "15:00","15:30","16:00","16:30","17:00","17:30",
-                "18:00","18:30","19:00","19:30","20:00","20:30",
-                "21:00","21:30"
+                "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
+                "15:00", "15:30", "16:00", "16:30", "17:00", "17:30",
+                "18:00", "18:30", "19:00", "19:30", "20:00", "20:30",
+                "21:00", "21:30"
             ],
         };
     },
@@ -311,7 +304,7 @@ export default {
 
                 const pad = n => String(n).padStart(2, "0");
                 const fmt = d =>
-                    `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
+                    `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
 
                 fetch("http://localhost:8080/Reservations", {
                     method: "POST",
@@ -324,13 +317,13 @@ export default {
                         email: this.form.email,
                     }),
                 })
-                .then(res => {
-                    if (!res.ok) throw new Error();
-                    alert("Reservering succesvol aangemaakt!");
-                    this.$router.push("/");
-                })
-                .catch(() => alert("Reserveren mislukt"))
-                .finally(() => this.submitting = false);
+                    .then(res => {
+                        if (!res.ok) throw new Error();
+                        alert("Reservering succesvol aangemaakt!");
+                        this.$router.push("/");
+                    })
+                    .catch(() => alert("Reserveren mislukt"))
+                    .finally(() => this.submitting = false);
 
             } catch {
                 alert("Ongeldige invoer");
@@ -351,110 +344,103 @@ export default {
 </script>
 
 <template>
-    <NavBar />
-    <NavbarMobile />
+    <section v-if="restaurant" class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8 mb-8">
+        <h1 class="text-4xl font-bold text-[#03CAED] mb-4">{{ restaurant.naam }}</h1>
+        <div class="space-y-2 text-lg">
+            <p class="text-gray-700">📍 <strong>Locatie:</strong> {{ restaurant.locatie }}</p>
+            <p class="text-gray-700">📞 <strong>Telefoon:</strong> {{ restaurant.telefoonnummer }}</p>
+            <p class="text-gray-700">👥 <strong>Max capaciteit:</strong> {{ restaurant.maxcapacity }} personen</p>
+            <p class="text-gray-700">✉️ <strong>Email:</strong> {{ restaurant.email }}</p>
+        </div>
+    </section>
 
-    <main class="flex flex-col items-center pt-[100px] px-4">
+    <section class="w-[420px] h-auto pb-12">
+        <h2 class="text-2xl font-semibold mb-4">Tafel reserveren bij {{ restaurant?.naam }}</h2>
 
-        <section v-if="restaurant" class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8 mb-8">
-            <h1 class="text-4xl font-bold text-[#03CAED] mb-4">{{ restaurant.naam }}</h1>
-            <div class="space-y-2 text-lg">
-                <p class="text-gray-700">📍 <strong>Locatie:</strong> {{ restaurant.locatie }}</p>
-                <p class="text-gray-700">📞 <strong>Telefoon:</strong> {{ restaurant.telefoonnummer }}</p>
-                <p class="text-gray-700">👥 <strong>Max capaciteit:</strong> {{ restaurant.maxcapacity }} personen</p>
-                <p class="text-gray-700">✉️ <strong>Email:</strong> {{ restaurant.email }}</p>
+        <div class="bg-white p-4 rounded-xl shadow mb-4">
+            <h3 class="font-semibold mb-2">Aantal personen</h3>
+            <input type="number" v-model.number="form.amountPeople" class="w-full p-2 border rounded" min="1"
+                :max="restaurant?.maxcapacity" />
+            <p v-if="!form.amountPeople || form.amountPeople <= 0" class="text-xs text-gray-500 mt-2">
+                Vul eerst het aantal personen in om beschikbare dagen te zien.
+            </p>
+            <p v-else-if="form.amountPeople > restaurant?.maxcapacity" class="text-xs text-red-500 mt-2">
+                Dit restaurant heeft een maximale capaciteit van {{ restaurant?.maxcapacity }} personen.
+            </p>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl shadow mb-4">
+            <h3 class="font-semibold mb-2">Duur</h3>
+            <select v-model="form.duration" class="w-full p-2 border rounded">
+                <option value="01:00">1 uur</option>
+                <option value="01:30">1.5 uur</option>
+                <option value="02:00">2 uur</option>
+            </select>
+        </div>
+
+        <div class="bg-white border-[#03CAED] border-2 z-10 p-4 rounded-xl shadow mb-8 relative">
+            <h3 class="text-center text-lg font-semibold mb-4">
+                {{ monthName.charAt(0).toUpperCase() + monthName.slice(1) }} {{ currentYear }}
+            </h3>
+
+            <div class="flex justify-between mb-2 px-2">
+                <button @click="prevMonth" class="text-xl">‹</button>
+                <button @click="nextMonth" class="text-xl">›</button>
             </div>
-        </section>
 
-        <section class="w-[420px] h-auto pb-12">
-            <h2 class="text-2xl font-semibold mb-4">Tafel reserveren bij {{ restaurant?.naam }}</h2>
-
-            <div class="bg-white p-4 rounded-xl shadow mb-4">
-                <h3 class="font-semibold mb-2">Aantal personen</h3>
-                <input type="number" v-model.number="form.amountPeople" class="w-full p-2 border rounded" min="1"
-                    :max="restaurant?.maxcapacity" />
-                <p v-if="!form.amountPeople || form.amountPeople <= 0" class="text-xs text-gray-500 mt-2">
-                    Vul eerst het aantal personen in om beschikbare dagen te zien.
-                </p>
-                <p v-else-if="form.amountPeople > restaurant?.maxcapacity" class="text-xs text-red-500 mt-2">
-                    Dit restaurant heeft een maximale capaciteit van {{ restaurant?.maxcapacity }} personen.
-                </p>
+            <div class="grid grid-cols-7 text-center text-gray-500 text-sm mb-2">
+                <span>ma</span><span>di</span><span>wo</span><span>do</span><span>vr</span><span>za</span><span>zo</span>
             </div>
 
-            <div class="bg-white p-4 rounded-xl shadow mb-4">
-                <h3 class="font-semibold mb-2">Duur</h3>
-                <select v-model="form.duration" class="w-full p-2 border rounded">
-                    <option value="01:00">1 uur</option>
-                    <option value="01:30">1.5 uur</option>
-                    <option value="02:00">2 uur</option>
-                </select>
-            </div>
+            <div class="grid grid-cols-7 gap-2">
+                <div v-for="(day, i) in daysInMonth" :key="i"
+                    class="h-12 flex flex-col items-center justify-center z-20 rounded-lg text-sm relative" :class="{
+                        'bg-gray-100 text-gray-400': day.disabled,
+                        'bg-[#03CAED] text-white': selectedDay === day.day && !day.disabled,
+                        'hover:bg-gray-200 cursor-pointer': !day.disabled && !day.empty
+                    }" @click="chooseDay(day)">
+                    <span v-if="!day.empty">{{ day.day }}</span>
+                    <span v-if="day.discount"
+                        class="absolute bottom-1 bg-[#FF8000] text-white text-[10px] px-1 rounded">
+                        {{ day.discount }}
+                    </span>
 
-            <div class="bg-white border-[#03CAED] border-2 z-10 p-4 rounded-xl shadow mb-8 relative">
-                <h3 class="text-center text-lg font-semibold mb-4">
-                    {{ monthName.charAt(0).toUpperCase() + monthName.slice(1) }} {{ currentYear }}
-                </h3>
-
-                <div class="flex justify-between mb-2 px-2">
-                    <button @click="prevMonth" class="text-xl">‹</button>
-                    <button @click="nextMonth" class="text-xl">›</button>
-                </div>
-
-                <div class="grid grid-cols-7 text-center text-gray-500 text-sm mb-2">
-                    <span>ma</span><span>di</span><span>wo</span><span>do</span><span>vr</span><span>za</span><span>zo</span>
-                </div>
-
-                <div class="grid grid-cols-7 gap-2">
-                    <div v-for="(day, i) in daysInMonth" :key="i"
-                        class="h-12 flex flex-col items-center justify-center z-20 rounded-lg text-sm relative" :class="{
-                            'bg-gray-100 text-gray-400': day.disabled,
-                            'bg-[#03CAED] text-white': selectedDay === day.day && !day.disabled,
-                            'hover:bg-gray-200 cursor-pointer': !day.disabled && !day.empty
-                        }" @click="chooseDay(day)">
-                        <span v-if="!day.empty">{{ day.day }}</span>
-                        <span v-if="day.discount"
-                            class="absolute bottom-1 bg-[#FF8000] text-white text-[10px] px-1 rounded">
-                            {{ day.discount }}
-                        </span>
-
-                        <div v-if="loadingDay && loadingDayDate === day.fullDate"
-                            class="absolute inset-0 flex items-center justify-center bg-white/70 rounded-lg">
-                            <div class="w-6 h-6 border-4 border-t-transparent rounded-full animate-spin"></div>
-                        </div>
+                    <div v-if="loadingDay && loadingDayDate === day.fullDate"
+                        class="absolute inset-0 flex items-center justify-center bg-white/70 rounded-lg">
+                        <div class="w-6 h-6 border-4 border-t-transparent rounded-full animate-spin"></div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="grid grid-cols-4 gap-2 mb-4">
-                <button v-for="t in timeSlots" :key="t" @click="!isTimeFull(t) && (form.time = t)"
-                    class="p-2 border w-[75px] rounded text-sm" :class="{
-                        'bg-[#FF8000] text-white': form.time === t,
-                        'hover:bg-gray-200 cursor-pointer': !isTimeFull(t),
-                        'bg-gray-100 text-gray-400 cursor-not-allowed': isTimeFull(t)
-                    }" :disabled="isTimeFull(t)">
-                    {{ t }}
-                </button>
-            </div>
+        <div class="grid grid-cols-4 gap-2 mb-4">
+            <button v-for="t in timeSlots" :key="t" @click="!isTimeFull(t) && (form.time = t)"
+                class="p-2 border w-[75px] rounded text-sm" :class="{
+                    'bg-[#FF8000] text-white': form.time === t,
+                    'hover:bg-gray-200 cursor-pointer': !isTimeFull(t),
+                    'bg-gray-100 text-gray-400 cursor-not-allowed': isTimeFull(t)
+                }" :disabled="isTimeFull(t)">
+                {{ t }}
+            </button>
+        </div>
 
-            <div class="bg-white p-4 rounded-xl shadow mb-4">
-                <h3 class="font-semibold mb-2">Email</h3>
-                <input type="email" v-model="form.email" class="w-full p-2 border rounded" />
-            </div>
+        <div class="bg-white p-4 rounded-xl shadow mb-4">
+            <h3 class="font-semibold mb-2">Email</h3>
+            <input type="email" v-model="form.email" class="w-full p-2 border rounded" />
+        </div>
 
-            <form @submit.prevent="submitReservation">
-                <button type="submit" class="w-full bg-[#03CAED] text-white p-3 rounded hover:bg-[#02a8c4] transition"
-                    :disabled="submitting">
-                    <span v-if="!submitting">Reserveren</span>
-                    <div v-else class="flex items-center justify-center">
-                        <div class="w-5 h-5 border-4 border-t-transparent border-white rounded-full animate-spin mr-2">
-                        </div>
-                        Bezig...
+        <form @submit.prevent="submitReservation">
+            <button type="submit" class="w-full bg-[#03CAED] text-white p-3 rounded hover:bg-[#02a8c4] transition"
+                :disabled="submitting">
+                <span v-if="!submitting">Reserveren</span>
+                <div v-else class="flex items-center justify-center">
+                    <div class="w-5 h-5 border-4 border-t-transparent border-white rounded-full animate-spin mr-2">
                     </div>
-                </button>
-            </form>
-        </section>
-    </main>
-    <Footer />
+                    Bezig...
+                </div>
+            </button>
+        </form>
+    </section>
 </template>
 
 

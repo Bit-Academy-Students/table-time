@@ -18,21 +18,6 @@
 -->
 <script setup>
 /*
- * Importeert de navigatiecomponent voor desktopgebruik
- */
-import NavBar from '../components/NavBar.vue';
-
-/*
- * Importeert de navigatiecomponent voor mobiel gebruik
- */
-import NavbarMobile from '../components/NavbarMobile.vue';
-
-/*
- * Importeert de footercomponent
- */
-import Footer from '../components/Footer.vue';
-
-/*
  * Importeert de tekstcomponent voor gasten
  */
 import GuestText from '../components/homePageText/GuestText.vue';
@@ -59,9 +44,6 @@ const active = ref('Guests');
 </script>
 
 <template>
-    <NavBar />
-    <NavbarMobile />
-    <main class="flex flex-col items-center max- pt-[100px]">
         <section class="flex flex-row justify-center max-[768px]:flex-col w-[80%] mb-[100px]">
             <div class="w-[50%] max-[768px]:w-full">
                 <h2>Table Time</h2>
@@ -73,7 +55,7 @@ const active = ref('Guests');
                     capaciteit allemaal in één overzichtelijk dashboard.</p>
             </div>
             <div class="w-[50%] max-[768px]:w-full flex justify-end flex-wrap">
-                <img src="./assets/img/homepageIMg.png" alt="">
+                <img src="../assets/img/homepageIMg.png" alt="">
             </div>
         </section>
         <h1 class="flex justify-center">Hoe werkt het</h1>
@@ -95,6 +77,4 @@ const active = ref('Guests');
          id="restaurantOwners" class="flex flex-col justify-center w-[80%]">
          <RestaurantOwnersText  />
         </section>
-    </main>
-    <Footer />
 </template>
