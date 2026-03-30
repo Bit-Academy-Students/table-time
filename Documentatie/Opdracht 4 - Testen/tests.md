@@ -31,7 +31,7 @@ Tests:      10 passed
 
 *(Zie screenshot hieronder voor de volledige terminal output)*
 
-**[SCREENSHOT HIER TOEVOEGEN — voer `npx vitest run` uit en maak een screenshot van de output]**
+![**\[SCREENSHOT\]**](image.png)
 
 ---
 

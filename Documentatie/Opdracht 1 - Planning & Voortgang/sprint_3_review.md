@@ -29,7 +29,6 @@
 
 | Teamlid | Taak |
 |---------|------|
-| Johan   | Iets met de kalender |
-| Rayan   | ??? |
-| Keano   | Contact Pagina |
-| Alex    | Ook iets met de kalender |
+| Johan & Alex   | gaat samen met alex werken aan de kalender |
+| Rayan   | gaat de documentatie van symfony beetje leren en kijken waar hij kan helpen |
+| Keano   | gaat werken aan de Contact Pagina |

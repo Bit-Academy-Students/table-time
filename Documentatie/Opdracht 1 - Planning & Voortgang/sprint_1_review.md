@@ -5,9 +5,9 @@
 ### kijken wat we hebben gemaakt in sprint 1 en wat we gaan maken in sprint 2
 
 ## doelen in sprint 1
-- alex de design van het website
-- keano, rayan en ik de backend van de website en het api met de database
-- ik samen met alex hebben we het docker recht gezet voor de backend en frontend
+- alex maakt het design van het website
+- keano, rayan en ik(Johan) de backend van de website en de api met de database
+-Johan heeft samen met alex het docker recht gezet voor de backend en frontend
 
 ## demo
 alex heeft laten zien hoe de website eruit ziet en wat de functies zijn die we hebben gemaakt
@@ -21,14 +21,12 @@ we hebben uitgelegd hoe we de tijd indeling doen over de reservaties en hoe we d
 wij moeten prioriteiten stellen om te automatiseren over de reservaties en of die mogelijk zijn qua tijd
 
 ## doelen in sprint 2
-- alex gaat verder met de frontend zo gaat hij bezig met een kalender kunnen zien over welke tijden beschikbaar zijn
-in de form om een reservatie te maken
-- keano en rayan gaan verder met de backend en het api zo gaan ze bezig met de error handling en validaties toevoegen
-- ik ga verder met de het connecten van front en back -end zo ga ik bezig met het maken van de reservaties
-en hulp bieden aan alex, rayan en keano waar nodig
+- alex gaat verder met de frontend zo gaat hij bezig met een kalender kunnen zien over welke tijden beschikbaar zijn in een form om een reservatie te maken.
+- keano en rayan gaan verder met de backend en het api zo gaan ze bezig met de error handling en validaties toevoegen.
+- johan gaat verder met de het connecten van front en back-end zo ga ik bezig met het maken van de reservaties en hulp bieden aan alex, rayan en keano waar nodig is.
 - alex wil graag duidelijkheid creëren in de website zodat ze weten waar je de reservaties kan plaatsen
 
-als restaurant eigenaar wil ik het per dag kunnen zien hoeveel reservaties er zijn geplaatst
-en mogelijk kunnen scrollen door de dagen heen
+# user stories
+als restaurant eigenaar wil ik het per dag kunnen zien hoeveel reservaties er zijn geplaatst en mogelijk kunnen scrollen door de dagen heen
 
 ook als klant is het niet eerste prioriteit om een account te maken
